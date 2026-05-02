@@ -97,7 +97,22 @@ class PerfilController {
             this.renderBajaForm();
         }
 
+        this.applyPermissions();
         lucide.createIcons();
+    }
+
+    applyPermissions() {
+        const canAdd = window.Utils.checkPermission('Perfiles', 'add');
+        const canEdit = window.Utils.checkPermission('Perfiles', 'edit');
+        const canDelete = window.Utils.checkPermission('Perfiles', 'delete');
+
+        const btnAlta = document.getElementById('btn-alta-perfil');
+        const btnEdit = document.getElementById('btn-actualizar-perfil');
+        const btnDelete = document.getElementById('btn-eliminar-perfil');
+
+        if (btnAlta) btnAlta.style.display = canAdd ? 'flex' : 'none';
+        if (btnEdit) btnEdit.style.display = canEdit ? 'flex' : 'none';
+        if (btnDelete) btnDelete.style.display = canDelete ? 'flex' : 'none';
     }
 
     renderTable() {
@@ -168,20 +183,32 @@ class PerfilController {
     async handleAltaSubmit(e) {
         e.preventDefault();
         const form = e.target;
+        const btnSave = form.closest('.screen-container').querySelector('.btn-primary');
+
         const data = {
-            nickname: form.nickname.value,
-            description: form.description.value,
+            nickname: form.nickname.value.trim(),
+            description: form.description.value.trim(),
             key_add: form.key_add.checked,
             key_edit: form.key_edit.checked,
             key_delete: form.key_delete.checked,
             key_export: form.key_export.checked
         };
+
+        if (!data.nickname) {
+            window.Utils.showToast('El nombre del perfil es obligatorio.', 'warning');
+            return;
+        }
+
         try {
+            window.Utils.setButtonLoading(btnSave, true);
             await this.model.createProfile(data);
             await this.model.fetchProfiles();
+            window.Utils.showToast('Perfil creado exitosamente.', 'success');
             this.navigate('general');
         } catch (err) {
-            alert('Error creando el perfil');
+            window.Utils.showToast('Error al crear el perfil: ' + (err.message || 'Error desconocido'), 'danger');
+        } finally {
+            window.Utils.setButtonLoading(btnSave, false);
         }
     }
 
@@ -189,32 +216,49 @@ class PerfilController {
         e.preventDefault();
         if (!this.selectedProfile) return;
         const form = e.target;
+        const btnSave = form.closest('.screen-container').querySelector('.btn-primary');
+
         const data = {
-            nickname: form.nickname.value,
-            description: form.description.value,
+            nickname: form.nickname.value.trim(),
+            description: form.description.value.trim(),
             key_add: form.key_add.checked,
             key_edit: form.key_edit.checked,
             key_delete: form.key_delete.checked,
             key_export: form.key_export.checked
         };
 
+        if (!data.nickname) {
+            window.Utils.showToast('El nombre del perfil no puede estar vacío.', 'warning');
+            return;
+        }
+
         try {
+            window.Utils.setButtonLoading(btnSave, true);
             await this.model.updateProfile(this.selectedProfile.idProfile, data);
             await this.model.fetchProfiles();
+            window.Utils.showToast('Perfil actualizado correctamente.', 'success');
             this.navigate('general');
         } catch (err) {
-            alert('Error actualizando el perfil');
+            window.Utils.showToast('Error al actualizar el perfil.', 'danger');
+        } finally {
+            window.Utils.setButtonLoading(btnSave, false);
         }
     }
 
     async handleBajaSubmit() {
         if (!this.selectedProfile) return;
+        const btnConfirm = document.getElementById('btn-confirmar-baja');
+        
         try {
+            window.Utils.setButtonLoading(btnConfirm, true);
             await this.model.deleteProfile(this.selectedProfile.idProfile);
             await this.model.fetchProfiles();
+            window.Utils.showToast('Perfil eliminado exitosamente.', 'success');
             this.navigate('general');
         } catch (err) {
-            alert('Error eliminando el perfil');
+            window.Utils.showToast('Error al eliminar el perfil. Es posible que esté en uso.', 'danger');
+        } finally {
+            window.Utils.setButtonLoading(btnConfirm, false);
         }
     }
 }

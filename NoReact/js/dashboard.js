@@ -133,7 +133,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // ── Render sidebar modules ────────────────────────────────────
     if (navModules) {
-        const grouped = modulesData.reduce((acc, m) => { (acc[m.area] = acc[m.area] || []).push(m); return acc; }, {});
+        const perms = JSON.parse(localStorage.getItem('permissions') || '[]');
+        
+        // Filtramos los módulos: si el usuario tiene permisos para ese módulo (y no es SinAcceso/idProfile 5)
+        // Nota: El backend ya filtra y solo envía los módulos donde el usuario tiene algo asignado.
+        const allowedModules = modulesData.filter(m => {
+            // El nombre en modulesData debe coincidir con el nombre en la DB (moduleName)
+            // 'Registro de Ejemplares' en UI es 'Registro de Ejemplares' en DB
+            return perms.some(p => p.moduleName === m.name);
+        });
+
+        const grouped = allowedModules.reduce((acc, m) => { (acc[m.area] = acc[m.area] || []).push(m); return acc; }, {});
         navModules.innerHTML = '';
         Object.entries(grouped).forEach(([area, mods]) => {
             const g = document.createElement('div');

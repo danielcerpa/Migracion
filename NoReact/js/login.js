@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok && data.success) {
                 // Autenticación exitosa
                 localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('permissions', JSON.stringify(data.permissions || []));
                 window.location.replace('views/dashboard.html');
             } else {
                 // Manejar mock alternativo por si la API falla o la DB está vacía

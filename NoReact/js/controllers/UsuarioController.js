@@ -162,7 +162,22 @@ class UsuarioController {
         else if (this.currentView === 'modificar') this.renderModificarForm();
         else if (this.currentView === 'baja') this.renderBajaForm();
 
+        this.applyPermissions();
         lucide.createIcons();
+    }
+
+    applyPermissions() {
+        const canAdd = window.Utils.checkPermission('Usuarios', 'add');
+        const canEdit = window.Utils.checkPermission('Usuarios', 'edit');
+        const canDelete = window.Utils.checkPermission('Usuarios', 'delete');
+
+        const btnAlta = document.getElementById('btn-alta');
+        const btnEdit = document.getElementById('btn-actualizar');
+        const btnDelete = document.getElementById('btn-eliminar');
+
+        if (btnAlta) btnAlta.style.display = canAdd ? 'flex' : 'none';
+        if (btnEdit) btnEdit.style.display = canEdit ? 'flex' : 'none';
+        if (btnDelete) btnDelete.style.display = canDelete ? 'flex' : 'none';
     }
 
     renderTable() {
@@ -388,7 +403,15 @@ class UsuarioController {
         const form = document.getElementById('alta-usuario-form');
         const btn = document.getElementById('btn-save-alta');
         if (!form || !btn) return;
-        const isValid = form.name.value.trim() && form.last_name.value.trim() && form.email.value.trim() && form.password.value.trim();
+        
+        const name = form.name.value.trim();
+        const lastName = form.last_name.value.trim();
+        const email = form.email.value.trim();
+        const password = form.password.value.trim();
+
+        const isEmailValid = window.Utils.validateEmail(email);
+        const isValid = name && lastName && email && isEmailValid && password.length >= 3;
+        
         btn.disabled = !isValid;
     }
 
@@ -440,19 +463,31 @@ class UsuarioController {
     async handleAltaSubmit(e) {
         e.preventDefault();
         const form = e.target;
+        const btnSave = document.getElementById('btn-save-alta');
+
         const data = {
-            name: form.name.value,
-            last_name: form.last_name.value,
-            second_last_name: form.second_last_name.value,
-            email: form.email.value,
-            password: form.password.value,
+            name: form.name.value.trim(),
+            last_name: form.last_name.value.trim(),
+            second_last_name: form.second_last_name.value.trim(),
+            email: form.email.value.trim(),
+            password: form.password.value.trim(),
             permisos: Object.entries(this.permissionsForm).map(([mod, prof]) => ({ idModule: Number(mod), idProfile: Number(prof) }))
         };
+
+        if (!window.Utils.validateEmail(data.email)) {
+            window.Utils.showToast('El formato del correo electrónico no es válido.', 'warning');
+            return;
+        }
+
         try {
+            window.Utils.setButtonLoading(btnSave, true);
             await this.model.createUser(data);
+            window.Utils.showToast('Usuario creado exitosamente.', 'success');
             this.navigate('general');
         } catch (err) {
-            alert('Error creando el usuario');
+            window.Utils.showToast('Error al crear el usuario: ' + (err.message || 'Error de conexión'), 'danger');
+        } finally {
+            window.Utils.setButtonLoading(btnSave, false);
         }
     }
 
@@ -460,30 +495,49 @@ class UsuarioController {
         e.preventDefault();
         if (!this.selectedUser) return;
         const form = e.target;
+        const btnSave = document.getElementById('btn-save-modificar');
+
         const data = {
-            name: form.name.value,
-            last_name: form.last_name.value,
-            second_last_name: form.second_last_name.value,
+            name: form.name.value.trim(),
+            last_name: form.last_name.value.trim(),
+            second_last_name: form.second_last_name.value.trim(),
             status: form.status.value === "1",
             permisos: Object.entries(this.permissionsForm).map(([mod, prof]) => ({ idModule: Number(mod), idProfile: Number(prof) }))
         };
-        if (form.password.value) data.password = form.password.value;
+
+        if (form.password.value) {
+            if (form.password.value.length < 3) {
+                window.Utils.showToast('La nueva contraseña debe tener al menos 3 caracteres.', 'warning');
+                return;
+            }
+            data.password = form.password.value;
+        }
 
         try {
+            window.Utils.setButtonLoading(btnSave, true);
             await this.model.updateUser(this.selectedUser.idUser, data);
+            window.Utils.showToast('Usuario actualizado correctamente.', 'success');
             this.navigate('general');
         } catch (err) {
-            alert('Error actualizando el usuario');
+            window.Utils.showToast('Error al actualizar el usuario.', 'danger');
+        } finally {
+            window.Utils.setButtonLoading(btnSave, false);
         }
     }
 
     async handleBajaSubmit() {
         if (!this.selectedUser) return;
+        const btnConfirm = document.getElementById('btn-confirmar-baja');
+        
         try {
+            window.Utils.setButtonLoading(btnConfirm, true);
             await this.model.deleteUser(this.selectedUser.idUser);
+            window.Utils.showToast('Usuario dado de baja (Inactivo).', 'success');
             this.navigate('general');
         } catch (err) {
-            alert('Error dando de baja al usuario');
+            window.Utils.showToast('Error al dar de baja al usuario.', 'danger');
+        } finally {
+            window.Utils.setButtonLoading(btnConfirm, false);
         }
     }
 }

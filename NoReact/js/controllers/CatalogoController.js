@@ -133,7 +133,22 @@ class CatalogoController {
             this.renderBaja();
         }
 
+        this.applyPermissions();
         lucide.createIcons();
+    }
+
+    applyPermissions() {
+        const canAdd = window.Utils.checkPermission('Catalogos', 'add');
+        const canEdit = window.Utils.checkPermission('Catalogos', 'edit');
+        const canDelete = window.Utils.checkPermission('Catalogos', 'delete');
+
+        const btnAlta = document.getElementById('btn-alta-catalogo');
+        const btnEdit = document.getElementById('btn-actualizar-catalogo');
+        const btnDelete = document.getElementById('btn-eliminar-catalogo');
+
+        if (btnAlta) btnAlta.style.display = canAdd ? 'flex' : 'none';
+        if (btnEdit) btnEdit.style.display = canEdit ? 'flex' : 'none';
+        if (btnDelete) btnDelete.style.display = canDelete ? 'flex' : 'none';
     }
 
     renderTable() {

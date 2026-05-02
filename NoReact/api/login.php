@@ -38,31 +38,33 @@ try {
         }
 
         if ($isPasswordValid) {
-            // 3. Obtener permisos/perfil del usuario (igual que AuthControlador.js)
-            // Se toma el primer perfil encontrado en la tabla 'permissions'
+            // 3. Obtener permisos detallados por módulo
             $stmtPerms = $pdo->prepare("
-                SELECT p.nickname, p.idProfile 
+                SELECT 
+                    m.idModule, 
+                    m.name as moduleName,
+                    p.key_add, 
+                    p.key_edit, 
+                    p.key_delete, 
+                    p.key_export
                 FROM permissions perm
+                JOIN module m ON perm.idModule = m.idModule
                 JOIN profile p ON perm.idProfile = p.idProfile
                 WHERE perm.idUser = ?
-                LIMIT 1
             ");
             $stmtPerms->execute([$user['idUser']]);
-            $perm = $stmtPerms->fetch(PDO::FETCH_ASSOC);
-            
-            $profileId = $perm ? $perm['idProfile'] : null;
-            $profileName = $perm ? $perm['nickname'] : null;
+            $permissions = $stmtPerms->fetchAll(PDO::FETCH_ASSOC);
 
-            // 4. Estructurar respuesta idéntica a @[Private]
+            // 4. Estructurar respuesta con el usuario y sus permisos
             echo json_encode([
                 "success" => true,
                 "user" => [
                     "id" => $user['idUser'],
                     "name" => $user['name'],
                     "email" => $user['email'],
-                    "profileId" => $profileId,
-                    "profileName" => $profileName
-                ]
+                    "status" => (int)$user['status']
+                ],
+                "permissions" => $permissions
             ]);
         } else {
             http_response_code(401);
