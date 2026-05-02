@@ -1,0 +1,977 @@
+.especimenes-module {
+  max-width: 100%;
+  margin: 0;
+  padding-bottom: 3rem;
+  animation: fadeIn 0.3s ease-out;
+
+  .module-screen { width: 100%; }
+
+  .screen-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .screen-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+  }
+
+  .screen-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .header-with-back {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .btn-back {
+    background: var(--bg-subtle);
+    border: none;
+    color: var(--text-color);
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .btn-back:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transform: translateY(-1px);
+  }
+
+  .header-actions { display: flex; gap: 0.65rem; }
+
+  /* ── Form Layout ────────────────────────────────────────── */
+  .form-container { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .form-section { margin-bottom: 1.5rem; }
+  .form-section:last-child { margin-bottom: 0; }
+
+  .section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .full-width { grid-column: 1 / -1; }
+
+  /* ── Buttons ────────────────────────────────────────────── */
+  .btn-primary, .btn-warning, .btn-outline, .btn-danger-soft {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn-primary {
+    background: var(--accent-color);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: translateY(0) scale(0.96);
+  }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .btn-warning {
+    background: var(--warning-color);
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .btn-warning:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    transform: translateY(-1px);
+  }
+  .btn-warning:active {
+    transform: translateY(0) scale(0.96);
+  }
+  .btn-outline {
+    background: var(--bg-subtle);
+    color: var(--text-color);
+    border: none;
+  }
+  .btn-outline:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+  }
+  .btn-outline:active {
+    transform: translateY(0) scale(0.96);
+  }
+  .btn-danger-soft {
+    background: var(--danger-color);
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+  }
+  .btn-danger-soft:hover {
+    filter: brightness(1.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    transform: translateY(-1px);
+  }
+  .btn-danger-soft:active {
+    background: var(--danger-color-hover);
+    transform: translateY(0) scale(0.96);
+  }
+  .btn-danger-soft:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .with-icon { gap: 8px; }
+
+  .module-info-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    color: var(--text-color);
+  }
+
+  /* ── Table Controls ─────────────────────────────────────── */
+  .table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 450px;
+  }
+  .search-wrapper > svg {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .search-wrapper input {
+    width: 100%;
+    padding: 0.5rem 32px 0.5rem 28px;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .search-wrapper input:focus {
+    outline: none;
+    border-bottom-color: var(--accent-color);
+  }
+
+  .btn-clear {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    transition: all 0.2s;
+    opacity: 0.6;
+    border-radius: 4px;
+  }
+  .btn-clear:hover {
+    color: var(--danger-color);
+    background: var(--bg-hover);
+    opacity: 1;
+  }
+
+  .filter-group { display: flex; align-items: center; gap: 1rem; }
+
+  /* ── Table styling is now global ────────────────────────── */
+  .custom-table th, .custom-table td {
+    white-space: nowrap;
+  }
+  
+  .td-empty {
+    text-align: center;
+    padding: 3rem !important;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    white-space: normal;
+  }
+
+  /* ── Status badge ──────────────────────────────────── */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+  .status-badge.activo  { color: var(--success-color) !important; }
+  .status-badge.inactivo { color: #EF4444; }
+
+  /* ── Slide-in animation ─────────────────────────────────── */
+  .animate-slide-in {
+    animation: slideIn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── Responsive ─────────────────────────────────────────── */
+  @media (max-width: 768px) {
+    .screen-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .table-controls { flex-direction: column; align-items: flex-start; }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.especimenes-module .module-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.especimenes-module .module-breadcrumb span {
+  cursor: pointer;
+}
+
+.especimenes-module .module-breadcrumb span:hover {
+  color: var(--accent-color);
+}
+
+.especimenes-module .module-breadcrumb .current-crumb {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Alta Form Specifics */
+.especimenes-module .alta-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.especimenes-module .form-section-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.especimenes-module .form-section-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.especimenes-module .section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.especimenes-module .section-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--accent-color);
+}
+
+.especimenes-module .form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 1100px) {
+  .especimenes-module .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .especimenes-module .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.especimenes-module .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.especimenes-module .form-group label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.especimenes-module .form-group input,
+.especimenes-module .form-group select,
+.especimenes-module .form-group textarea {
+  padding: 0.75rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.especimenes-module .form-group input:focus,
+.especimenes-module .form-group select:focus,
+.especimenes-module .form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb, 23, 197, 0), 0.1);
+}
+
+/* Las reglas de search-wrapper input para el General ya están
+   definidas dentro del bloque .especimenes-module (nesting).
+   Las reglas de .alta-form sobreescriben para el formulario de alta. */
+
+.especimenes-module .form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Animations for premium feel */
+@keyframes slideInUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.especimenes-module .form-section-card {
+  animation: slideInUp 0.4s ease-out backwards;
+}
+
+.especimenes-module .form-section-card:nth-child(2) { animation-delay: 0.1s; }
+.especimenes-module .form-section-card:nth-child(3) { animation-delay: 0.2s; }
+.especimenes-module .form-section-card:nth-child(4) { animation-delay: 0.3s; }
+
+/* Desktop Hover Effects */
+@media (min-width: 1024px) {
+  .especimenes-module .custom-table tr:hover td {
+    background-color: var(--bg-hover) !important;
+  }
+}
+
+/* Pagination Info Stylization */
+.pagination-info strong {
+  color: var(--accent-color);
+}
+
+/* ── Alta Especimen: Flat Form Style ─────────────────────── */
+.especimenes-module .alta-form .form-card {
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.especimenes-module .alta-form .form-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.75rem 2rem 2rem;
+  margin-bottom: 0;
+}
+
+.especimenes-module .alta-form .section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.especimenes-module .alta-form .form-section-divider {
+  display: none;
+}
+
+/* Inputs flat — igual que Usuarios/Catalogos */
+.especimenes-module .alta-form .form-group input,
+.especimenes-module .alta-form .form-group select,
+.especimenes-module .alta-form .form-group textarea {
+  width: 100%;
+  padding: 0.6rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.especimenes-module .alta-form .form-group input:focus,
+.especimenes-module .alta-form .form-group select:focus,
+.especimenes-module .alta-form .form-group textarea:focus {
+  outline: none;
+  border-bottom-color: var(--accent-color);
+  background: transparent;
+  box-shadow: none;
+}
+
+.especimenes-module .alta-form .form-group input:disabled,
+.especimenes-module .alta-form .form-group select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-bottom-style: dashed;
+}
+
+/* Search wrapper — igual que Catalogos/Usuarios */
+.especimenes-module .alta-form .search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: none;
+}
+
+.especimenes-module .alta-form .search-wrapper > svg {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.especimenes-module .alta-form .search-wrapper input {
+  width: 100% !important;
+  padding: 0.6rem 28px 0.6rem 22px !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  border-radius: 0 !important;
+  font-size: 0.95rem !important;
+}
+
+.especimenes-module .alta-form .search-wrapper input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-bottom-color: var(--accent-color) !important;
+  background: transparent !important;
+}
+
+.especimenes-module .alta-form .search-wrapper input:disabled {
+  opacity: 0.4;
+  border-bottom-style: dashed !important;
+}
+
+.especimenes-module .alta-form .btn-clear {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: all 0.2s;
+  opacity: 0.6;
+  border-radius: 4px;
+}
+
+.especimenes-module .alta-form .btn-clear:hover {
+  color: var(--danger-color);
+  background: transparent;
+  opacity: 1;
+}
+
+.especimenes-module .alta-form .input-selected {
+  border-bottom-color: var(--accent-color) !important;
+}
+
+.especimenes-module .alta-form .input-disabled {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px dashed var(--border-color) !important;
+  border-radius: 0 !important;
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* ── Solicitudes (MisSolicitudes.tsx) ─────────────────────────────────────── */
+
+.especimenes-module .sol-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.especimenes-module .sol-section--history {
+  margin-top: 1rem;
+  opacity: 0.85;
+}
+
+.especimenes-module .sol-section-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.especimenes-module .sol-count {
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 99px;
+  letter-spacing: 0;
+}
+.especimenes-module .sol-count--muted {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+}
+
+.especimenes-module .sol-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.especimenes-module .sol-empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+/* ── Card ─────────────────────────────── */
+.especimenes-module .sol-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.especimenes-module .sol-card:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+.especimenes-module .sol-card--returned {
+  border-left: 3px solid var(--warning-color);
+}
+.especimenes-module .sol-card--history {
+  opacity: 0.75;
+}
+
+.especimenes-module .sol-card-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  gap: 1rem;
+}
+
+.especimenes-module .sol-card-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.especimenes-module .sol-id {
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  min-width: 48px;
+}
+
+.especimenes-module .sol-tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: var(--bg-subtle);
+  color: var(--text-color);
+}
+.especimenes-module .sol-tipo--muted {
+  opacity: 0.6;
+}
+
+.especimenes-module .sol-especie {
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--text-color);
+}
+.especimenes-module .sol-especie--muted {
+  color: var(--text-muted);
+}
+
+.especimenes-module .sol-card-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.especimenes-module .sol-date {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── Estado badge ─────────────────────── */
+.especimenes-module .sol-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.especimenes-module .sol-badge--pending  { background: rgba(234,179,8,0.12);  color: #ca8a04; }
+.especimenes-module .sol-badge--approved { background: rgba(16,185,129,0.12); color: #059669; }
+.especimenes-module .sol-badge--rejected { background: rgba(239,68,68,0.12);  color: #dc2626; }
+.especimenes-module .sol-badge--returned { background: rgba(234,88,12,0.12);  color: #ea580c; }
+
+/* ── Detalle expandible ───────────────── */
+.especimenes-module .sol-card-detail {
+  padding: 0 1.1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  border-top: 1px solid var(--border-color);
+  animation: slideIn 0.18s ease-out;
+}
+
+.especimenes-module .sol-datos-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.especimenes-module .sol-datos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.4rem 1.5rem;
+}
+
+.especimenes-module .sol-dato-item {
+  display: flex;
+  flex-direction: column;
+}
+.especimenes-module .sol-dato-key {
+  font-size: 0.68rem;
+  text-transform: capitalize;
+  color: var(--text-muted);
+}
+.especimenes-module .sol-dato-val {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+/* ── Comentario del revisor ───────────── */
+.especimenes-module .sol-comment {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  background: rgba(234,88,12,0.07);
+  border-left: 3px solid var(--warning-color);
+  border-radius: 0 8px 8px 0;
+  padding: 0.65rem 0.85rem;
+  color: var(--text-color);
+}
+.especimenes-module .sol-comment svg { color: var(--warning-color); flex-shrink: 0; margin-top: 2px; }
+.especimenes-module .sol-comment-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--warning-color);
+  margin-bottom: 0.2rem;
+}
+.especimenes-module .sol-comment-body {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-color);
+}
+.especimenes-module .sol-comment--history {
+  background: rgba(107,114,128,0.07);
+  border-left-color: var(--text-muted);
+}
+.especimenes-module .sol-comment--history svg { color: var(--text-muted); }
+.especimenes-module .sol-comment--history .sol-comment-title { color: var(--text-muted); }
+
+/* ── Localidad ────────────────────────── */
+.especimenes-module .sol-loc {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ── Acciones ─────────────────────────── */
+.especimenes-module .sol-actions {
+  display: flex;
+  gap: 0.6rem;
+  padding-top: 0.25rem;
+}
+
+.especimenes-module .sol-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: var(--text-color);
+  flex-wrap: wrap;
+}
+
+/* ── Reglas adicionales del card reescrito ── */
+.especimenes-module .sol-fecha-col {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.especimenes-module .sol-estado-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 0.35rem 0;
+}
+
+.especimenes-module .sol-especimen-ref {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #059669;
+  padding: 0.4rem 0.75rem;
+  background: rgba(16,185,129,0.08);
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* ── Formulario inline de edición dentro del card ─────────────────── */
+.especimenes-module .sol-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.especimenes-module .sol-edit-grid .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.especimenes-module .sol-edit-grid .form-group label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--text-muted);
+}
+
+.especimenes-module .sol-edit-grid .form-group input {
+  padding: 0.45rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--accent-color);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.especimenes-module .sol-edit-grid .form-group input:focus {
+  border-bottom-color: var(--accent-color);
+  box-shadow: 0 2px 0 0 rgba(var(--accent-rgb, 23,197,0), 0.25);
+}
+
+/* ── Insect Cards Grid ───────────────────────────────── */
+.especimenes-module .insect-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.especimenes-module .insect-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.especimenes-module .insect-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0,0,0,0.15);
+  border-color: var(--accent-color);
+}
+
+.especimenes-module .insect-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
+.especimenes-module .insect-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+}
+
+.especimenes-module .insect-id {
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg-subtle);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.especimenes-module .insect-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.especimenes-module .insect-common-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.especimenes-module .insect-scientific-name {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem 0;
+}
+
+.especimenes-module .insect-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.especimenes-module .insect-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.especimenes-module .detail-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.especimenes-module .detail-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

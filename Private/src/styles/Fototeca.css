@@ -1,0 +1,551 @@
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.fototeca-module {
+  max-width: 100%;
+  margin: 0;
+  padding-bottom: 3rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.fototeca-module .module-screen {
+  min-height: 0;
+}
+
+.fototeca-module .animate-slide-in {
+  animation: slideIn 0.35s ease-out;
+}
+
+.fototeca-module .fototeca-mock-banner {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--accent-color-dark-bg, rgba(74, 124, 89, 0.2));
+  border: 1px solid var(--accent-color);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+/* Breadcrumb */
+.fototeca-module .module-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.fototeca-module .module-breadcrumb span {
+  cursor: pointer;
+}
+
+.fototeca-module .module-breadcrumb span:hover {
+  color: var(--accent-color);
+}
+
+.fototeca-module .module-breadcrumb .current-crumb {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Screen Layout */
+.fototeca-module .screen-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.fototeca-module .screen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.fototeca-module .header-with-back {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fototeca-module .btn-back {
+  background: var(--bg-subtle, #f3f4f6);
+  border: none;
+  color: var(--text-color);
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fototeca-module .btn-back:hover {
+  background: var(--bg-subtle);
+  color: var(--text-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0 0.8px currentColor, 0 0 0.3px currentColor;
+  transform: translateY(-1px);
+}
+
+.dark-mode .fototeca-module .btn-back {
+  background: var(--bg-subtle);
+}
+
+.dark-mode .fototeca-module .btn-back:hover {
+  background: var(--bg-hover);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+.fototeca-module .screen-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.fototeca-module .screen-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Table Controls */
+.fototeca-module .table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fototeca-module .search-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 450px;
+}
+
+.fototeca-module .search-wrapper > svg {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.fototeca-module .btn-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: all 0.2s;
+  opacity: 0.6;
+}
+
+.fototeca-module .btn-clear:hover {
+  color: var(--danger-color);
+  background: transparent;
+  opacity: 1;
+}
+
+.fototeca-module .search-wrapper input {
+  width: 100%;
+  padding: 0.5rem 32px 0.5rem 28px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.fototeca-module .search-wrapper input:focus {
+  outline: none;
+  border-bottom-color: var(--accent-color);
+}
+
+
+
+/* Table styling globally inherited from components.css */
+
+.fototeca-module .td-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 1rem;
+}
+
+.fototeca-module .user-code {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.fototeca-module .fototeca-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  display: block;
+}
+
+.fototeca-module .user-code.text-truncate {
+  max-width: 200px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.fototeca-module .text-muted-small {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.fototeca-module .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.fototeca-module .status-badge.activo {
+  color: #10B981;
+}
+
+.fototeca-module .status-badge.inactivo {
+  color: #EF4444;
+}
+
+/* Buttons */
+.fototeca-module .header-actions {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.fototeca-module .btn-primary,
+.fototeca-module .btn-warning,
+.fototeca-module .btn-outline,
+.fototeca-module .btn-danger-soft {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.fototeca-module .btn-primary {
+  background: var(--accent-color);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.fototeca-module .btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.fototeca-module .btn-primary:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.fototeca-module .btn-warning {
+  background: var(--warning-color);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.fototeca-module .btn-warning:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.fototeca-module .btn-warning:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.fototeca-module .btn-outline {
+  background: var(--bg-subtle);
+  color: var(--text-color);
+  border: none;
+}
+
+.fototeca-module .btn-outline:hover {
+  background: var(--bg-subtle);
+  color: var(--text-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 0 0.8px currentColor, 0 0 0.3px currentColor;
+  transform: translateY(-1px);
+}
+
+.fototeca-module .btn-outline:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.dark-mode .fototeca-module .btn-outline {
+  background: var(--bg-subtle);
+}
+
+.dark-mode .fototeca-module .btn-outline:hover {
+  background: var(--bg-hover);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  transform: translateY(-1px);
+}
+
+.fototeca-module .btn-small {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 0.8rem;
+}
+
+.fototeca-module .btn-danger-soft {
+  background: var(--danger-color);
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+}
+
+.fototeca-module .btn-danger-soft:hover {
+  filter: brightness(1.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.fototeca-module .btn-danger-soft:active {
+  background: var(--danger-color-hover);
+  transform: translateY(0) scale(0.96);
+}
+
+/* Forms */
+.fototeca-module .form-container-split {
+  width: 100%;
+}
+
+.fototeca-module .split-layout-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.fototeca-module .form-left-column {
+  max-width: 640px;
+}
+
+.fototeca-module .form-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.fototeca-module .form-section {
+  margin-bottom: 2rem;
+}
+
+.fototeca-module .section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.fototeca-module .form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.fototeca-module .form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.fototeca-module .form-group label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.fototeca-module .form-group input,
+.fototeca-module .form-group select {
+  width: 100%;
+  padding: 0.6rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.fototeca-module .form-group input:focus {
+  outline: none;
+  border-bottom-color: var(--accent-color);
+}
+
+/* Chrome, Safari, Edge, Opera: hide native arrows */
+.fototeca-module input[type="number"]::-webkit-inner-spin-button,
+.fototeca-module input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.fototeca-module input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield;
+}
+
+/* Custom Number Input Stepper */
+.fototeca-module .custom-number-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fototeca-module .custom-number-input input {
+  padding-right: 2.5rem !important; /* Spacing for custom icons */
+  padding-left: 0.5rem !important;
+}
+
+.fototeca-module .number-stepper {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border-color);
+  width: 28px;
+}
+
+.fototeca-module .number-stepper button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 50%;
+}
+
+.fototeca-module .number-stepper button:hover {
+  background: var(--bg-subtle);
+  color: var(--accent-color);
+}
+
+.fototeca-module .number-stepper button:active {
+  background: var(--bg-hover);
+}
+
+.fototeca-module .number-stepper button:first-child {
+  border-bottom: 0.5px solid var(--border-color);
+}
+
+.fototeca-module .checkbox-label,
+.checkbox-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.85rem !important;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  user-select: none;
+  margin-top: 1.5rem;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+  line-height: 1; /* Fix vertical drift */
+  transition: all 0.2s;
+}
+
+.fototeca-module .checkbox-label:hover,
+.checkbox-label:hover {
+  color: var(--accent-color);
+}
+
+.fototeca-module .checkbox-label input,
+.checkbox-label input {
+  width: 18px !important;
+  height: 18px !important;
+  cursor: pointer;
+  accent-color: var(--accent-color) !important;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin: 0 !important;
+  flex-shrink: 0;
+  transform: translateY(-0.5px); /* Micro-adjustment for optical centering */
+}
+
+.fototeca-module .form-footer-sticky {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  justify-content: flex-end;
+}
+
+/* Baja layout */
+.fototeca-module .baja-layout {
+  width: 100%;
+}
+
+.fototeca-module .baja-list-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.fototeca-module .baja-table-wrapper {
+  overflow-x: auto;
+}
+
+@media (max-width: 900px) {
+  .fototeca-module .form-container-split .split-layout-form {
+    grid-template-columns: 1fr;
+  }
+}

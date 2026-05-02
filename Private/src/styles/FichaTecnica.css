@@ -1,0 +1,547 @@
+/* ===================
+   Overlay de fondo
+   =================== */
+.ft-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    animation: ftFadeIn 0.25s ease-out;
+}
+
+@keyframes ftFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===================
+   Modal principal
+   =================== */
+.ft-modal {
+    background: var(--bg-card);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    border-radius: 16px;
+    box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    animation: ftSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid var(--border-color);
+}
+
+@keyframes ftSlideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* ===================
+   Contenedor de scroll
+   =================== */
+.ft-scroll {
+    overflow-y: auto;
+    max-height: 90vh;
+    padding: 0;
+}
+
+/* ===================
+   Botón de cierre
+   =================== */
+.ft-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s ease;
+    color: var(--text-color);
+    line-height: 1;
+}
+
+.ft-close:hover {
+    background: #f00;
+    color: #fff;
+}
+
+/* ===================
+   Encabezado de la ficha
+   =================== */
+.ft-header {
+    padding: 40px 40px 24px;
+    text-align: center;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.ft-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-color);
+    letter-spacing: 0.08em;
+    margin: 0 0 4px;
+}
+
+.ft-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0 0 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.ft-header-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+    text-align: left;
+}
+
+/* ===================
+   Fila de ID y estado
+   =================== */
+.ft-id-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.ft-id {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: #f0f0f0;
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+.ft-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.03em;
+}
+
+.ft-status.public_release {
+    background: #e6f4ea;
+    color: #1e6e2e;
+}
+
+.ft-status.validated {
+    background: #fef3cd;
+    color: #7a5c00;
+}
+
+.ft-status.captured {
+    background: #fef3cd;
+    color: #7a5c00;
+}
+
+/* ===================
+   Sección hero (nombre + imagen)
+   =================== */
+.ft-hero-section {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.ft-hero-info {
+    flex: 1;
+}
+
+.ft-common-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0 0 4px;
+    line-height: 1.2;
+}
+
+.ft-scientific-name {
+    font-size: 1.1rem;
+    color: #1A73E8;
+    margin: 0 0 12px;
+    font-weight: 400;
+}
+
+/* ===================
+   Pastillas de taxonomía
+   =================== */
+.ft-taxonomy-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ft-pill {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: #ebebeb;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.ft-pill-order {
+    background: #e8f0fe;
+    color: #1A3A8C;
+}
+
+.ft-pill-family {
+    background: #fff3e0;
+    color: #7a4500;
+}
+
+.ft-pill-tribu {
+    background: #e6f4ea;
+    color: #1e6e2e;
+}
+
+/* ===================
+   Imagen del espécimen
+   =================== */
+.ft-hero-image {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    border-radius: 12px;
+    border: 1px solid #d4d4d4;
+}
+
+.ft-bug-icon {
+    width: 56px;
+    height: 56px;
+    opacity: 0.5;
+    filter: invert(20%);
+}
+
+/* ===================
+   Secciones de datos
+   =================== */
+.ft-section {
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--text-color);
+}
+
+.ft-section:last-of-type {
+    border-bottom: none;
+}
+
+.ft-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #1A73E8;
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--text-color);
+}
+
+/* ===================
+   Cuadrículas de campos
+   =================== */
+.ft-grid {
+    display: grid;
+    gap: 12px 24px;
+    margin-bottom: 12px;
+}
+
+.ft-grid:last-child {
+    margin-bottom: 0;
+}
+
+.ft-grid-1 {
+    grid-template-columns: 1fr;
+}
+
+.ft-grid-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.ft-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* ===================
+   Campo individual
+   =================== */
+.ft-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ft-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.ft-value {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--text-color);
+    padding: 6px 0;
+    border-bottom: 1px dotted #d4d4d4;
+    min-height: 32px;
+}
+
+.ft-value.ft-italic {
+    font-style: italic;
+}
+
+/* ===================
+   Bloque de notas
+   =================== */
+.ft-notes {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text-color);
+    background: var(--bg-subtle);
+    padding: 16px 20px;
+    border-radius: 8px;
+    border: 1px dashed #d4d4d4;
+}
+
+/* ===================
+   Área de fotografía
+   =================== */
+.ft-photo-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: var(--bg-subtle);
+    border-radius: 8px;
+    border: 1px dashed #d4d4d4;
+}
+
+.ft-photo-placeholder {
+    width: 80px;
+    height: 80px;
+    opacity: 0.3;
+    filter: invert(20%);
+    margin-bottom: 12px;
+}
+
+.ft-photo-caption {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* ===================
+   Pie de la ficha
+   =================== */
+.ft-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background: var(--bg-subtle);
+    border-top: 2px solid #1A73E8;
+}
+
+.ft-footer-collection {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.ft-footer-id {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ===================
+   Responsive móvil
+   =================== */
+@media (max-width: 768px) {
+    .ft-overlay {
+        padding: 12px;
+    }
+
+    .ft-modal {
+        max-height: 95vh;
+        border-radius: 12px;
+    }
+
+    .ft-scroll {
+        max-height: 95vh;
+    }
+
+    .ft-header,
+    .ft-section,
+    .ft-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .ft-hero-section {
+        flex-direction: column-reverse;
+        text-align: center;
+    }
+
+    .ft-taxonomy-pills {
+        justify-content: center;
+    }
+
+    .ft-grid-2,
+    .ft-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .ft-header-row {
+        grid-template-columns: 1fr;
+    }
+
+    .ft-title {
+        font-size: 1.4rem;
+    }
+
+    .ft-common-name {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .ft-header {
+        padding-top: 24px;
+    }
+
+    .ft-title {
+        font-size: 1.2rem;
+    }
+
+    .ft-common-name {
+        font-size: 1.1rem;
+    }
+
+    .ft-scientific-name {
+        font-size: 0.95rem;
+    }
+}
+
+/* ===================
+   Dark mode overrides
+   =================== */
+.dark-mode .ft-overlay {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.dark-mode .ft-modal {
+    background: #111111;
+    border-color: var(--border-color);
+}
+
+.dark-mode .ft-close {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-muted);
+}
+
+.dark-mode .ft-close:hover {
+    background: var(--danger-color);
+    color: #fff;
+}
+
+/* Soft text overrides for high contrast items */
+.dark-mode .ft-scientific-name,
+.dark-mode .ft-section-title {
+    color: #79a8ff;
+}
+
+.dark-mode .ft-header,
+.dark-mode .ft-section {
+    border-bottom-color: var(--border-color);
+}
+
+.dark-mode .ft-id {
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+}
+
+.dark-mode .ft-status.public_release,
+.dark-mode .ft-status.validated,
+.dark-mode .ft-status.captured {
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+}
+
+/* Taxonomy pills */
+.dark-mode .ft-pill {
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+}
+
+.dark-mode .ft-pill-order {
+    background: rgba(121, 168, 255, 0.15);
+    color: #79a8ff;
+}
+
+.dark-mode .ft-pill-family {
+    background: rgba(255, 183, 77, 0.15);
+    color: #ffb74d;
+}
+
+.dark-mode .ft-pill-tribu {
+    background: rgba(129, 201, 149, 0.15);
+    color: #81c995;
+}
+
+.dark-mode .ft-hero-image {
+    background: var(--bg-subtle);
+    border-color: var(--border-color);
+}
+
+.dark-mode .ft-value {
+    color: var(--text-color);
+    border-bottom-color: var(--border-color);
+}
+
+.dark-mode .ft-notes {
+    background: var(--bg-subtle);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+.dark-mode .ft-photo-area {
+    background: var(--bg-subtle);
+    border-color: var(--border-color);
+}
+
+.dark-mode .ft-footer {
+    background: var(--bg-subtle);
+    border-top-color: var(--border-color);
+}
+
+

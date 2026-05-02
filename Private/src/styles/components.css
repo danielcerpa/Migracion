@@ -1,0 +1,374 @@
+/* ── Cards ───────────────────────────────────────────────── */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+}
+
+/* ── Tables ──────────────────────────────────────────────── */
+.table-container {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .table-container {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: var(--bg-subtle);
+  padding: 12px 24px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dark-mode .data-table th {
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.dark-mode .data-table td {
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.data-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.dark-mode .data-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── Custom Table (Shared across modules) ────────── */
+.table-card {
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card-highlight, rgba(255, 255, 255, 0.01));
+}
+
+.custom-table th {
+  padding: 0.85rem 0.75rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.custom-table td {
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.custom-table tbody tr:last-child td,
+.custom-table tr:last-child td {
+  border-bottom: none;
+}
+
+.custom-table tr:hover td {
+  background: rgba(255, 255, 255, 0.03); 
+  cursor: pointer;
+}
+
+:root.dark-mode .custom-table tr:hover td,
+body.dark-mode .custom-table tr:hover td,
+.dark-mode .custom-table tr:hover td {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.td-id {
+  font-family: monospace;
+  color: var(--text-muted);
+  width: 80px;
+}
+
+.td-name {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.td-center {
+  text-align: center;
+}
+
+.td-empty {
+  text-align: center;
+  padding: 3rem !important;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ── Table Column Separators ─────────────────────────────── */
+.data-table th:not(:last-child),
+.data-table td:not(:last-child),
+.custom-table th:not(:last-child),
+.custom-table td:not(:last-child),
+.compact-table th:not(:last-child),
+.compact-table td:not(:last-child),
+.permissions-dual-table th:not(:last-child),
+.permissions-dual-table td:not(:last-child) {
+  border-right: 1px solid var(--border-color);
+}
+
+
+
+/* ── Badges ──────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badge-green {
+  background-color: var(--accent-color-light);
+  color: var(--accent-color);
+}
+
+.dark-mode .badge-green {
+  background-color: var(--accent-color-dark-bg);
+  color: var(--mint-color);
+}
+
+.badge-yellow {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.dark-mode .badge-yellow {
+  background-color: rgba(180, 83, 9, 0.3);
+  color: #FCD34D;
+}
+
+.badge-blue {
+  background-color: #DBEAFE;
+  color: #1E40AF;
+}
+
+.dark-mode .badge-blue {
+  background-color: rgba(37, 99, 235, 0.3);
+  color: #60A5FA;
+}
+
+.badge-red {
+  background-color: var(--danger-color-light);
+  color: var(--danger-color);
+}
+
+.dark-mode .badge-red {
+  background-color: var(--danger-color-dark-bg);
+  color: #F87171;
+}
+
+.badge-gray {
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
+}
+
+.dark-mode .badge-gray {
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-color-hover);
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.btn-icon-only {
+  padding: 8px;
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.dark-mode .btn-icon-only {
+  color: var(--text-muted);
+}
+
+.btn-icon-only:hover {
+  background-color: var(--bg-hover);
+  color: var(--accent-color);
+}
+
+.dark-mode .btn-icon-only:hover {
+  background-color: var(--bg-hover);
+  color: var(--mint-color);
+}
+
+.btn-icon-only.destroy:hover {
+  color: var(--danger-color);
+  background-color: var(--danger-color-light);
+}
+
+.dark-mode .btn-icon-only.destroy:hover {
+  color: #F87171;
+  background-color: var(--danger-color-dark-bg);
+}
+
+/* ── Search ──────────────────────────────────────────────── */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 16px 8px 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-color);
+  font-size: 0.875rem;
+}
+
+.dark-mode .search-input {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-color-light);
+}
+
+.dark-mode .search-input:focus {
+  box-shadow: 0 0 0 2px var(--accent-color-dark-bg);
+}
+
+/* ── General ─────────────────────────────────────────────── */
+input {
+    font-family: inherit;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg-card) inset !important;
+    -webkit-text-fill-color: var(--text-color) !important;
+    caret-color: var(--text-color) !important;
+}
+
+/* ── Search Dropdown ─────────────────────────────────────── */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.search-dropdown-item {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.25rem !important;
+  transition: background-color 0.2s ease;
+}
+
+.search-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.search-dropdown-item:hover {
+  background-color: var(--bg-hover) !important;
+}

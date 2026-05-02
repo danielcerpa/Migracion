@@ -1,0 +1,210 @@
+<div id="especimenes-module" class="usuarios-module especimenes-module">
+  <!-- Breadcrumbs -->
+  <div id="especimenes-breadcrumb" class="module-breadcrumb" style="display: none; margin-top: 1rem;">
+    <span id="breadcrumb-back" style="cursor: pointer; color: var(--text-muted);">Especímenes</span>
+    <i data-lucide="chevron-right" style="width: 14px; height: 14px; color: var(--text-muted); margin: 0 8px;"></i>
+    <span id="current-crumb" class="current-crumb" style="font-weight: 500; color: var(--text-color);"></span>
+  </div>
+
+  <div class="module-screen">
+    <!-- VIEW: GENERAL -->
+    <div id="view-esp-general" class="screen-container fade-in">
+      <div class="screen-header">
+        <div>
+          <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
+            Registro de Ejemplares
+            <button class="module-info-btn" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            </button>
+          </h2>
+        </div>
+        <div class="header-actions">
+          <button id="btn-alta-especimen" class="btn-primary with-icon">
+            <i data-lucide="plus" style="width: 18px; height: 18px;"></i> Nuevo Registro
+          </button>
+          <button id="btn-actualizar-especimen" class="btn-warning with-icon">
+            <i data-lucide="edit" style="width: 18px; height: 18px;"></i> Modificar
+          </button>
+          <button id="btn-eliminar-especimen" class="btn-danger-soft with-icon">
+            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Eliminar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-controls">
+        <div class="search-wrapper">
+          <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+          <input type="text" id="search-especimen-input" placeholder="Buscar por especie, colector, ID...">
+        </div>
+      </div>
+
+      <div class="insect-cards-grid" id="especimen-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- VIEW: ALTA -->
+    <div id="view-esp-alta" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Nuevo Espécimen</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="alta-especimen-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Guardar Espécimen
+          </button>
+        </div>
+      </div>
+
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
+        <form id="alta-especimen-form">
+          
+          <h3 class="section-title" style="margin-top: 0; color: var(--accent-color);">Identificación Base</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group"><label>ID Especie (Catálogo)</label><input type="number" name="id_especie"></div>
+            <div class="form-group"><label>Nombre Común</label><input type="text" name="nombre_comun" placeholder="Ej. Mariposa Monarca"></div>
+            <div class="form-group"><label>Nombre Científico *</label><input type="text" name="nombre_cientifico" required></div>
+          </div>
+
+          <h3 class="section-title" style="color: var(--accent-color);">Datos de Colecta</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group"><label>ID Colector</label><input type="number" name="id_colector"></div>
+            <div class="form-group"><label>ID Determinador</label><input type="number" name="id_determinador"></div>
+            <div class="form-group"><label>Fecha Colecta</label><input type="date" name="fecha_colecta"></div>
+            <div class="form-group"><label>Año de Identificación</label><input type="number" name="anio_identificacion" placeholder="YYYY"></div>
+            <div class="form-group"><label>Número de Individuos</label><input type="number" name="num_individuos" value="1"></div>
+          </div>
+
+          <h3 class="section-title" style="color: var(--accent-color);">Datos Geográficos y Ecológicos</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group"><label>ID País</label><input type="number" name="id_pais"></div>
+            <div class="form-group"><label>ID Estado</label><input type="number" name="id_estado"></div>
+            <div class="form-group"><label>Latitud N</label><input type="text" name="latitud_n"></div>
+            <div class="form-group"><label>Longitud O</label><input type="text" name="longitud_o"></div>
+            <div class="form-group"><label>Altitud (m)</label><input type="number" name="altitud"></div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Datos Ecológicos</label>
+              <textarea name="datos_ecologicos" rows="2" style="width:100%;"></textarea>
+            </div>
+          </div>
+
+          <h3 class="section-title" style="color: var(--accent-color);">Control Interno</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1rem;">
+            <div class="form-group"><label>Número de Frasco</label><input type="text" name="numero_frasco"></div>
+            <div class="form-group"><label>ID Colección</label><input type="number" name="id_coleccion"></div>
+            <div class="form-group"><label>Año Catalogación</label><input type="number" name="anio_catalogacion"></div>
+            <div class="form-group"><label>Envío Identificación</label><input type="text" name="envio_identificacion" placeholder="Sí/No u otra nota"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: MODIFICAR -->
+    <div id="view-esp-modificar" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Actualizar Espécimen</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="modificar-especimen-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
+        <form id="modificar-especimen-form">
+          <h3 class="section-title" style="margin-top: 0; color: var(--accent-color);">Identificación Base</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group"><label>ID Especie (Catálogo)</label><input type="number" name="id_especie"></div>
+            <div class="form-group"><label>Nombre Común</label><input type="text" name="nombre_comun"></div>
+            <div class="form-group"><label>Nombre Científico *</label><input type="text" name="nombre_cientifico" required></div>
+          </div>
+
+          <h3 class="section-title" style="color: var(--accent-color);">Datos de Colecta</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group"><label>ID Colector</label><input type="number" name="id_colector"></div>
+            <div class="form-group"><label>ID Determinador</label><input type="number" name="id_determinador"></div>
+            <div class="form-group"><label>Fecha Colecta</label><input type="date" name="fecha_colecta"></div>
+            <div class="form-group"><label>Año de Identificación</label><input type="number" name="anio_identificacion"></div>
+            <div class="form-group"><label>Número de Individuos</label><input type="number" name="num_individuos"></div>
+          </div>
+
+          <h3 class="section-title" style="color: var(--accent-color);">Datos Geográficos y Ecológicos</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group"><label>ID País</label><input type="number" name="id_pais"></div>
+            <div class="form-group"><label>ID Estado</label><input type="number" name="id_estado"></div>
+            <div class="form-group"><label>Latitud N</label><input type="text" name="latitud_n"></div>
+            <div class="form-group"><label>Longitud O</label><input type="text" name="longitud_o"></div>
+            <div class="form-group"><label>Altitud (m)</label><input type="number" name="altitud"></div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Datos Ecológicos</label>
+              <textarea name="datos_ecologicos" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
+            </div>
+          </div>
+
+          <h3 class="section-title" style="color: var(--accent-color);">Control Interno</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1rem;">
+            <div class="form-group"><label>Número de Frasco</label><input type="text" name="numero_frasco"></div>
+            <div class="form-group"><label>ID Colección</label><input type="number" name="id_coleccion"></div>
+            <div class="form-group"><label>Año Catalogación</label><input type="number" name="anio_catalogacion"></div>
+            <div class="form-group"><label>Envío Identificación</label><input type="text" name="envio_identificacion"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: BAJA -->
+    <div id="view-esp-baja" class="screen-container animate-slide-in" style="display: none; max-width: 600px; margin: 0 auto; text-align: center;">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 3rem; border-radius: 12px; margin-top: 2rem;">
+        <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #EF4444; margin-bottom: 1rem;"></i>
+        <h2 style="margin-top: 0; color: var(--text-color);">Confirmar Baja</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+          ¿Está seguro de que desea eliminar el espécimen <strong id="baja-esp-name"></strong>?
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <button class="btn-outline btn-back-general">Cancelar</button>
+          <button id="btn-confirmar-baja-esp" class="btn-aprobacion btn-reject" style="border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            Confirmar Eliminación
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: DETALLE (Ficha Técnica) -->
+    <div id="view-esp-detalle" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Ficha Técnica</h2>
+        </div>
+        <div class="header-actions">
+          <button id="btn-edit-from-detail" class="btn-warning with-icon">
+            <i data-lucide="edit" style="width: 18px; height: 18px;"></i> Editar
+          </button>
+          <button id="btn-delete-from-detail" class="btn-danger-soft with-icon">
+            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Eliminar
+          </button>
+          <button id="btn-print-from-detail" class="btn-outline with-icon">
+            <i data-lucide="printer" style="width: 18px; height: 18px;"></i> Imprimir
+          </button>
+        </div>
+      </div>
+
+      <div id="especimen-detalle-content">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,134 @@
+:root {
+  --app-scale: 1;
+  --gray-50:  #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e6e6e6;
+  --gray-300: #d6d6d6;
+  --gray-400: #a5a5a5;
+  --gray-500: #767676;
+  --gray-600: #575757;
+  --gray-700: #434343;
+  --gray-750: #363636;
+  --gray-800: #292929;
+  --gray-900: #1a1a1a;
+  --gray-950: #000000;
+
+  --accent-color:        #4c885e;
+  --accent-color-hover:  #3D6B4A;
+  --accent-color-light:  #e2ece7;
+  --accent-color-dark-bg: rgba(74, 124, 89, 0.15);
+  --mint-color:          #17c500;
+  --success-color:       #15b600;
+
+  /* ── Rojo (logout / acciones destructivas) ────────────────── */
+  --danger-color:        #DC2626;
+  --danger-color-hover:  #B91C1C;
+  --danger-color-light:  #FEE2E2;
+  --danger-color-dark-bg: rgba(185, 28, 28, 0.2);
+
+  /* ── Amarillo (modificar) ──────────────────────── */
+  --warning-color:       #e4a00d;
+  --warning-color-hover: #a16207;
+  --warning-color-dark-bg: rgba(202, 138, 4, 0.15);
+
+  /* ── Tema CLARO ───────────── */
+  --text-color:    var(--gray-900);
+  --text-muted:    var(--gray-600);
+  --bg-body:       var(--gray-100);
+  --bg-card:       var(--gray-50);
+  --bg-subtle:     var(--gray-200);
+  --bg-hover:      var(--gray-300);
+  --border-color:  var(--gray-300);
+  accent-color:    var(--accent-color);
+}
+
+body.dark-mode {
+  --text-color:    var(--gray-50);
+  --text-muted:    var(--gray-400);
+  --bg-body:       var(--gray-900);
+  --bg-card:       var(--gray-800);
+  --bg-subtle:     var(--gray-700);
+  --bg-subtle-2:   var(--gray-750);
+  --bg-hover:      var(--gray-600);
+  --border-color:  var(--gray-700);
+  accent-color:    var(--accent-color);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: calc(16px * var(--app-scale));
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-color);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 0.95rem; /* ~15px base */
+}
+
+/* Scaling levels */
+html.scale-1-2 { --app-scale: 1.2; }
+html.scale-1-4 { --app-scale: 1.4; }
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background-color: var(--bg-body);
+}
+
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Utility buttons from original index.css */
+.btn-primary, .btn-warning, .btn-danger-soft, .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.625rem;
+    padding: 0 1.125rem;
+    border-radius: 0.5rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary { background: var(--accent-color); color: white; }
+.btn-primary:hover { background: var(--accent-color-hover); transform: translateY(-1px); }
+
+.btn-warning { background: var(--warning-color); color: white; }
+.btn-warning:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+.btn-danger-soft { background: var(--danger-color); color: white; }
+.btn-danger-soft:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+.btn-outline { background: var(--bg-subtle); color: var(--text-color); }
+.btn-outline:hover { background: var(--bg-hover); transform: translateY(-1px); }

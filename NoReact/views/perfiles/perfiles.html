@@ -1,0 +1,184 @@
+<div id="perfiles-module" class="usuarios-module perfiles-module">
+  <!-- Breadcrumbs -->
+  <div id="perfiles-breadcrumb" class="module-breadcrumb" style="display: none;">
+    <span id="breadcrumb-back" style="cursor: pointer; color: var(--text-muted);">Perfiles</span>
+    <i data-lucide="chevron-right" style="width: 14px; height: 14px; color: var(--text-muted); margin: 0 8px;"></i>
+    <span id="current-crumb" class="current-crumb" style="font-weight: 500; color: var(--text-color);"></span>
+  </div>
+
+  <div class="module-screen">
+    <!-- VIEW: GENERAL -->
+    <div id="view-general" class="screen-container fade-in">
+      <div class="screen-header">
+        <div>
+          <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
+            Gestión de Perfiles
+            <button class="module-info-btn" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            </button>
+          </h2>
+        </div>
+        <div class="header-actions">
+          <button id="btn-alta-perfil" class="btn-primary with-icon">
+            <i data-lucide="shield-plus" style="width: 18px; height: 18px;"></i> Nuevo Perfil
+          </button>
+          <button id="btn-actualizar-perfil" class="btn-warning with-icon">
+            <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i> Modificar Perfil
+          </button>
+          <button id="btn-eliminar-perfil" class="btn-danger-soft with-icon">
+            <i data-lucide="shield-minus" style="width: 18px; height: 18px;"></i> Eliminar Perfil
+          </button>
+        </div>
+      </div>
+
+      <div class="table-controls">
+        <div class="search-wrapper">
+          <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+          <input type="text" id="search-profiles-input" placeholder="Buscar por nombre o descripción...">
+          <button id="btn-clear-search" class="btn-clear" title="Limpiar búsqueda" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex;">
+            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <table class="custom-table" id="module-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre de Perfil</th>
+              <th>Descripción</th>
+              <th style="text-align: center;">Alta</th>
+              <th style="text-align: center;">Modificar</th>
+              <th style="text-align: center;">Baja</th>
+              <th style="text-align: center;">Exportar</th>
+            </tr>
+          </thead>
+          <tbody id="perfiles-table-body">
+            <!-- Rows rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW: ALTA -->
+    <div id="view-alta" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Nuevo Perfil</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="alta-perfil-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Guardar Perfil
+          </button>
+        </div>
+      </div>
+
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
+        <form id="alta-perfil-form">
+          <h3 class="section-title" style="margin-top: 0;">Información del Perfil</h3>
+          <div class="form-grid" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+              <label>Nombre del Perfil</label>
+              <input type="text" name="nickname" class="form-control" placeholder="Ej. Capturista Senior" required>
+            </div>
+            <div class="form-group">
+              <label>Descripción</label>
+              <input type="text" name="description" class="form-control" placeholder="Describe los roles o alcance del perfil">
+            </div>
+          </div>
+
+          <h3 class="section-title">Niveles de Acceso Globales</h3>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" name="key_add" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Dar de Alta
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" name="key_edit" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Modificar
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" name="key_delete" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Dar de Baja
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" name="key_export" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Exportar Reportes
+            </label>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: MODIFICAR -->
+    <div id="view-modificar" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Actualizar Perfil</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="modificar-perfil-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
+        <form id="modificar-perfil-form">
+          <h3 class="section-title" style="margin-top: 0;">Información del Perfil</h3>
+          <div class="form-grid" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="form-group">
+              <label>Nombre del Perfil</label>
+              <input type="text" name="nickname" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Descripción</label>
+              <input type="text" name="description" class="form-control">
+            </div>
+          </div>
+
+          <h3 class="section-title">Niveles de Acceso Globales</h3>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" name="key_add" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Dar de Alta
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" name="key_edit" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Modificar
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" name="key_delete" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Dar de Baja
+            </label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+              <input type="checkbox" name="key_export" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Exportar Reportes
+            </label>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: BAJA -->
+    <div id="view-baja" class="screen-container animate-slide-in" style="display: none; max-width: 600px; margin: 0 auto; text-align: center;">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 3rem; border-radius: 12px; margin-top: 2rem;">
+        <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #EF4444; margin-bottom: 1rem;"></i>
+        <h2 style="margin-top: 0; color: var(--text-color);">Confirmar Baja</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+          ¿Está seguro de que desea eliminar el perfil <strong id="baja-perfil-name"></strong>?
+          <br><br>
+          <span style="font-size: 0.85rem;">Nota: Si existen usuarios asociados a este perfil, perderán los accesos correspondientes.</span>
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <button class="btn-outline btn-back-general">Cancelar</button>
+          <button id="btn-confirmar-baja" class="btn-aprobacion btn-reject" style="border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            Confirmar Eliminación
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

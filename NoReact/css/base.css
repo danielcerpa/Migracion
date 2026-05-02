@@ -1,0 +1,148 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.no-transition *:not(.theme-switch-track):not(.theme-switch-thumb):not(.theme-icon),
+.no-transition *:not(.theme-switch-track):not(.theme-switch-thumb):not(.theme-icon)::before,
+.no-transition *:not(.theme-switch-track):not(.theme-switch-thumb):not(.theme-icon)::after {
+  transition: none !important;
+}
+
+html {
+  overflow: auto;
+  height: 100%;
+  accent-color: var(--accent-color);
+}
+
+body {
+  background: var(--bg-body);
+  color: var(--text-color);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  overflow: auto;
+  height: 100%;
+  accent-color: var(--accent-color);
+  color-scheme: light;
+}
+
+.dark-mode body {
+  background: var(--bg-body);
+  color: var(--text-color);
+  color-scheme: dark !important;
+  accent-color: var(--accent-color);
+}
+
+input[type="date"] {
+  color-scheme: light;
+}
+
+.dark-mode input[type="date"] {
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 2px;
+  transition: background 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background: var(--bg-hover);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-subtle);
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: var(--bg-body);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 5px;
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Form Refinement */
+input, select, textarea {
+  accent-color: var(--accent-color) !important;
+  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::selection {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: var(--bg-subtle);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-color);
+}
+
+/* ── Global Form Focus: underline only ──────────────────── */
+/* Reset default styles for common form elements */
+input:not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
+select,
+textarea {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  border-radius: 0 !important;
+  color: var(--text-color) !important;
+  outline: none !important;
+  transition: border-color 0.2s ease;
+  box-shadow: none !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Apply the green underline on focus with !important to win over module-specific CSS */
+input:not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-bottom: 2px solid var(--accent-color) !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Ensure placeholder visibility remains consistent */
+::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.7;
+}
+
+/* Keep submit/button-style inputs looking normal */
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"],
+input[type="range"] {
+  border: none;
+  border-bottom: none;
+  border-radius: 4px;
+}

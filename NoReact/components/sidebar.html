@@ -1,0 +1,67 @@
+            <aside class="sidebar" id="sidebar-aside">
+                <div id="sidebar-header" class="sidebar-header">
+                    <div class="sidebar-header-title-row">
+                        <button id="sidebar-collapse-btn" class="sidebar-collapse-btn" title="Colapsar Barra de Navegación">
+                            <i data-lucide="panel-left-close" id="collapse-icon"></i>
+                        </button>
+                    </div>
+
+                    <a id="nav-dashboard" href="#" class="nav-item nav-item-dashboard active" data-view="dashboard">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span class="nav-label">Panel de Control</span>
+                    </a>
+                </div>
+
+                <nav class="sidebar-nav" id="sidebar-nav">
+                    <!-- Loading state matching Sidebar.tsx -->
+                    <div id="nav-loading" style="display: none; padding: 16px; font-size: 0.9rem; color: #666;">Cargando menú...</div>
+                    <div id="nav-modules-container">
+                        <!-- Dynamic Groups here -->
+                    </div>
+                </nav>
+
+                <div id="sidebar-footer" class="sidebar-footer">
+                    <!-- Config Panel (Exact as in Sidebar.tsx) -->
+                    <div id="config-panel" class="config-panel" style="display: none;">
+                        <div class="config-panel-row">
+                            <span class="config-panel-label">Tema</span>
+                            <div id="theme-toggle" class="theme-switch-wrapper is-light" title="Modo Oscuro">
+                                <div class="theme-switch-track">
+                                    <div class="theme-switch-thumb"></div>
+                                    <i data-lucide="sun" class="theme-icon icon-sun" style="width:16px; height:16px;"></i>
+                                    <i data-lucide="moon" class="theme-icon icon-moon" style="width:16px; height:16px;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="config-panel-row" id="config-size-interface">
+                            <span class="config-panel-label">Tamaño</span>
+                            <div class="font-size-select config-select" style="display: flex; align-items: center; padding: 6px 10px;">
+                                <div class="custom-select-container" id="scale-select-container">
+                                    <div class="custom-select-trigger select-table-compact" id="scale-trigger">
+                                    <div class="custom-select-trigger select-table-compact" id="scale-trigger">
+                                        <span id="scale-current-label">Normal</span>
+                                        <i data-lucide="chevron-up" style="width:14px; height:14px; color: var(--text-muted);"></i>
+                                    </div>
+                                    <div id="scale-options" style="display: none; position: absolute; bottom: 100%; margin-bottom: 0.5rem; left: 42%; transform: translateX(-50%); min-width: 8.5rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 0.5rem; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.5); padding: 0.25rem;">
+                                        <div class="custom-select-option selected" data-value="1">Normal</div>
+                                        <div class="custom-select-option" data-value="1.2">Grande</div>
+                                        <div class="custom-select-option" data-value="1.4">Muy Grande</div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-actions">
+                        <button id="config-btn" class="sidebar-btn config-btn">
+                            <i data-lucide="settings-2"></i>
+                            <span class="nav-label">Configuración</span>
+                        </button>
+                        <button id="logout-btn" class="logout-btn">
+                            <i data-lucide="log-out"></i>
+                            <span class="nav-label">Cerrar Sesión</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>

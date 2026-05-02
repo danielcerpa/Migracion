@@ -1,0 +1,213 @@
+<div id="catalogos-module" class="catalogos-module">
+  <!-- Breadcrumbs -->
+  <div id="catalogos-breadcrumb" class="module-breadcrumb" style="display: none; margin-top: 1rem;">
+    <span id="breadcrumb-catalogos" style="cursor: pointer; color: var(--text-muted);">Catálogos</span>
+    <i data-lucide="chevron-right" style="width: 14px; height: 14px; color: var(--text-muted); margin: 0 8px;"></i>
+    <span id="breadcrumb-section" style="cursor: pointer; color: var(--text-color);"></span>
+    
+    <i id="crumb-sep" data-lucide="chevron-right" style="display:none; width: 14px; height: 14px; color: var(--text-muted); margin: 0 8px;"></i>
+    <span id="current-crumb-cat" class="current-crumb" style="display:none; font-weight: 500; color: var(--text-color);"></span>
+  </div>
+
+  <div class="module-screen">
+    
+    <!-- VIEW: DASHBOARD -->
+    <div id="view-cat-dashboard" class="catalog-dashboard animate-fade-in">
+      <div class="dashboard-header" id="catalog-dashboard-header" style="margin-bottom: 2rem;">
+        <h1 class="dashboard-title" style="font-size: 1.8rem; font-weight: 700;">Panel de Control de Catálogos</h1>
+      </div>
+
+      <div class="dashboard-grid-container" style="display: flex; flex-direction: column; gap: 2.5rem;">
+        
+        <!-- Geografía -->
+        <div class="dashboard-category-section">
+          <h2 class="category-title" style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Geografía</h2>
+          <div class="catalog-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('pais')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem; transition: transform 0.2s, box-shadow 0.2s;">
+              <div style="background: #3b82f620; color: #3b82f6; padding: 12px; border-radius: 12px;"><i data-lucide="globe"></i></div>
+              <span style="font-weight: 600;">País</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('estado')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #10b98120; color: #10b981; padding: 12px; border-radius: 12px;"><i data-lucide="map-pin"></i></div>
+              <span style="font-weight: 600;">Estado</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('municipio')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #f59e0b20; color: #f59e0b; padding: 12px; border-radius: 12px;"><i data-lucide="building-2"></i></div>
+              <span style="font-weight: 600;">Municipio</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('localidad')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #17c50020; color: #17c500; padding: 12px; border-radius: 12px;"><i data-lucide="trees"></i></div>
+              <span style="font-weight: 600;">Localidad</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Taxonomía -->
+        <div class="dashboard-category-section">
+          <h2 class="category-title" style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Taxonomía</h2>
+          <div class="catalog-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('orden')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #8b5cf620; color: #8b5cf6; padding: 12px; border-radius: 12px;"><i data-lucide="layout-grid"></i></div><span style="font-weight: 600;">Orden</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('familia')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #ec489920; color: #ec4899; padding: 12px; border-radius: 12px;"><i data-lucide="layers"></i></div><span style="font-weight: 600;">Familia</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('subfamilia')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #f43f5e20; color: #f43f5e; padding: 12px; border-radius: 12px;"><i data-lucide="layers-2"></i></div><span style="font-weight: 600;">Subfamilia</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('tribu')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #06b6d420; color: #06b6d4; padding: 12px; border-radius: 12px;"><i data-lucide="blend"></i></div><span style="font-weight: 600;">Tribu</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('genero')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #3b82f620; color: #3b82f6; padding: 12px; border-radius: 12px;"><i data-lucide="podcast"></i></div><span style="font-weight: 600;">Género</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('especie')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #10b98120; color: #10b981; padding: 12px; border-radius: 12px;"><i data-lucide="land-plot"></i></div><span style="font-weight: 600;">Especie</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('tipo')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #64748b20; color: #64748b; padding: 12px; border-radius: 12px;"><i data-lucide="hash"></i></div><span style="font-weight: 600;">Tipo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal y Bio/Biblio -->
+        <div class="dashboard-category-section">
+          <h2 class="category-title" style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Personal y Bio/Biblio</h2>
+          <div class="catalog-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('colector')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #f9731620; color: #f97316; padding: 12px; border-radius: 12px;"><i data-lucide="user-round"></i></div><span style="font-weight: 600;">Colector</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('determinador')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #a855f720; color: #a855f7; padding: 12px; border-radius: 12px;"><i data-lucide="users"></i></div><span style="font-weight: 600;">Determinador</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('planta')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #17c50020; color: #17c500; padding: 12px; border-radius: 12px;"><i data-lucide="leaf"></i></div><span style="font-weight: 600;">Planta</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('organismo')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #6366f120; color: #6366f1; padding: 12px; border-radius: 12px;"><i data-lucide="microscope"></i></div><span style="font-weight: 600;">Organismo</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('coleccion')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #facc1520; color: #facc15; padding: 12px; border-radius: 12px;"><i data-lucide="library"></i></div><span style="font-weight: 600;">Colección</span>
+            </div>
+            <div class="catalog-card" onclick="window.CatalogoController.selectSection('cita')" style="cursor: pointer; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1rem;">
+              <div style="background: #94a3b820; color: #94a3b8; padding: 12px; border-radius: 12px;"><i data-lucide="book-open"></i></div><span style="font-weight: 600;">Cita Bib.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: GENERAL -->
+    <div id="view-cat-general" class="screen-container fade-in" style="display: none;">
+      <div class="screen-header">
+        <div>
+          <h2 id="cat-title-general" class="screen-title" style="display: flex; align-items: center; gap: 8px;">
+            Gestión
+            <button class="module-info-btn" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            </button>
+          </h2>
+        </div>
+        <div class="header-actions">
+          <button id="btn-alta-catalogo" class="btn-primary with-icon">
+            <i data-lucide="plus" style="width: 18px; height: 18px;"></i> Nuevo
+          </button>
+          <button id="btn-actualizar-catalogo" class="btn-warning with-icon">
+            <i data-lucide="edit" style="width: 18px; height: 18px;"></i> Modificar
+          </button>
+          <button id="btn-eliminar-catalogo" class="btn-danger-soft with-icon">
+            <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i> Eliminar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-controls">
+        <div class="search-wrapper">
+          <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+          <input type="text" id="search-catalogos-input" placeholder="Buscar registros...">
+        </div>
+      </div>
+
+      <div class="table-card">
+        <table class="custom-table">
+          <thead id="cat-table-head">
+          </thead>
+          <tbody id="cat-table-body">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW: ALTA -->
+    <div id="view-cat-alta" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 id="cat-title-alta" class="screen-title" style="margin: 0;">Nuevo</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="alta-catalogo-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Guardar
+          </button>
+        </div>
+      </div>
+
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
+        <form id="alta-catalogo-form">
+          <h3 class="section-title" style="margin-top: 0;">Datos del Registro</h3>
+          <div class="form-grid dynamic-fields" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Rendered by JS -->
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: MODIFICAR -->
+    <div id="view-cat-modificar" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 id="cat-title-modificar" class="screen-title" style="margin: 0;">Actualizar</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="modificar-catalogo-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
+        <form id="modificar-catalogo-form">
+          <h3 class="section-title" style="margin-top: 0;">Datos del Registro</h3>
+          <div class="form-grid dynamic-fields" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Rendered by JS -->
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: BAJA -->
+    <div id="view-cat-baja" class="screen-container animate-slide-in" style="display: none; max-width: 600px; margin: 0 auto; text-align: center;">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 3rem; border-radius: 12px; margin-top: 2rem;">
+        <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #EF4444; margin-bottom: 1rem;"></i>
+        <h2 style="margin-top: 0; color: var(--text-color);">Confirmar Baja</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+          ¿Está seguro de que desea eliminar el registro <strong id="baja-cat-name"></strong>?
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <button class="btn-outline btn-back-general">Cancelar</button>
+          <button id="btn-confirmar-baja-cat" class="btn-aprobacion btn-reject" style="border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            Confirmar Eliminación
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

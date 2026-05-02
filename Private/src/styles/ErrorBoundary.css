@@ -1,0 +1,19 @@
+.error-boundary-container {
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.error-boundary-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--danger-color, #EF4444);
+}
+
+.error-boundary-details {
+    white-space: pre-wrap;
+    background-color: var(--bg-subtle, #f0f0f0);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid var(--border-color, #ccc);
+}

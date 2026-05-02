@@ -1,0 +1,35 @@
+/* ── Provisional View Scope ────────────────────────────── */
+.provisional-wrapper {
+  --prov-title-color: var(--text-primary, #e2e8f0);
+  --prov-icon-color: var(--accent, #ff0000);
+  --prov-desc-color: var(--text-secondary, #94a3b8);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  height: 100%;
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+
+  .provisional-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+  }
+
+  .provisional-desc {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    margin: 0;
+  }
+
+  .provisional-icon {
+    color: var(--prov-icon-color);
+    opacity: 0.85;
+  }
+}
+

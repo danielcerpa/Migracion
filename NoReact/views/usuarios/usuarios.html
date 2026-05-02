@@ -1,0 +1,265 @@
+<div id="usuarios-module" class="usuarios-module">
+  <!-- Breadcrumbs -->
+  <div id="usuarios-breadcrumb" class="module-breadcrumb" style="display: none;">
+    <span id="breadcrumb-back" style="cursor: pointer; color: var(--text-muted);">Usuarios</span>
+    <i data-lucide="chevron-right" style="width: 14px; height: 14px; color: var(--text-muted); margin: 0 8px;"></i>
+    <span id="current-crumb" class="current-crumb" style="font-weight: 500; color: var(--text-color);"></span>
+  </div>
+
+  <div class="module-screen">
+    <!-- VIEW: GENERAL -->
+    <div id="view-general" class="screen-container fade-in">
+      <div class="screen-header">
+        <div>
+          <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
+            Gestión de Usuarios
+            <button class="module-info-btn" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            </button>
+          </h2>
+        </div>
+        <div class="header-actions">
+          <button id="btn-alta" class="btn-primary with-icon">
+            <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i> Nuevo Usuario
+          </button>
+          <button id="btn-actualizar" class="btn-warning with-icon">
+            <i data-lucide="user-check" style="width: 18px; height: 18px;"></i> Modificar Usuario
+          </button>
+          <button id="btn-eliminar" class="btn-danger-soft with-icon">
+            <i data-lucide="user-minus" style="width: 18px; height: 18px;"></i> Eliminar Usuario
+          </button>
+        </div>
+      </div>
+
+      <div class="table-controls">
+        <div class="search-wrapper">
+          <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+          <input type="text" id="search-users-input" placeholder="Buscar por nombre, apellidos o email...">
+          <button id="btn-clear-search" class="btn-clear" title="Limpiar búsqueda" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex; visibility: hidden;">
+            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+        <div class="filter-group">
+          <div class="pagination-select-wrapper">
+            <span class="pagination-select-label">Mostrar:</span>
+            <select id="rows-per-page-select" class="pagination-select">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+          <button class="btn-outline" style="display: flex; align-items: center; gap: 6px;">
+            <i data-lucide="filter" style="width: 18px; height: 18px;"></i> Filtros
+          </button>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <table class="custom-table" id="module-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido Paterno</th>
+              <th>Apellido Materno</th>
+              <th>Email</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="usuarios-table-body">
+            <!-- Rows rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="pagination-container" class="pagination-container animate-slide-in" style="display: none; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+        <div class="pagination-info" id="pagination-info"></div>
+        <div class="pagination-controls" id="pagination-controls" style="display: flex; gap: 0.5rem;"></div>
+      </div>
+    </div>
+
+    <!-- VIEW: ALTA -->
+    <div id="view-alta" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Nuevo Usuario</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button id="btn-save-alta" type="submit" form="alta-usuario-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Guardar Usuario
+          </button>
+        </div>
+      </div>
+
+      <div class="form-container-split" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <form id="alta-usuario-form" style="display: contents;">
+          <!-- Left Col -->
+          <div class="form-left-column">
+            <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px;">
+              <h3 class="section-title" style="margin-top: 0;">Información Personal</h3>
+              <div class="form-grid" style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label>Nombre(s)</label>
+                  <input type="text" name="name" class="form-control" placeholder="Ej. Juan" required>
+                </div>
+                <div class="form-group">
+                  <label>Apellido Paterno</label>
+                  <input type="text" name="last_name" class="form-control" placeholder="Ej. Pérez" required>
+                </div>
+                <div class="form-group">
+                  <label>Apellido Materno</label>
+                  <input type="text" name="second_last_name" class="form-control" placeholder="Ej. García">
+                </div>
+                <div class="form-group">
+                  <label>Email (Usuario)</label>
+                  <input type="email" name="email" class="form-control" placeholder="usuario@mail.com" required>
+                </div>
+                <div class="form-group full-width">
+                  <label>Contraseña</label>
+                  <div style="position: relative; display: flex; align-items: center;">
+                    <input type="password" name="password" id="alta-password" class="form-control" placeholder="••••••••" required style="width: 100%; padding-right: 2.5rem;">
+                    <button type="button" class="toggle-password" data-target="alta-password" style="position: absolute; right: 0.75rem; background: transparent; border: none; cursor: pointer; color: var(--text-muted); display: flex;">
+                      <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Right Col -->
+          <div class="form-right-column">
+            <div class="form-card perms-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px;">
+              <h3 class="section-title" style="margin-top: 0;">Permisos por Módulo</h3>
+              <p class="helper-text-form" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Asigna el acceso para cada herramienta.</p>
+              <div id="alta-permissions-container" class="permissions-table-wrapper mini-table"></div>
+            </div>
+
+            <!-- Reference Table -->
+            <div class="form-card compact-summary-card" style="margin-top: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px;">
+              <h3 class="section-title" style="font-size: 0.75rem; margin-bottom: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Referencia de Perfiles</h3>
+              <div id="alta-reference-container" class="mini-reference-table"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: MODIFICAR -->
+    <div id="view-modificar" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <div>
+            <h2 class="screen-title" style="margin: 0;">Actualizar Usuario</h2>
+            <p id="mod-subtitle" class="screen-subtitle" style="color: var(--text-muted); font-size: 0.9rem; margin: 4px 0 0 0;">Busca y selecciona un usuario para editar</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Descartar</button>
+          <button id="btn-save-modificar" type="submit" form="modificar-usuario-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Actualizar Cambios
+          </button>
+        </div>
+      </div>
+
+      <!-- Search in Modificar -->
+      <div class="form-card" style="margin-bottom: 1.5rem; overflow: visible; background: var(--bg-card); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px;">
+        <div class="form-section" style="position: relative;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Buscar Usuario a Modificar</label>
+          <div class="search-wrapper" style="width: 100%; max-width: 600px;">
+            <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+            <input type="text" id="search-mod-input" placeholder="Buscar por nombre, apellidos o email...">
+            <button id="btn-clear-mod-search" class="btn-clear" style="background: transparent; border: none; cursor: pointer; display: flex; visibility: hidden;">
+              <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+          <div id="search-mod-dropdown" class="search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-width: 600px; z-index: 100; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin-top: 4px; max-height: 300px; overflow-y: auto;"></div>
+        </div>
+      </div>
+
+      <div id="modificar-form-content" class="form-container-split" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; opacity: 0.5; pointer-events: none;">
+        <form id="modificar-usuario-form" style="display: contents;">
+          <!-- Left Col -->
+          <div class="form-left-column">
+            <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px;">
+              <h3 class="section-title" style="margin-top: 0;">Información Personal</h3>
+              <div class="form-grid" style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label>Nombre(s)</label>
+                  <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Apellido Paterno</label>
+                  <input type="text" name="last_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label>Apellido Materno</label>
+                  <input type="text" name="second_last_name" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Email (Usuario)</label>
+                  <input type="email" name="email" class="form-control input-disabled" disabled>
+                </div>
+                <div class="form-group">
+                  <label>Estado</label>
+                  <select name="status" class="form-select custom-select-vanilla">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                  </select>
+                </div>
+                <div class="form-group full-width">
+                  <label>Nueva Contraseña <span style="color:var(--text-muted); font-size:0.8rem;">(Dejar en blanco para no cambiar)</span></label>
+                  <div style="position: relative; display: flex; align-items: center;">
+                    <input type="password" name="password" id="mod-password" class="form-control" placeholder="••••••••" style="width: 100%; padding-right: 2.5rem;">
+                    <button type="button" class="toggle-password" data-target="mod-password" style="position: absolute; right: 0.75rem; background: transparent; border: none; cursor: pointer; color: var(--text-muted); display: flex;">
+                      <i data-lucide="eye" style="width: 18px; height: 18px;"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Right Col -->
+          <div class="form-right-column">
+            <div class="form-card perms-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px;">
+              <h3 class="section-title" style="margin-top: 0;">Permisos por Módulo</h3>
+              <p class="helper-text-form" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Ajusta el nivel de acceso por herramienta.</p>
+              <div id="modificar-permissions-container" class="permissions-table-wrapper mini-table"></div>
+            </div>
+
+            <!-- Reference Table -->
+            <div class="form-card compact-summary-card" style="margin-top: 1rem; background: var(--bg-card); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px;">
+              <h3 class="section-title" style="font-size: 0.75rem; margin-bottom: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Referencia de Perfiles</h3>
+              <div id="modificar-reference-container" class="mini-reference-table"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: BAJA -->
+    <div id="view-baja" class="screen-container animate-slide-in" style="display: none; max-width: 600px; margin: 0 auto; text-align: center;">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 3rem; border-radius: 12px; margin-top: 2rem;">
+        <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #EF4444; margin-bottom: 1rem;"></i>
+        <h2 style="margin-top: 0; color: var(--text-color);">Confirmar Baja</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+          ¿Está seguro de que desea dar de baja al usuario <strong id="baja-user-name"></strong> (<span id="baja-user-email"></span>)? Esta acción deshabilitará su acceso al sistema.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <button class="btn-outline btn-back-general">Cancelar</button>
+          <button id="btn-confirmar-baja" class="btn-aprobacion btn-reject" style="border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            Confirmar Baja
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

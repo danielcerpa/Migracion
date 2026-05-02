@@ -1,0 +1,105 @@
+/* ── Driver.js Custom Theme ───────────────────────────────── */
+.driver-popover {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35) !important;
+  padding: 18px 20px !important;
+  max-width: 320px !important;
+}
+
+/* Ajuste específico para el paso 2 para que no choque con el techo de la pantalla */
+.popover-step-2 {
+  margin-top: 40px !important;
+}
+
+/* La escala se hereda del body.zoom configurado en Sidebar.tsx */
+body.scale-1-2 .driver-popover { 
+  transform: scale(1.2); 
+  transform-origin: left center;
+}
+body.scale-1-4 .driver-popover { 
+  transform: scale(1.4); 
+  transform-origin: left center;
+}
+
+.driver-popover-title {
+  color: var(--text-color) !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 8px !important;
+  font-family: inherit !important;
+}
+
+.driver-popover-description {
+  color: var(--text-muted) !important;
+  font-size: 0.875rem !important;
+  line-height: 1.55 !important;
+  font-family: inherit !important;
+}
+
+.driver-popover-description strong {
+  color: var(--text-color) !important;
+  font-weight: 600 !important;
+}
+
+.driver-popover-progress-text {
+  color: var(--text-muted) !important;
+  font-size: 0.75rem !important;
+}
+
+.driver-popover-footer {
+  margin-top: 14px !important;
+  gap: 8px !important;
+}
+
+.driver-popover-prev-btn,
+.driver-popover-next-btn,
+.driver-popover-done-btn {
+  padding: 7px 14px !important;
+  border-radius: 7px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  transition: background 0.15s, box-shadow 0.15s !important;
+  text-shadow: none !important;
+}
+
+.driver-popover-prev-btn {
+  background: var(--bg-subtle) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+  opacity: 1 !important;
+}
+.driver-popover-prev-btn:hover {
+  background: var(--bg-card) !important;
+  color: var(--text-color) !important;
+}
+
+.driver-popover-next-btn,
+.driver-popover-done-btn {
+  background: color-mix(in srgb, var(--accent-color) 85%, transparent) !important;
+  color: #fff !important;
+  border: 1px solid color-mix(in srgb, var(--accent-color) 70%, transparent) !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+}
+.driver-popover-next-btn:hover,
+.driver-popover-done-btn:hover {
+  background: var(--accent-color) !important;
+  box-shadow: none !important;
+}
+
+.driver-popover-close-btn {
+  color: var(--text-muted) !important;
+  font-size: 1.1rem !important;
+  transition: color 0.15s !important;
+}
+.driver-popover-close-btn:hover {
+  color: var(--text-color) !important;
+}
+
+.driver-popover-arrow {
+  display: none !important;
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Gestión Entomológica</title>
+    <!-- Bootstrap CSS -->
+    <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon-wrapper">
+                    <i data-lucide="bug" style="width: 40px; height: 40px;"></i>
+                </div>
+                <h2 class="login-title">Bienvenido</h2>
+                <p class="login-subtitle" id="sistem">Sistema de Gestión Entomológica</p>
+                
+                <p class="login-subtitle">Administrador de prueba:</p>
+                <p class="login-subtitle">admin@mail.com</p>
+                <p class="login-subtitle">Contraseña: 123</p>
+                <br />
+                <p class="login-subtitle">Consultor de prueba: </p>
+                <p class="login-subtitle">consultor@mail.com</p>
+                <p class="login-subtitle">Contraseña: 123</p>
+            </div>
+
+            <div class="login-form-box">
+                <form id="login-form">
+                    <div id="error-msg" style="display: none; background-color: #FEE2E2; color: #991B1B; padding: 12px; border-radius: 8px; font-size: 0.875rem; margin-bottom: 20px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>Correo Electrónico</span>
+                            <span id="email-count" class="char-count">0/150</span>
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            required
+                            class="form-input"
+                            placeholder="nombre@ejemplo.com"
+                            maxlength="150"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span>Contraseña</span>
+                            <span id="pass-count" class="char-count">0/64</span>
+                        </label>
+                        <div class="password-input-container">
+                            <input
+                                type="password"
+                                id="password"
+                                required
+                                class="form-input password-input"
+                                placeholder="••••••••"
+                                maxlength="64"
+                            />
+                            <button
+                                type="button"
+                                id="toggle-password"
+                                class="password-toggle-btn"
+                                aria-label="Mostrar contraseña"
+                            >
+                                <i data-lucide="eye" id="eye-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="submit-btn"
+                    >
+                        Iniciar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <button 
+            id="theme-toggle"
+            class="login-theme-btn"
+            title="Modo Oscuro"
+        >
+            <i data-lucide="moon" id="theme-icon"></i>
+        </button>
+    </div>
+
+    <!-- Lucide Icons -->
+    <script src="libs/lucide/lucide.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/login.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

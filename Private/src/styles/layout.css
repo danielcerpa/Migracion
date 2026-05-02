@@ -1,0 +1,51 @@
+.app-layout {
+  display: flex;
+  height: 100vh;
+  background-color: var(--bg-body);
+  transition: background-color 0.3s ease;
+  overflow: hidden;
+}
+
+.dark-mode .app-layout {
+  background-color: var(--bg-body);
+}
+
+.main-content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  color: var(--text-color);
+}
+
+.page-container {
+  max-width: 100%;
+  margin: 0;
+}
+
+.page-header {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 4px;
+}
+
+.dark-mode .page-title {
+  color: var(--text-color);
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+}
+
+.dark-mode .page-subtitle {
+  color: var(--text-muted);
+}

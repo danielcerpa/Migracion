@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="../css/aprobaciones.css">
+
+<div id="aprobaciones-module" class="aprobaciones-container">
+    <header class="aprobaciones-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+            <div>
+                <h1 class="aprobaciones-title" style="display: flex; align-items: center; gap: 12px;">
+                    Aprobaciones Pendientes
+                    <button class="module-info-btn" title="Ver guía del módulo">
+                      <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+                    </button>
+                </h1>
+                <p class="aprobaciones-subtitle">Revisa y gestiona las solicitudes de registro enviadas por los capturistas.</p>
+            </div>
+        </div>
+    </header>
+
+    <div id="aprobaciones-grid-container">
+        <!-- Rendered by JS -->
+    </div>
+
+    <!-- Modal para rechazar/regresar -->
+    <div id="aprobacion-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2 id="modal-action-title" class="modal-title">Acción</h2>
+            <p id="modal-action-subtitle" class="aprobaciones-subtitle" style="margin-bottom: 1rem;"></p>
+            
+            <textarea 
+                id="modal-comment-text" 
+                class="comment-textarea" 
+                placeholder="Escriba sus comentarios aquí..."
+            ></textarea>
+            
+            <div class="modal-footer">
+                <button id="btn-close-modal" class="btn-aprobacion btn-secondary">Cancelar</button>
+                <button id="btn-confirm-action" class="btn-aprobacion">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>

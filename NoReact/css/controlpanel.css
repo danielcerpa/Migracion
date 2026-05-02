@@ -1,0 +1,194 @@
+/* ── Controlpanel.css (exact port from Private) ──────────────── */
+.control-panel-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--text-color);
+}
+
+.control-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.control-panel-section {
+  margin-bottom: 2rem;
+}
+
+.control-panel-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+.control-panel-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+.control-panel-welcome {
+  margin-bottom: 3rem;
+}
+
+.control-panel-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.control-panel-module-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.control-panel-module-description {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.control-panel-list {
+  color: var(--text-muted);
+  line-height: 2;
+  font-size: 1rem;
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.control-panel-help-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color);
+}
+
+.control-panel-help-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.control-panel-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.control-panel-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.control-panel-card-content {
+  padding-left: 3rem;
+}
+
+.control-panel-module-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.control-panel-module-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.control-panel-icon-wrapper {
+  background-color: var(--bg-subtle);
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-panel-card-header .control-panel-icon-wrapper {
+  color: var(--accent-color);
+}
+
+.control-panel-module-header .control-panel-icon-wrapper {
+  color: var(--area-color);
+}
+
+.control-panel-help-section {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  margin-bottom: 2rem;
+}
+
+.control-panel-help-button {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+
+.control-panel-help-button:hover {
+  background-color: var(--accent-color-hover);
+}
+
+.control-panel-help-button-icon {
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-panel-help-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-color);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* ── Area Color Variables ───────────────────── */
+.module-security  { --area-color: #378d70; }
+.module-admin     { --area-color: #336ece; }
+.module-collection{ --area-color: #70378d; }
+.module-research  { --area-color: #c27e0a; }
+.module-system    { --area-color: #4a4f56; }
+
+body.dark-mode .module-security  { --area-color: #10B981; }
+body.dark-mode .module-admin     { --area-color: #3B82F6; }
+body.dark-mode .module-collection{ --area-color: #8B5CF6; }
+body.dark-mode .module-research  { --area-color: #F59E0B; }
+body.dark-mode .module-system    { --area-color: #6B7280; }

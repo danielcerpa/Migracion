@@ -1,0 +1,185 @@
+<div id="prestamos-module" class="usuarios-module prestamos-module">
+  <!-- Breadcrumbs -->
+  <div id="prestamos-breadcrumb" class="module-breadcrumb" style="display: none; margin-top: 1rem;">
+    <span id="breadcrumb-back" style="cursor: pointer; color: var(--text-muted);">Préstamos</span>
+    <i data-lucide="chevron-right" style="width: 14px; height: 14px; color: var(--text-muted); margin: 0 8px;"></i>
+    <span id="current-crumb" class="current-crumb" style="font-weight: 500; color: var(--text-color);"></span>
+  </div>
+
+  <div class="module-screen">
+    <!-- VIEW: GENERAL -->
+    <div id="view-pres-general" class="screen-container fade-in">
+      <div class="screen-header">
+        <div>
+          <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
+            Gestión de Préstamos
+            <button class="module-info-btn" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            </button>
+          </h2>
+        </div>
+        <div class="header-actions">
+          <button id="btn-alta-prestamo" class="btn-primary with-icon">
+            <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i> Nuevo Préstamo
+          </button>
+          <button id="btn-actualizar-prestamo" class="btn-warning with-icon">
+            <i data-lucide="user-check" style="width: 18px; height: 18px;"></i> Modificar
+          </button>
+          <button id="btn-eliminar-prestamo" class="btn-danger-soft with-icon">
+            <i data-lucide="user-minus" style="width: 18px; height: 18px;"></i> Eliminar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-controls">
+        <div class="search-wrapper">
+          <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+          <input type="text" id="search-prestamo-input" placeholder="Buscar por prestatario, institución, estado...">
+        </div>
+      </div>
+
+      <div class="table-card">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>ID Espécimen</th>
+              <th>Prestatario</th>
+              <th>Institución</th>
+              <th>F. Préstamo</th>
+              <th>Estado</th>
+              <th style="text-align: center;">Propósito</th>
+            </tr>
+          </thead>
+          <tbody id="prestamo-table-body">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- VIEW: ALTA -->
+    <div id="view-pres-alta" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Nuevo Préstamo</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="alta-prestamo-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Guardar Préstamo
+          </button>
+        </div>
+      </div>
+
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
+        <form id="alta-prestamo-form">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>ID Espécimen *</label><input type="number" name="idEjemplar" required></div>
+            <div class="form-group"><label>Prestatario *</label><input type="text" name="prestatario" required></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Institución</label><input type="text" name="institucion"></div>
+            <div class="form-group"><label>Propósito</label><input type="text" name="proposito"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Fecha Préstamo *</label><input type="date" name="fecha_prestamo" required></div>
+            <div class="form-group"><label>Fecha Dev. Estimada</label><input type="date" name="fecha_devolucion_estimada"></div>
+            <div class="form-group"><label>Fecha Dev. Real</label><input type="date" name="fecha_devolucion_real"></div>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>Condición al Prestar</label>
+            <textarea name="condicion_al_prestar" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>Observaciones</label>
+            <textarea name="observaciones" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Estado del Préstamo</label>
+            <select name="estado_prestamo">
+                <option value="Activo">Activo</option>
+                <option value="Devuelto">Devuelto</option>
+                <option value="Atrasado">Atrasado</option>
+                <option value="Baja">Baja / Perdido</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: MODIFICAR -->
+    <div id="view-pres-modificar" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Actualizar Préstamo</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="modificar-prestamo-form" class="btn-primary with-icon">
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
+        <form id="modificar-prestamo-form">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>ID Espécimen *</label><input type="number" name="idEjemplar" required></div>
+            <div class="form-group"><label>Prestatario *</label><input type="text" name="prestatario" required></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Institución</label><input type="text" name="institucion"></div>
+            <div class="form-group"><label>Propósito</label><input type="text" name="proposito"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Fecha Préstamo *</label><input type="date" name="fecha_prestamo" required></div>
+            <div class="form-group"><label>Fecha Dev. Estimada</label><input type="date" name="fecha_devolucion_estimada"></div>
+            <div class="form-group"><label>Fecha Dev. Real</label><input type="date" name="fecha_devolucion_real"></div>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>Condición al Prestar</label>
+            <textarea name="condicion_al_prestar" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label>Observaciones</label>
+            <textarea name="observaciones" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Estado del Préstamo</label>
+            <select name="estado_prestamo">
+                <option value="Activo">Activo</option>
+                <option value="Devuelto">Devuelto</option>
+                <option value="Atrasado">Atrasado</option>
+                <option value="Baja">Baja / Perdido</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW: BAJA -->
+    <div id="view-pres-baja" class="screen-container animate-slide-in" style="display: none; max-width: 600px; margin: 0 auto; text-align: center;">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 3rem; border-radius: 12px; margin-top: 2rem;">
+        <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: #EF4444; margin-bottom: 1rem;"></i>
+        <h2 style="margin-top: 0; color: var(--text-color);">Confirmar Baja</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+          ¿Está seguro de que desea eliminar el préstamo <strong id="baja-pres-name"></strong>? Esto marcará el préstamo como "Baja".
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <button class="btn-outline btn-back-general">Cancelar</button>
+          <button id="btn-confirmar-baja-pres" class="btn-aprobacion btn-reject" style="border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            Confirmar Eliminación
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
