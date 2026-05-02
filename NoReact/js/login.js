@@ -1,3 +1,16 @@
+/** Permisos de demostración si el login cae en modo mock (misma forma que login.php). */
+const MOCK_DEMO_MODULES = ['Usuarios', 'Perfiles', 'Catalogos', 'Aprobaciones', 'Registro de Ejemplares', 'Fototeca', 'Prestamos', 'Reportes'];
+
+function buildMockPermissions(isAdmin) {
+    return MOCK_DEMO_MODULES.map((moduleName) => ({
+        moduleName,
+        key_add: 1,
+        key_edit: 1,
+        key_delete: isAdmin ? 1 : 0,
+        key_export: isAdmin ? 1 : 1,
+    }));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('user')) {
         window.location.replace('views/dashboard.html');
@@ -86,14 +99,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Manejar mock alternativo por si la API falla o la DB está vacía
                 if ((email === 'admin@mail.com' || email === 'consultor@mail.com') && password === '123') {
+                    const isAdmin = email === 'admin@mail.com';
                     const user = {
-                        id_usuario: email === 'admin@mail.com' ? 1 : 2,
-                        nombre: email === 'admin@mail.com' ? 'Admin' : 'Consultor',
-                        apellido_paterno: 'Mock',
-                        email: email,
-                        nombre_perfil: email === 'admin@mail.com' ? 'Administrador' : 'Consultor'
+                        id: isAdmin ? 1 : 2,
+                        name: isAdmin ? 'Admin' : 'Consultor',
+                        email,
+                        status: 1,
                     };
                     localStorage.setItem('user', JSON.stringify(user));
+                    localStorage.setItem('permissions', JSON.stringify(buildMockPermissions(isAdmin)));
                     window.location.replace('views/dashboard.html');
                 } else {
                     errorMsg.textContent = data.error || 'Correo o contraseña incorrectos';
@@ -104,14 +118,15 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Login error:', err);
             // Fallback al mock si no hay servidor
             if ((email === 'admin@mail.com' || email === 'consultor@mail.com') && password === '123') {
+                const isAdmin = email === 'admin@mail.com';
                 const user = {
-                    id_usuario: email === 'admin@mail.com' ? 1 : 2,
-                    nombre: email === 'admin@mail.com' ? 'Admin' : 'Consultor',
-                    apellido_paterno: 'Mock',
-                    email: email,
-                    nombre_perfil: email === 'admin@mail.com' ? 'Administrador' : 'Consultor'
+                    id: isAdmin ? 1 : 2,
+                    name: isAdmin ? 'Admin' : 'Consultor',
+                    email,
+                    status: 1,
                 };
                 localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('permissions', JSON.stringify(buildMockPermissions(isAdmin)));
                 window.location.replace('views/dashboard.html');
             } else {
                 errorMsg.textContent = 'Error de conexión con el servidor.';

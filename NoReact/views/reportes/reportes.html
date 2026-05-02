@@ -1,0 +1,32 @@
+<div id="reportes-module" class="usuarios-module" style="max-width: 960px; margin: 0 auto;">
+  <div class="screen-header" style="margin-bottom: 1.5rem;">
+    <div>
+      <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
+        Reportes y estado de la colección
+        <button class="module-info-btn" type="button" title="Resumen desde la base de datos">
+          <i data-lucide="bar-chart-2" style="width: 14px; height: 14px;"></i>
+        </button>
+      </h2>
+      <p style="color: var(--text-muted); margin: 0.25rem 0 0 0;">Conteos en vivo (solo lectura).</p>
+    </div>
+    <div class="header-actions">
+      <button type="button" id="btn-reportes-refresh" class="btn-outline with-icon">
+        <i data-lucide="refresh-cw" style="width: 18px; height: 18px;"></i> Actualizar
+      </button>
+    </div>
+  </div>
+
+  <div id="reportes-stats-grid" class="insect-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem;">
+    <div class="d-flex justify-content-center py-5" style="grid-column: 1/-1;">
+      <div class="spinner-border text-success" role="status"></div>
+    </div>
+  </div>
+
+  <div class="form-card" style="margin-top: 2rem; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card);">
+    <h3 class="section-title" style="margin-top: 0; color: var(--accent-color);">Exportación rápida</h3>
+    <p style="color: var(--text-muted); font-size: 0.9rem;">Descarga un CSV con los espécimenes activos (columnas principales).</p>
+    <button type="button" id="btn-export-especimenes-csv" class="btn-primary with-icon">
+      <i data-lucide="download" style="width: 18px; height: 18px;"></i> CSV espécimenes activos
+    </button>
+  </div>
+</div>

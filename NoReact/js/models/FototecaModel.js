@@ -8,36 +8,12 @@ class FototecaModel {
         try {
             const response = await fetch(`${this.apiBase}/fototeca.php`);
             if (!response.ok) throw new Error('Error al obtener fototeca');
-            this.items = await response.json();
-            
-            // Mock if empty
-            if (this.items.length === 0) {
-                this.items = [
-                    {
-                        id_foto: 1,
-                        id_colector: null,
-                        id_determinador: null,
-                        id_especimen: 101,
-                        ruta_archivo: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=200&h=200&fit=crop',
-                        descripcion_foto: 'Imagen de prueba 1',
-                        fecha_subida: '2025-03-15 10:00:00',
-                        status: 1,
-                    },
-                    {
-                        id_foto: 2,
-                        id_colector: 1,
-                        id_determinador: null,
-                        id_especimen: 101,
-                        ruta_archivo: 'https://images.unsplash.com/photo-1470093851219-69951fcbb533?w=200&h=200&fit=crop',
-                        descripcion_foto: null,
-                        fecha_subida: '2025-03-16 09:30:00',
-                        status: 1,
-                    }
-                ];
-            }
+            const data = await response.json();
+            this.items = Array.isArray(data) ? data : [];
             return this.items;
         } catch (err) {
             console.error('fetchFotos error:', err);
+            this.items = [];
             return [];
         }
     }

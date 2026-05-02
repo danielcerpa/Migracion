@@ -22,6 +22,9 @@
           <button id="btn-alta-prestamo" class="btn-primary with-icon">
             <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i> Nuevo Préstamo
           </button>
+          <button id="btn-registrar-devolucion" type="button" class="btn-outline with-icon" title="Marca el préstamo seleccionado como devuelto hoy">
+            <i data-lucide="package-check" style="width: 18px; height: 18px;"></i> Registrar devolución
+          </button>
           <button id="btn-actualizar-prestamo" class="btn-warning with-icon">
             <i data-lucide="user-check" style="width: 18px; height: 18px;"></i> Modificar
           </button>
@@ -77,9 +80,30 @@
 
       <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
         <form id="alta-prestamo-form">
+          <div class="form-group prestamo-ejemplar-search-wrap" style="margin-bottom: 1.25rem; position: relative;">
+            <label>Buscar espécimen en la colección</label>
+            <div class="search-wrapper" style="position: relative;">
+              <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+              <input type="text" class="prestamo-ejemplar-search-input" autocomplete="off" placeholder="ID, nombre común o científico…" style="width:100%; padding-left: 2.25rem;">
+            </div>
+            <div class="prestamo-ejemplar-dropdown" style="display: none;">
+              <table class="custom-table compact-table" style="width:100%; margin:0;">
+                <thead><tr><th>ID</th><th>Nombre común</th><th>Científico</th></tr></thead>
+                <tbody class="prestamo-ejemplar-dropdown-body"></tbody>
+              </table>
+            </div>
+          </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-            <div class="form-group"><label>ID Espécimen *</label><input type="number" name="idEjemplar" required></div>
+            <div class="form-group"><label>ID Espécimen *</label><input type="number" name="idEjemplar" required min="1"></div>
             <div class="form-group"><label>Prestatario *</label><input type="text" name="prestatario" required></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Nombre científico (auto)</label><input type="text" name="nombre_cientifico" readonly class="prestamo-readonly-field"></div>
+            <div class="form-group"><label>Nombre común (auto)</label><input type="text" name="nombre_comun" readonly class="prestamo-readonly-field"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Prestamista (quien autoriza en colección) *</label><input type="text" name="prestamista" required></div>
+            <div class="form-group"><label>Tel. prestatario</label><input type="text" name="telefono_prestatario" maxlength="15"></div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <div class="form-group"><label>Institución</label><input type="text" name="institucion"></div>
@@ -103,6 +127,7 @@
             <select name="estado_prestamo">
                 <option value="Activo">Activo</option>
                 <option value="Devuelto">Devuelto</option>
+                <option value="Vencido">Vencido</option>
                 <option value="Atrasado">Atrasado</option>
                 <option value="Baja">Baja / Perdido</option>
             </select>
@@ -130,9 +155,30 @@
 
       <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
         <form id="modificar-prestamo-form">
+          <div class="form-group prestamo-ejemplar-search-wrap" style="margin-bottom: 1.25rem; position: relative;">
+            <label>Buscar espécimen en la colección</label>
+            <div class="search-wrapper" style="position: relative;">
+              <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+              <input type="text" class="prestamo-ejemplar-search-input" autocomplete="off" placeholder="ID, nombre común o científico…" style="width:100%; padding-left: 2.25rem;">
+            </div>
+            <div class="prestamo-ejemplar-dropdown" style="display: none;">
+              <table class="custom-table compact-table" style="width:100%; margin:0;">
+                <thead><tr><th>ID</th><th>Nombre común</th><th>Científico</th></tr></thead>
+                <tbody class="prestamo-ejemplar-dropdown-body"></tbody>
+              </table>
+            </div>
+          </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-            <div class="form-group"><label>ID Espécimen *</label><input type="number" name="idEjemplar" required></div>
+            <div class="form-group"><label>ID Espécimen *</label><input type="number" name="idEjemplar" required min="1"></div>
             <div class="form-group"><label>Prestatario *</label><input type="text" name="prestatario" required></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Nombre científico (auto)</label><input type="text" name="nombre_cientifico" readonly class="prestamo-readonly-field"></div>
+            <div class="form-group"><label>Nombre común (auto)</label><input type="text" name="nombre_comun" readonly class="prestamo-readonly-field"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Prestamista *</label><input type="text" name="prestamista" required></div>
+            <div class="form-group"><label>Tel. prestatario</label><input type="text" name="telefono_prestatario" maxlength="15"></div>
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <div class="form-group"><label>Institución</label><input type="text" name="institucion"></div>
@@ -156,6 +202,7 @@
             <select name="estado_prestamo">
                 <option value="Activo">Activo</option>
                 <option value="Devuelto">Devuelto</option>
+                <option value="Vencido">Vencido</option>
                 <option value="Atrasado">Atrasado</option>
                 <option value="Baja">Baja / Perdido</option>
             </select>

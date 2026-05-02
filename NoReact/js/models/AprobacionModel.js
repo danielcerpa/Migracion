@@ -25,7 +25,10 @@ class AprobacionModel {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_revisor: user?.id || 1 })
             });
-            if (!response.ok) throw new Error('Error al aprobar');
+            const body = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(body.error || 'Error al aprobar');
+            }
             await this.fetchAprobaciones();
             return true;
         } catch (err) {

@@ -6,6 +6,7 @@ class PerfilController {
         this.query = '';
         this.currentPage = 1;
         this.rowsPerPage = 10;
+        this._uiAbort = null;
     }
 
     async init() {
@@ -14,28 +15,33 @@ class PerfilController {
 
         await this.model.fetchProfiles();
 
+        if (this._uiAbort) this._uiAbort.abort();
+        this._uiAbort = new AbortController();
+
         this.bindEvents();
         this.render();
         if (window.PerfilesTutorial) window.PerfilesTutorial.init();
     }
 
     bindEvents() {
+        const { signal } = this._uiAbort;
+
         // Navigation events
-        document.getElementById('btn-alta-perfil')?.addEventListener('click', () => this.navigate('alta'));
+        document.getElementById('btn-alta-perfil')?.addEventListener('click', () => this.navigate('alta'), { signal });
         document.getElementById('btn-actualizar-perfil')?.addEventListener('click', () => {
             if (!this.selectedProfile) { alert('Seleccione un perfil de la tabla primero.'); return; }
             this.navigate('modificar', this.selectedProfile);
-        });
+        }, { signal });
         document.getElementById('btn-eliminar-perfil')?.addEventListener('click', () => {
             if (!this.selectedProfile) { alert('Seleccione un perfil de la tabla primero.'); return; }
             this.navigate('baja', this.selectedProfile);
-        });
+        }, { signal });
 
         // Back buttons
         document.querySelectorAll('.btn-back-general').forEach(btn => {
-            btn.addEventListener('click', () => this.navigate('general'));
+            btn.addEventListener('click', () => this.navigate('general'), { signal });
         });
-        document.getElementById('breadcrumb-back')?.addEventListener('click', () => this.navigate('general'));
+        document.getElementById('breadcrumb-back')?.addEventListener('click', () => this.navigate('general'), { signal });
 
         // Search
         const searchInput = document.getElementById('search-profiles-input');
@@ -44,18 +50,18 @@ class PerfilController {
                 this.query = e.target.value;
                 this.currentPage = 1;
                 this.renderTable();
-            });
+            }, { signal });
         }
         document.getElementById('btn-clear-search')?.addEventListener('click', () => {
             this.query = '';
             if (searchInput) searchInput.value = '';
             this.renderTable();
-        });
+        }, { signal });
 
         // Forms
-        document.getElementById('alta-perfil-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e));
-        document.getElementById('modificar-perfil-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e));
-        document.getElementById('btn-confirmar-baja')?.addEventListener('click', () => this.handleBajaSubmit());
+        document.getElementById('alta-perfil-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e), { signal });
+        document.getElementById('modificar-perfil-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e), { signal });
+        document.getElementById('btn-confirmar-baja')?.addEventListener('click', () => this.handleBajaSubmit(), { signal });
     }
 
     navigate(view, profile = null) {

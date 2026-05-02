@@ -5,11 +5,15 @@ class CatalogoController {
         this.currentSection = null;
         this.selectedItem = null;
         this.query = '';
+        this._uiAbort = null;
     }
 
     async init() {
         this.container = document.getElementById('catalogos-module');
         if (!this.container) return;
+
+        if (this._uiAbort) this._uiAbort.abort();
+        this._uiAbort = new AbortController();
 
         this.bindEvents();
         this.render();
@@ -17,22 +21,24 @@ class CatalogoController {
     }
 
     bindEvents() {
+        const { signal } = this._uiAbort;
+
         // Navigation events
-        document.getElementById('breadcrumb-catalogos')?.addEventListener('click', () => this.navigate('dashboard'));
-        document.getElementById('breadcrumb-section')?.addEventListener('click', () => this.navigate('general'));
+        document.getElementById('breadcrumb-catalogos')?.addEventListener('click', () => this.navigate('dashboard'), { signal });
+        document.getElementById('breadcrumb-section')?.addEventListener('click', () => this.navigate('general'), { signal });
         
-        document.getElementById('btn-alta-catalogo')?.addEventListener('click', () => this.navigate('alta'));
+        document.getElementById('btn-alta-catalogo')?.addEventListener('click', () => this.navigate('alta'), { signal });
         document.getElementById('btn-actualizar-catalogo')?.addEventListener('click', () => {
             if (!this.selectedItem) { alert('Seleccione un registro de la tabla primero.'); return; }
             this.navigate('modificar', this.selectedItem);
-        });
+        }, { signal });
         document.getElementById('btn-eliminar-catalogo')?.addEventListener('click', () => {
             if (!this.selectedItem) { alert('Seleccione un registro de la tabla primero.'); return; }
             this.navigate('baja', this.selectedItem);
-        });
+        }, { signal });
 
         document.querySelectorAll('.btn-back-general').forEach(btn => {
-            btn.addEventListener('click', () => this.navigate('general'));
+            btn.addEventListener('click', () => this.navigate('general'), { signal });
         });
 
         // Search
@@ -41,13 +47,13 @@ class CatalogoController {
             searchInput.addEventListener('input', (e) => {
                 this.query = e.target.value;
                 this.renderTable();
-            });
+            }, { signal });
         }
 
         // Forms
-        document.getElementById('alta-catalogo-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e));
-        document.getElementById('modificar-catalogo-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e));
-        document.getElementById('btn-confirmar-baja-cat')?.addEventListener('click', () => this.handleBajaSubmit());
+        document.getElementById('alta-catalogo-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e), { signal });
+        document.getElementById('modificar-catalogo-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e), { signal });
+        document.getElementById('btn-confirmar-baja-cat')?.addEventListener('click', () => this.handleBajaSubmit(), { signal });
     }
 
     async selectSection(section) {

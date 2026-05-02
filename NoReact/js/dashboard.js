@@ -2,18 +2,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user) { window.location.replace('../index.html'); return; }
 
-    // 0. Check for permissions/status (Access Denied Modal)
-    // If user is inactive (status 0) or has no modules assigned (mocking this for now)
-    const hasNoModules = false; // This would be true if modulesData fetch returned empty
+    const permsCheck = JSON.parse(localStorage.getItem('permissions') || '[]');
+    const hasNoModules = !Array.isArray(permsCheck) || permsCheck.length === 0;
     if (user.status === 0 || hasNoModules) {
         if (window.AccessDeniedModal) {
             const modal = new window.AccessDeniedModal();
             modal.show();
-            return; // Stop further initialization
+            return;
         }
     }
 
-    // 1. Fetch and inject sidebar component
     const sidebarContainer = document.getElementById('sidebar');
     try {
         const sidebarRes = await fetch(`../components/sidebar.html?v=${new Date().getTime()}`);
@@ -25,10 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // 2. Query DOM elements (now they exist in the DOM)
     const sidebarAside = document.getElementById('sidebar-aside');
     const collapseBtn  = document.getElementById('sidebar-collapse-btn');
-    const collapseIcon = document.getElementById('collapse-icon');
     const themeToggle  = document.getElementById('theme-toggle');
     const configBtn    = document.getElementById('config-btn');
     const configPanel  = document.getElementById('config-panel');
@@ -37,7 +33,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const navModules   = document.getElementById('nav-modules-container');
     const navDashboard = document.getElementById('nav-dashboard');
 
-    const modulesData = [
+    /** Lista estática (fallback) — nombres deben coincidir con la tabla `module` en v2.sql */
+    const modulesStatic = [
         { name:'Usuarios',              area:'Seguridad',      view:'usuarios' },
         { name:'Perfiles',              area:'Seguridad',      view:'perfiles' },
         { name:'Catalogos',             area:'Administrativo', view:'catalogos' },
@@ -45,11 +42,49 @@ document.addEventListener('DOMContentLoaded', async () => {
         { name:'Registro de Ejemplares',area:'Colección',      view:'especimenes' },
         { name:'Fototeca',              area:'Colección',      view:'fototeca' },
         { name:'Prestamos',             area:'Colección',      view:'prestamos' },
+        { name:'Reportes',              area:'Sistema',        view:'reportes' },
     ];
 
-    const iconMap = { usuarios:'users', perfiles:'shield-check', catalogos:'book-open', aprobaciones:'clipboard-check', especimenes:'bug', fototeca:'camera', prestamos:'handshake' };
+    const iconMap = {
+        usuarios:'users', perfiles:'shield-check', catalogos:'book-open', aprobaciones:'clipboard-check',
+        especimenes:'bug', fototeca:'camera', prestamos:'handshake', reportes:'bar-chart-2', provisional:'construction',
+    };
 
-    // ── Sidebar collapse ──────────────────────────────────────────
+    function normalizeModuleName(s) {
+        return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    /**
+     * Misma lógica de enrutado que `sistemas/Private/src/components/Sidebar.tsx` (NavLink).
+     */
+    function moduleRowToNav(m) {
+        const name = m.name || '';
+        const nn = normalizeModuleName(name);
+        let view = 'provisional';
+        if (nn.includes('usuario')) view = 'usuarios';
+        else if (nn.includes('perfil')) view = 'perfiles';
+        else if (nn.includes('catalog')) view = 'catalogos';
+        else if (nn.includes('aprobacion')) view = 'aprobaciones';
+        else if (nn.includes('ejemplar') || nn.includes('registro')) view = 'especimenes';
+        else if (nn.includes('fotot')) view = 'fototeca';
+        else if (nn.includes('prestamo')) view = 'prestamos';
+        else if (nn.includes('verificacion')) view = 'provisional';
+        else if (nn.includes('reporte')) view = 'reportes';
+        return { name, area: m.area || 'Sistema', view, idModule: m.idModule };
+    }
+
+    async function fetchNavModulesForUser(uid) {
+        try {
+            const r = await fetch(`../api/modules.php?userId=${encodeURIComponent(uid)}`);
+            if (!r.ok) return null;
+            const rows = await r.json();
+            if (!Array.isArray(rows) || rows.length === 0) return null;
+            return rows.map(moduleRowToNav);
+        } catch (_) {
+            return null;
+        }
+    }
+
     if (collapseBtn) {
         collapseBtn.addEventListener('click', () => {
             sidebarAside.classList.toggle('sidebar-collapsed');
@@ -62,7 +97,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // ── Theme ─────────────────────────────────────────────────────
     applyTheme(localStorage.getItem('theme') || 'light');
     if (themeToggle) {
         themeToggle.addEventListener('click', (e) => {
@@ -73,9 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function applyTheme(t) {
-        // Add no-transition class to body to prevent color animation
         document.body.classList.add('no-transition');
-        
         document.body.classList.toggle('dark-mode', t === 'dark');
         if (themeToggle) {
             themeToggle.classList.toggle('is-dark', t === 'dark');
@@ -83,14 +115,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         localStorage.setItem('theme', t);
         lucide.createIcons();
-        
-        // Use a short timeout to remove the class after the DOM has updated
-        setTimeout(() => {
-            document.body.classList.remove('no-transition');
-        }, 50);
+        setTimeout(() => { document.body.classList.remove('no-transition'); }, 50);
     }
 
-    // ── Config panel ──────────────────────────────────────────────
     if (configBtn && configPanel) {
         configBtn.addEventListener('click', e => {
             e.stopPropagation();
@@ -98,8 +125,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             configPanel.style.display = open ? 'none' : 'flex';
             configBtn.classList.toggle('config-btn-active', !open);
         });
-        
-        // Prevent closing when clicking inside the panel
         configPanel.addEventListener('click', e => e.stopPropagation());
         document.addEventListener('click', e => {
             if (!configPanel.contains(e.target) && !configBtn.contains(e.target)) {
@@ -109,7 +134,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // ── Scale select ──────────────────────────────────────────────
     const scaleTrigger = document.getElementById('scale-trigger');
     const scaleOptions = document.getElementById('scale-options');
     const scaleLabel   = document.getElementById('scale-current-label');
@@ -122,8 +146,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 opt.classList.add('selected');
                 scaleLabel.textContent = opt.textContent;
                 scaleOptions.style.display = 'none';
-                
-                // Apply scaling classes to html
                 document.documentElement.classList.remove('scale-1-2', 'scale-1-4');
                 if (val === '1.2') document.documentElement.classList.add('scale-1-2');
                 if (val === '1.4') document.documentElement.classList.add('scale-1-4');
@@ -131,19 +153,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // ── Render sidebar modules ────────────────────────────────────
-    if (navModules) {
-        const perms = JSON.parse(localStorage.getItem('permissions') || '[]');
-        
-        // Filtramos los módulos: si el usuario tiene permisos para ese módulo (y no es SinAcceso/idProfile 5)
-        // Nota: El backend ya filtra y solo envía los módulos donde el usuario tiene algo asignado.
-        const allowedModules = modulesData.filter(m => {
-            // El nombre en modulesData debe coincidir con el nombre en la DB (moduleName)
-            // 'Registro de Ejemplares' en UI es 'Registro de Ejemplares' en DB
-            return perms.some(p => p.moduleName === m.name);
-        });
+    const perms = JSON.parse(localStorage.getItem('permissions') || '[]');
+    const userId = user.id ?? user.idUser;
+    let navModuleList = await fetchNavModulesForUser(userId);
+    if (!navModuleList) {
+        navModuleList = modulesStatic.filter(m => perms.some(p => p.moduleName === m.name));
+    }
 
-        const grouped = allowedModules.reduce((acc, m) => { (acc[m.area] = acc[m.area] || []).push(m); return acc; }, {});
+    if (navModules) {
+        const grouped = navModuleList.reduce((acc, m) => {
+            (acc[m.area] = acc[m.area] || []).push(m);
+            return acc;
+        }, {});
         navModules.innerHTML = '';
         Object.entries(grouped).forEach(([area, mods]) => {
             const g = document.createElement('div');
@@ -152,10 +173,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             const children = g.querySelector('.nav-group-children');
             mods.forEach(m => {
                 const a = document.createElement('a');
-                a.href = '#'; a.className = 'nav-item nav-child'; a.title = m.name;
+                a.href = '#';
+                a.className = 'nav-item nav-child';
+                a.title = m.name;
                 a.setAttribute('data-view', m.view);
+                a.setAttribute('data-module-name', m.name);
                 a.innerHTML = `<i data-lucide="${iconMap[m.view] || 'circle-dot'}"></i><span class="nav-label">${m.name}</span>`;
-                a.onclick = e => { e.preventDefault(); setActive(a); loadView(m.view); };
+                a.onclick = e => {
+                    e.preventDefault();
+                    sessionStorage.setItem('provisionalTitle', m.name);
+                    setActive(a);
+                    loadView(m.view);
+                };
                 children.appendChild(a);
             });
             navModules.appendChild(g);
@@ -163,7 +192,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     lucide.createIcons();
 
-    // ── Navigation helpers ────────────────────────────────────────
     function setActive(el) {
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
         if (el) el.classList.add('active');
@@ -175,7 +203,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadView(view) {
         contentArea.innerHTML = '<div class="d-flex justify-content-center py-5"><div class="spinner-border text-success"></div></div>';
-        
+
         const pathMap = {
             dashboard: '../views/dashboard/dashboard.html',
             usuarios: '../views/usuarios/usuarios.html',
@@ -184,7 +212,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             especimenes: '../views/especimenes/especimenes.html',
             aprobaciones: '../views/aprobaciones/aprobaciones.html',
             fototeca: '../views/fototeca/fototeca.html',
-            prestamos: '../views/prestamos/prestamos.html'
+            prestamos: '../views/prestamos/prestamos.html',
+            reportes: '../views/reportes/reportes.html',
+            provisional: '../views/provisional/provisional.html',
         };
 
         const viewPath = pathMap[view];
@@ -199,7 +229,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             const html = await response.text();
             contentArea.innerHTML = html;
             lucide.createIcons();
-            
+
+            if (view === 'provisional') {
+                const t = document.getElementById('provisional-module-title');
+                if (t) t.textContent = sessionStorage.getItem('provisionalTitle') || 'Módulo';
+            }
+
             if (view === 'usuarios' && window.UsuarioController) {
                 window.UsuarioController.init();
             } else if (view === 'perfiles' && window.PerfilController) {
@@ -214,19 +249,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 window.PrestamoController.init();
             } else if (view === 'aprobaciones' && window.AprobacionController) {
                 window.AprobacionController.init();
+            } else if (view === 'reportes' && window.ReporteController) {
+                window.ReporteController.init();
             } else if (view === 'dashboard' && window.DashboardTutorial) {
                 window.DashboardTutorial.init();
             }
-
         } catch (error) {
             contentArea.innerHTML = `<div class="text-center py-5 text-danger"><h3>Error cargando el módulo "${view}"</h3><p>${error.message}</p></div>`;
         }
     }
 
     if (logoutBtn) {
-        logoutBtn.onclick = () => { 
-            localStorage.removeItem('user'); 
-            window.location.replace('../index.html'); 
+        logoutBtn.onclick = () => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('permissions');
+            window.location.replace('../index.html');
         };
     }
 

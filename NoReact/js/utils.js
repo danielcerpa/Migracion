@@ -107,6 +107,12 @@ class Utils {
         const key = keyMap[action];
         return Boolean(Number(modulePerm[key]));
     }
+
+    /** El usuario tiene el módulo asignado (aunque no tenga permiso de alta/edición). */
+    static hasModuleAccess(moduleName) {
+        const perms = JSON.parse(localStorage.getItem('permissions') || '[]');
+        return Array.isArray(perms) && perms.some((p) => p.moduleName === moduleName);
+    }
 }
 
 window.Utils = Utils;

@@ -9,6 +9,7 @@ class UsuarioController {
         this.permissionsForm = {}; // Store selections for Alta/Modificar
         this.modSearchTerm = '';
         this.showModDropdown = false;
+        this._uiAbort = null;
     }
 
     async init() {
@@ -22,12 +23,17 @@ class UsuarioController {
             this.model.getProfilesAll()
         ]);
 
+        if (this._uiAbort) this._uiAbort.abort();
+        this._uiAbort = new AbortController();
+
         this.bindEvents();
         this.render();
         if (window.UsuariosTutorial) window.UsuariosTutorial.init();
     }
 
     bindEvents() {
+        const { signal } = this._uiAbort;
+
         // Use event delegation for static elements
         this.container.addEventListener('click', (e) => {
             const target = e.target.closest('button, .btn-back, #breadcrumb-back');
@@ -69,7 +75,7 @@ class UsuarioController {
                 this.selectedUser = null;
                 this.renderModificarForm();
             }
-        });
+        }, { signal });
 
         // Search inputs
         const searchInput = document.getElementById('search-users-input');
@@ -80,7 +86,7 @@ class UsuarioController {
                 this.renderTable();
                 const clearBtn = document.getElementById('btn-clear-search');
                 if (clearBtn) clearBtn.style.visibility = this.query ? 'visible' : 'hidden';
-            });
+            }, { signal });
         }
 
         const modSearchInput = document.getElementById('search-mod-input');
@@ -91,11 +97,11 @@ class UsuarioController {
                 this.renderModDropdown();
                 const clearBtn = document.getElementById('btn-clear-mod-search');
                 if (clearBtn) clearBtn.style.visibility = this.modSearchTerm ? 'visible' : 'hidden';
-            });
+            }, { signal });
             modSearchInput.addEventListener('focus', () => {
                 this.showModDropdown = true;
                 this.renderModDropdown();
-            });
+            }, { signal });
             // Hide dropdown on blur with delay to allow clicks
             modSearchInput.addEventListener('blur', () => {
                 setTimeout(() => {
@@ -103,7 +109,7 @@ class UsuarioController {
                     const dropdown = document.getElementById('search-mod-dropdown');
                     if (dropdown) dropdown.style.display = 'none';
                 }, 200);
-            });
+            }, { signal });
         }
 
         // Pagination select
@@ -111,15 +117,15 @@ class UsuarioController {
             this.rowsPerPage = parseInt(e.target.value, 10);
             this.currentPage = 1;
             this.renderTable();
-        });
+        }, { signal });
 
         // Forms
-        document.getElementById('alta-usuario-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e));
-        document.getElementById('modificar-usuario-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e));
-        document.getElementById('btn-confirmar-baja')?.addEventListener('click', () => this.handleBajaSubmit());
+        document.getElementById('alta-usuario-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e), { signal });
+        document.getElementById('modificar-usuario-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e), { signal });
+        document.getElementById('btn-confirmar-baja')?.addEventListener('click', () => this.handleBajaSubmit(), { signal });
 
         // Real-time validation for Alta
-        document.getElementById('alta-usuario-form')?.addEventListener('input', () => this.validateAltaForm());
+        document.getElementById('alta-usuario-form')?.addEventListener('input', () => this.validateAltaForm(), { signal });
     }
 
     navigate(view, user = null) {
@@ -312,11 +318,21 @@ class UsuarioController {
         html += '</tbody></table>';
         container.innerHTML = html;
 
+        const sig = this._uiAbort?.signal;
         container.querySelectorAll('select').forEach(sel => {
             sel.addEventListener('change', (e) => {
                 this.permissionsForm[e.target.dataset.module] = e.target.value;
-            });
+            }, sig ? { signal: sig } : undefined);
         });
+    }
+
+    /**
+     * Exige al menos un módulo con un perfil distinto de «Sin Acceso» (evita usuarios bloqueados por error).
+     */
+    permisosTienenAccesoOperativo() {
+        const sin = this.model.profiles.find(p => p.nickname === 'Sin Acceso' || p.nickname === 'SinAcceso');
+        const sinId = sin ? String(sin.idProfile) : null;
+        return Object.entries(this.permissionsForm).some(([, prof]) => (sinId == null ? true : String(prof) !== sinId));
     }
 
     renderReferenceTable(containerId) {
@@ -479,6 +495,11 @@ class UsuarioController {
             return;
         }
 
+        if (!this.permisosTienenAccesoOperativo()) {
+            window.Utils.showToast('Asigne al menos un módulo con un perfil distinto de «Sin Acceso».', 'warning');
+            return;
+        }
+
         try {
             window.Utils.setButtonLoading(btnSave, true);
             await this.model.createUser(data);
@@ -511,6 +532,11 @@ class UsuarioController {
                 return;
             }
             data.password = form.password.value;
+        }
+
+        if (!this.permisosTienenAccesoOperativo()) {
+            window.Utils.showToast('Debe quedar al menos un módulo con perfil distinto de «Sin Acceso».', 'warning');
+            return;
         }
 
         try {

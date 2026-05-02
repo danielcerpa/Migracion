@@ -3,6 +3,7 @@ class AprobacionController {
         this.model = window.AprobacionModel;
         this.currentSolicitud = null;
         this.commentAction = null; // 'RECHAZADA' o 'REGRESADA'
+        this._uiAbort = null;
     }
 
     async init() {
@@ -10,15 +11,43 @@ class AprobacionController {
         if (!this.container) return;
 
         await this.model.fetchAprobaciones();
-        
-        this.bindEvents();
+
+        if (this._uiAbort) this._uiAbort.abort();
+        this._uiAbort = new AbortController();
+        const { signal } = this._uiAbort;
+
+        this.bindEvents(signal);
         this.render();
         if (window.AprobacionesTutorial) window.AprobacionesTutorial.init();
     }
 
-    bindEvents() {
-        document.getElementById('btn-close-modal')?.addEventListener('click', () => this.closeModal());
-        document.getElementById('btn-confirm-action')?.addEventListener('click', () => this.submitCommentAction());
+    bindEvents(signal) {
+        document.getElementById('btn-close-modal')?.addEventListener('click', () => this.closeModal(), { signal });
+        document.getElementById('btn-confirm-action')?.addEventListener('click', () => this.submitCommentAction(), { signal });
+    }
+
+    /** Normaliza `datos_propuestos` y enriquece etiquetas para tarjeta (texto legacy o solo IDs). */
+    datosParaTarjeta(sol) {
+        const raw = sol.datos_propuestos;
+        let d = {};
+        if (raw != null && typeof raw === 'object' && !Array.isArray(raw)) {
+            d = raw;
+        }
+        const idOr = (k) => (d[k] != null && d[k] !== '' ? String(d[k]) : null);
+        const lineTax = () => {
+            const o = d.orden_nombre || d.orden || (idOr('id_orden') ? `Orden #${idOr('id_orden')}` : null);
+            const f = d.familia_nombre || d.familia || (idOr('id_familia') ? `Fam. #${idOr('id_familia')}` : null);
+            if (o && f) return `${o} / ${f}`;
+            return o || f || 'N/A';
+        };
+        const loc = () => {
+            const l = d.localidad_nombre || d.localidad || (idOr('id_localidad') ? `Loc. #${idOr('id_localidad')}` : null);
+            const m = d.municipio_nombre || d.municipio || (idOr('id_municipio') ? `Mun. #${idOr('id_municipio')}` : null);
+            if (l && m) return `${l}, ${m}`;
+            return l || m || 'N/A';
+        };
+        const col = d.coleccion_nombre || d.coleccion || (idOr('id_coleccion') ? `Col. #${idOr('id_coleccion')}` : 'N/A');
+        return { d, nombre_cientifico: d.nombre_cientifico || 'N/A', nombre_comun: d.nombre_comun || 'N/A', lineTax: lineTax(), loc: loc(), coleccion: col };
     }
 
     render() {
@@ -41,7 +70,7 @@ class AprobacionController {
         const gridContainer = grid.querySelector('.aprobaciones-grid');
 
         this.model.items.forEach(sol => {
-            const d = sol.datos_propuestos;
+            const t = this.datosParaTarjeta(sol);
             const card = document.createElement('div');
             card.className = 'aprobacion-card';
             
@@ -69,27 +98,27 @@ class AprobacionController {
                 <div class="insect-info-grid">
                     <div class="info-item">
                         <span class="info-label"><i data-lucide="leaf" style="width: 12px; height: 12px;"></i> Nombre Científico</span>
-                        <span class="info-value scientific">${d.nombre_cientifico || 'N/A'}</span>
+                        <span class="info-value scientific">${t.nombre_cientifico}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Nombre Común</span>
-                        <span class="info-value">${d.nombre_comun || 'N/A'}</span>
+                        <span class="info-value">${t.nombre_comun}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Orden / Familia</span>
-                        <span class="info-value">${d.orden || 'N/A'} / ${d.familia || 'N/A'}</span>
+                        <span class="info-value">${t.lineTax}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label"><i data-lucide="map-pin" style="width: 12px; height: 12px;"></i> Ubicación</span>
-                        <span class="info-value">${d.localidad || 'N/A'}, ${d.municipio || 'N/A'}</span>
+                        <span class="info-value">${t.loc}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Fecha Colecta</span>
-                        <span class="info-value">${d.fecha_colecta || 'N/A'}</span>
+                        <span class="info-value">${t.d.fecha_colecta || 'N/A'}</span>
                     </div>
                     <div class="info-item">
                         <span class="info-label"><i data-lucide="library" style="width: 12px; height: 12px;"></i> Colección</span>
-                        <span class="info-value">${d.coleccion || 'N/A'}</span>
+                        <span class="info-value">${t.coleccion}</span>
                     </div>
                 </div>
 
@@ -137,8 +166,13 @@ class AprobacionController {
 
     async handleApprove(id) {
         if (!confirm('¿Está seguro de que desea aprobar esta solicitud? Se creará un nuevo espécimen en el catálogo.')) return;
-        await this.model.approve(id);
-        this.render();
+        try {
+            await this.model.approve(id);
+            window.Utils.showToast('Solicitud aprobada y espécimen creado.', 'success');
+            this.render();
+        } catch (err) {
+            window.Utils.showToast('No se pudo aprobar: ' + (err.message || 'error de servidor'), 'danger');
+        }
     }
 
     openModal(id, action) {
@@ -175,10 +209,17 @@ class AprobacionController {
             return;
         }
 
-        if (this.commentAction === 'RECHAZADA') {
-            await this.model.reject(this.currentSolicitud, text);
-        } else {
-            await this.model.returnRequest(this.currentSolicitud, text);
+        try {
+            if (this.commentAction === 'RECHAZADA') {
+                await this.model.reject(this.currentSolicitud, text);
+                window.Utils.showToast('Solicitud rechazada.', 'success');
+            } else {
+                await this.model.returnRequest(this.currentSolicitud, text);
+                window.Utils.showToast('Solicitud regresada al usuario.', 'success');
+            }
+        } catch (err) {
+            window.Utils.showToast('No se pudo completar la acción.', 'danger');
+            return;
         }
 
         this.closeModal();

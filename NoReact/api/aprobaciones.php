@@ -53,14 +53,39 @@ switch ($method) {
             }
 
             $datos = json_decode($solicitud['datos_propuestos'], true);
+            if (!is_array($datos)) {
+                $datos = [];
+            }
+
+            // Solo columnas válidas de `especimenes` (evita fallos por claves de UI o JSON antiguo)
+            $allowedCols = [
+                'id_pais', 'id_estado', 'id_municipio', 'id_localidad', 'id_orden', 'id_familia', 'id_subfamilia',
+                'id_tribu', 'id_genero', 'id_especie', 'id_tipo', 'id_colector', 'id_determinador', 'id_planta',
+                'id_organismo_huesped', 'id_coleccion', 'id_cita',
+                'anio_identificacion', 'nombre_comun', 'nombre_cientifico', 'fecha_colecta', 'altitud',
+                'datos_ecologicos', 'num_individuos', 'envio_identificacion', 'anio_catalogacion',
+                'latitud_n', 'longitud_o', 'numero_frasco', 'status',
+            ];
+            $filtered = [];
+            foreach ($allowedCols as $c) {
+                if (array_key_exists($c, $datos)) {
+                    $filtered[$c] = $datos[$c];
+                }
+            }
+            if (!array_key_exists('status', $filtered)) {
+                $filtered['status'] = 1;
+            }
 
             if ($action === 'approve') {
                 // 1. Crear el espécimen en la tabla principal
-                $fields = array_keys($datos);
+                $fields = array_keys($filtered);
+                if (count($fields) === 0) {
+                    throw new Exception("La solicitud no contiene datos de espécimen válidos para aprobar.");
+                }
                 $placeholders = array_fill(0, count($fields), '?');
                 $sqlEsp = "INSERT INTO especimenes (" . implode(', ', $fields) . ") VALUES (" . implode(', ', $placeholders) . ")";
                 $stmtEsp = $pdo->prepare($sqlEsp);
-                $stmtEsp->execute(array_values($datos));
+                $stmtEsp->execute(array_values($filtered));
                 $idEspecimen = $pdo->lastInsertId();
 
                 // 2. Actualizar estado de la solicitud

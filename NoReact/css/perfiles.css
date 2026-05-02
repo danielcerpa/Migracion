@@ -1,0 +1,25 @@
+/* Perfiles: refuerzo visual de tablas de permisos de referencia */
+
+.perfiles-module .permissions-dual-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.perfiles-module .permissions-dual-table td {
+  padding: 0.5rem 0.35rem;
+  vertical-align: middle;
+}
+
+.perfiles-module .module-label-cell {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.perfiles-module .compact-table th {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}

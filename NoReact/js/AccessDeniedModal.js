@@ -26,6 +26,7 @@ class AccessDeniedModal {
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', () => {
                         localStorage.removeItem('user');
+                        localStorage.removeItem('permissions');
                         localStorage.removeItem('token');
                         window.location.replace('../index.html');
                     });
@@ -41,6 +42,7 @@ class AccessDeniedModal {
             // Fallback: alert and logout
             alert('Acceso Denegado: Sus permisos han sido eliminados. Por favor, contáctese con su administrador.');
             localStorage.removeItem('user');
+            localStorage.removeItem('permissions');
             window.location.replace('../index.html');
         }
     }

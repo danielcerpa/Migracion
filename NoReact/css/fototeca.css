@@ -1,0 +1,33 @@
+/* Fototeca: subida y miniaturas (paridad con estilos del proyecto React en sistemas/) */
+
+.fototeca-module .fototeca-upload-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+
+.fototeca-module .fototeca-upload-hint code {
+  font-size: 0.8rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: var(--bg-input);
+}
+
+.fototeca-module input[type="file"] {
+  width: 100%;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.fototeca-module .fototeca-table-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.fototeca-module .form-group.full-width {
+  grid-column: 1 / -1;
+}

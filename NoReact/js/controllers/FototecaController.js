@@ -4,6 +4,7 @@ class FototecaController {
         this.currentView = 'general';
         this.selectedItem = null;
         this.query = '';
+        this._uiAbort = null;
     }
 
     async init() {
@@ -11,6 +12,9 @@ class FototecaController {
         if (!this.container) return;
 
         await this.model.fetchFotos();
+
+        if (this._uiAbort) this._uiAbort.abort();
+        this._uiAbort = new AbortController();
         
         this.bindEvents();
         this.render();
@@ -18,32 +22,34 @@ class FototecaController {
     }
 
     bindEvents() {
-        document.getElementById('btn-alta-fototeca')?.addEventListener('click', () => this.navigate('alta'));
+        const { signal } = this._uiAbort;
+
+        document.getElementById('btn-alta-fototeca')?.addEventListener('click', () => this.navigate('alta'), { signal });
         document.getElementById('btn-actualizar-fototeca')?.addEventListener('click', () => {
             if (!this.selectedItem) { alert('Seleccione una imagen primero.'); return; }
             this.navigate('modificar', this.selectedItem);
-        });
+        }, { signal });
         document.getElementById('btn-eliminar-fototeca')?.addEventListener('click', () => {
             if (!this.selectedItem) { alert('Seleccione una imagen primero.'); return; }
             this.navigate('baja', this.selectedItem);
-        });
+        }, { signal });
 
         document.querySelectorAll('.btn-back-general').forEach(btn => {
-            btn.addEventListener('click', () => this.navigate('general'));
+            btn.addEventListener('click', () => this.navigate('general'), { signal });
         });
-        document.getElementById('breadcrumb-back')?.addEventListener('click', () => this.navigate('general'));
+        document.getElementById('breadcrumb-back')?.addEventListener('click', () => this.navigate('general'), { signal });
 
         const searchInput = document.getElementById('search-fototeca-input');
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
                 this.query = e.target.value;
                 this.renderTable();
-            });
+            }, { signal });
         }
         
-        document.getElementById('alta-fototeca-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e));
-        document.getElementById('modificar-fototeca-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e));
-        document.getElementById('btn-confirmar-baja-foto')?.addEventListener('click', () => this.handleBajaSubmit());
+        document.getElementById('alta-fototeca-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e), { signal });
+        document.getElementById('modificar-fototeca-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e), { signal });
+        document.getElementById('btn-confirmar-baja-foto')?.addEventListener('click', () => this.handleBajaSubmit(), { signal });
     }
 
     navigate(view, item = null) {
@@ -138,10 +144,16 @@ class FototecaController {
                 const statusBadge = `<span class="status-badge ${isActivo ? 'activo' : 'inactivo'}">${isActivo ? 'Activo' : 'Inactivo'}</span>`;
                 
                 let imgHTML = '';
-                if (item.ruta_archivo && (item.ruta_archivo.startsWith('http') || item.ruta_archivo.startsWith('data:image'))) {
-                    imgHTML = `<img src="${item.ruta_archivo}" alt="${item.descripcion_foto || 'Imagen'}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" loading="lazy" />`;
-                } else {
+                let src = item.ruta_archivo || '';
+                if (src && !src.startsWith('http') && !src.startsWith('data:')) {
+                    src = '../' + String(src).replace(/^\.\//, '');
+                }
+                if (src && (src.startsWith('http') || src.startsWith('data:image') || /\.(jpe?g|png|gif|webp)(\?|$)/i.test(src))) {
+                    imgHTML = `<img class="fototeca-table-thumb" src="${src}" alt="Vista previa" loading="lazy" />`;
+                } else if (src) {
                     imgHTML = `<code style="font-size:0.8rem; background:var(--bg-input); padding:4px; border-radius:4px;">${item.ruta_archivo || 'N/A'}</code>`;
+                } else {
+                    imgHTML = `<span class="text-muted">—</span>`;
                 }
 
                 tr.innerHTML = `
@@ -181,14 +193,38 @@ class FototecaController {
 
     async handleAltaSubmit(e) {
         e.preventDefault();
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
+        const form = e.target;
+        const fileInput = form.querySelector('input[type="file"]');
+        const file = fileInput?.files?.[0];
         try {
-            await this.model.createFoto(data);
+            if (file) {
+                const fd = new FormData();
+                fd.append('archivo', file);
+                fd.append('id_especimen', form.elements.namedItem('id_especimen').value);
+                const desc = form.elements.namedItem('descripcion_foto')?.value || '';
+                fd.append('descripcion_foto', desc);
+                const col = form.elements.namedItem('id_colector')?.value;
+                const det = form.elements.namedItem('id_determinador')?.value;
+                if (col) fd.append('id_colector', col);
+                if (det) fd.append('id_determinador', det);
+                const response = await fetch(`${this.model.apiBase}/fototeca.php`, { method: 'POST', body: fd });
+                const body = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(body.error || 'Error');
+            } else {
+                const formData = new FormData(form);
+                formData.delete('archivo');
+                const data = Object.fromEntries(formData.entries());
+                if (!String(data.ruta_archivo || '').trim()) {
+                    window.Utils.showToast('Suba un archivo o indique una URL en el campo ruta.', 'warning');
+                    return;
+                }
+                await this.model.createFoto(data);
+            }
             await this.model.fetchFotos();
+            window.Utils.showToast('Imagen registrada.', 'success');
             this.navigate('general');
         } catch (err) {
-            alert('Error subiendo imagen');
+            window.Utils.showToast(err.message || 'Error al registrar la imagen', 'danger');
         }
     }
 
