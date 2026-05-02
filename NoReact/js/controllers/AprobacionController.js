@@ -117,7 +117,22 @@ class AprobacionController {
             gridContainer.appendChild(card);
         });
 
+        this.applyPermissions();
         lucide.createIcons();
+    }
+
+    applyPermissions() {
+        const canEdit = window.Utils.checkPermission('Aprobaciones', 'edit');
+        const canDelete = window.Utils.checkPermission('Aprobaciones', 'delete');
+
+        // Los botones de aceptar/regresar/rechazar se consideran edición/gestión
+        document.querySelectorAll('.btn-accept, .btn-return').forEach(btn => {
+            btn.style.display = canEdit ? 'flex' : 'none';
+        });
+
+        document.querySelectorAll('.btn-reject').forEach(btn => {
+            btn.style.display = canDelete ? 'flex' : 'none';
+        });
     }
 
     async handleApprove(id) {

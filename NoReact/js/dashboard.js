@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const modulesData = [
         { name:'Usuarios',              area:'Seguridad',      view:'usuarios' },
         { name:'Perfiles',              area:'Seguridad',      view:'perfiles' },
-        { name:'Catálogos',             area:'Administrativo', view:'catalogos' },
+        { name:'Catalogos',             area:'Administrativo', view:'catalogos' },
         { name:'Aprobaciones',          area:'Administrativo', view:'aprobaciones' },
         { name:'Registro de Ejemplares',area:'Colección',      view:'especimenes' },
         { name:'Fototeca',              area:'Colección',      view:'fototeca' },
-        { name:'Préstamos',             area:'Colección',      view:'prestamos' },
+        { name:'Prestamos',             area:'Colección',      view:'prestamos' },
     ];
 
     const iconMap = { usuarios:'users', perfiles:'shield-check', catalogos:'book-open', aprobaciones:'clipboard-check', especimenes:'bug', fototeca:'camera', prestamos:'handshake' };

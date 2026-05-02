@@ -113,7 +113,22 @@ class EspecimenController {
             this.renderDetalle();
         }
 
+        this.applyPermissions();
         lucide.createIcons();
+    }
+
+    applyPermissions() {
+        const canAdd = window.Utils.checkPermission('Registro de Ejemplares', 'add');
+        const canEdit = window.Utils.checkPermission('Registro de Ejemplares', 'edit');
+        const canDelete = window.Utils.checkPermission('Registro de Ejemplares', 'delete');
+
+        const btnAlta = this.container.querySelector('#btn-alta-especimen');
+        const btnEdit = this.container.querySelector('#btn-actualizar-especimen');
+        const btnDelete = this.container.querySelector('#btn-eliminar-especimen');
+
+        if (btnAlta) btnAlta.style.display = canAdd ? 'flex' : 'none';
+        if (btnEdit) btnEdit.style.display = canEdit ? 'flex' : 'none';
+        if (btnDelete) btnDelete.style.display = canDelete ? 'flex' : 'none';
     }
 
     renderCards() {

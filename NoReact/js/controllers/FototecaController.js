@@ -84,7 +84,22 @@ class FototecaController {
             this.renderBajaForm();
         }
 
+        this.applyPermissions();
         lucide.createIcons();
+    }
+
+    applyPermissions() {
+        const canAdd = window.Utils.checkPermission('Fototeca', 'add');
+        const canEdit = window.Utils.checkPermission('Fototeca', 'edit');
+        const canDelete = window.Utils.checkPermission('Fototeca', 'delete');
+
+        const btnAlta = document.getElementById('btn-alta-fototeca');
+        const btnEdit = document.getElementById('btn-actualizar-fototeca');
+        const btnDelete = document.getElementById('btn-eliminar-fototeca');
+
+        if (btnAlta) btnAlta.style.display = canAdd ? 'flex' : 'none';
+        if (btnEdit) btnEdit.style.display = canEdit ? 'flex' : 'none';
+        if (btnDelete) btnDelete.style.display = canDelete ? 'flex' : 'none';
     }
 
     renderTable() {

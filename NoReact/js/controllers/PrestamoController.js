@@ -84,7 +84,22 @@ class PrestamoController {
             this.renderBajaForm();
         }
 
+        this.applyPermissions();
         lucide.createIcons();
+    }
+
+    applyPermissions() {
+        const canAdd = window.Utils.checkPermission('Prestamos', 'add');
+        const canEdit = window.Utils.checkPermission('Prestamos', 'edit');
+        const canDelete = window.Utils.checkPermission('Prestamos', 'delete');
+
+        const btnAlta = document.getElementById('btn-alta-prestamo');
+        const btnEdit = document.getElementById('btn-actualizar-prestamo');
+        const btnDelete = document.getElementById('btn-eliminar-prestamo');
+
+        if (btnAlta) btnAlta.style.display = canAdd ? 'flex' : 'none';
+        if (btnEdit) btnEdit.style.display = canEdit ? 'flex' : 'none';
+        if (btnDelete) btnDelete.style.display = canDelete ? 'flex' : 'none';
     }
 
     renderTable() {
