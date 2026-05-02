@@ -64,3 +64,160 @@
   font-weight: 600;
   color: var(--text-muted);
 }
+
+/* ── Alta / Modificar Especimen: Flat Form Style (paridad con React) ─── */
+.especimenes-module .alta-form .form-card {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.especimenes-module .alta-form .form-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.75rem 2rem 2rem;
+  margin-bottom: 0;
+}
+
+.especimenes-module .alta-form .section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}
+
+.especimenes-module .alta-form .form-section-divider {
+  display: none !important;
+}
+
+.especimenes-module .alta-form .form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 1.25rem !important;
+  margin-bottom: 0 !important;
+}
+
+.especimenes-module .alta-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.especimenes-module .alta-form .form-group label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.especimenes-module .alta-form .form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Inputs flat */
+.especimenes-module .alta-form .form-group input,
+.especimenes-module .alta-form .form-group select,
+.especimenes-module .alta-form .form-group textarea {
+  width: 100%;
+  padding: 0.6rem 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.especimenes-module .alta-form .form-group textarea {
+  resize: vertical;
+}
+
+.especimenes-module .alta-form .form-group input:focus,
+.especimenes-module .alta-form .form-group select:focus,
+.especimenes-module .alta-form .form-group textarea:focus {
+  outline: none;
+  border-bottom-color: var(--accent-color);
+  background: transparent;
+  box-shadow: none;
+}
+
+.especimenes-module .alta-form .form-group input:disabled,
+.especimenes-module .alta-form .form-group select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-bottom-style: dashed;
+}
+
+/* CustomSelect inside alta-form: flat, sin border lateral */
+.especimenes-module .alta-form .custom-select-container .custom-select-trigger {
+  padding: 0.6rem 0;
+  margin: 0;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.95rem;
+}
+
+.especimenes-module .alta-form .custom-select-container .custom-select-trigger:hover {
+  background-color: transparent;
+}
+
+@media (max-width: 1100px) {
+  .especimenes-module .alta-form .form-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .especimenes-module .alta-form .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Responsive: ajustes adicionales (mobile/tablet) ─────── */
+@media (max-width: 768px) {
+  /* Reducir padding del form-card (modificar) para aprovechar viewport */
+  #view-esp-modificar .form-card {
+    padding: 1.25rem !important;
+  }
+  /* Forzar 1 columna en cualquier form-grid de Alta/Modificar
+     (incluye los casos con style inline en el HTML) */
+  #view-esp-alta .form-grid,
+  #view-esp-modificar .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  /* Cards grid de la vista general: minmax más pequeño */
+  #especimen-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+    gap: 1rem !important;
+  }
+  /* Tabla general: garantizar overflow horizontal */
+  #view-esp-general .custom-table-wrapper,
+  #view-esp-general .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  #view-esp-modificar .form-card {
+    padding: 1rem !important;
+  }
+  #especimen-cards-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

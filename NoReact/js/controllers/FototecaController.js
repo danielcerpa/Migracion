@@ -50,6 +50,22 @@ class FototecaController {
         document.getElementById('alta-fototeca-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e), { signal });
         document.getElementById('modificar-fototeca-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e), { signal });
         document.getElementById('btn-confirmar-baja-foto')?.addEventListener('click', () => this.handleBajaSubmit(), { signal });
+
+        // Preview de archivo seleccionado
+        const fileInput = document.getElementById('alta-foto-file');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                const previewWrap = document.getElementById('alta-foto-preview');
+                const previewImg = document.getElementById('alta-foto-preview-img');
+                if (file && previewWrap && previewImg) {
+                    previewImg.src = URL.createObjectURL(file);
+                    previewWrap.style.display = 'block';
+                } else if (previewWrap) {
+                    previewWrap.style.display = 'none';
+                }
+            }, { signal });
+        }
     }
 
     navigate(view, item = null) {

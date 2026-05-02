@@ -19,12 +19,17 @@ class FototecaModel {
     }
 
     async createFoto(data) {
+        // Si recibimos FormData (con archivo), no fijamos Content-Type (lo hace el browser)
+        const isFormData = data instanceof FormData;
         const response = await fetch(`${this.apiBase}/fototeca.php`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            headers: isFormData ? {} : { 'Content-Type': 'application/json' },
+            body: isFormData ? data : JSON.stringify(data)
         });
-        if (!response.ok) throw new Error('Error creando imagen');
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || 'Error creando imagen');
+        }
         return await response.json();
     }
 

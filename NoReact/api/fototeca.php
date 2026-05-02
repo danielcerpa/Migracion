@@ -128,12 +128,23 @@ switch ($method) {
             $data['fecha_subida'] = date('Y-m-d H:i:s');
         }
 
+        if (empty($data['ruta_archivo']) || empty($data['id_especimen'])) {
+            http_response_code(400);
+            echo json_encode(["error" => "Faltan campos obligatorios (id_especimen, archivo o ruta)"]);
+            exit;
+        }
+
+        if (!isset($data['status'])) $data['status'] = 1;
+        if (!isset($data['fecha_subida'])) $data['fecha_subida'] = date('Y-m-d H:i:s');
+
+        $fields = array_keys($data);
+        $placeholders = array_fill(0, count($fields), '?');
         $sql = "INSERT INTO fototeca (" . implode(', ', $fields) . ") VALUES (" . implode(', ', $placeholders) . ")";
         $stmt = $pdo->prepare($sql);
 
         try {
             $stmt->execute(array_values($data));
-            echo json_encode(["id_foto" => $pdo->lastInsertId(), "message" => "Imagen registrada"]);
+            echo json_encode(["id_foto" => $pdo->lastInsertId(), "ruta_archivo" => $data['ruta_archivo'], "message" => "Imagen registrada"]);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["error" => $e->getMessage()]);

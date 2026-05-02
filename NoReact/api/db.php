@@ -13,7 +13,7 @@ $host = "127.0.0.1";
 $user = "root";
 $password = ""; // Cambia a "1472" si tu XAMPP tiene clave
 $dbname = "ug";
-$port = 3307;
+$port = 3306;
 
 try {
     $dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4";
@@ -27,4 +27,3 @@ try {
     echo json_encode(["error" => "Error de conexión: " . $e->getMessage()]);
     exit();
 }
-?>

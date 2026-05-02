@@ -319,9 +319,21 @@ class UsuarioController {
         container.innerHTML = html;
 
         const sig = this._uiAbort?.signal;
+        const sinAccesoId = sinAcceso ? String(sinAcceso.idProfile) : null;
+
+        const updateDangerState = (sel) => {
+            if (sinAccesoId && String(sel.value) === sinAccesoId) {
+                sel.classList.add('is-danger');
+            } else {
+                sel.classList.remove('is-danger');
+            }
+        };
+
         container.querySelectorAll('select').forEach(sel => {
+            updateDangerState(sel); // estado inicial
             sel.addEventListener('change', (e) => {
                 this.permissionsForm[e.target.dataset.module] = e.target.value;
+                updateDangerState(e.target);
             }, sig ? { signal: sig } : undefined);
         });
     }

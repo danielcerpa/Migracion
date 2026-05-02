@@ -257,6 +257,129 @@
   to   { opacity: 1; }
 }
 
+/* ── CustomSelect (vanilla) ───────────────────────────────── */
+.custom-select-search {
+  padding: 0.35rem 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0.25rem;
+  position: sticky;
+  top: 0;
+  background: var(--bg-card);
+  z-index: 1;
+}
+
+.custom-select-search-input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.custom-select-search-input:focus {
+  border-color: var(--accent-color);
+}
+
+.custom-select-clear:hover {
+  color: var(--danger-color, #EF4444) !important;
+}
+
+/* ── Native <select> styled (custom-select-vanilla / form-select) ──
+   Aplica a <select> nativos para que se vean como el CustomSelect de React.
+   Usado en tablas de permisos (Usuarios → Alta/Modificar). */
+.custom-select-vanilla,
+select.form-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  background-color: var(--bg-input, var(--bg-card));
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  line-height: 1.4;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+  /* Chevron SVG (color heredado vía currentColor truco con stroke) */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23808080' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 14px 14px;
+}
+
+.custom-select-vanilla:hover,
+select.form-select:hover {
+  border-color: var(--accent-color);
+  background-color: var(--bg-subtle, var(--bg-hover));
+}
+
+.custom-select-vanilla:focus,
+select.form-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.custom-select-vanilla:disabled,
+select.form-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Eliminar la flecha nativa en IE/Edge legacy */
+.custom-select-vanilla::-ms-expand,
+select.form-select::-ms-expand {
+  display: none;
+}
+
+/* Estilo de las opciones del dropdown nativo
+   (soporte limitado: funciona en Firefox/Chrome con bg-card opaco) */
+.custom-select-vanilla option,
+select.form-select option {
+  background-color: var(--bg-card);
+  color: var(--text-color);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.custom-select-vanilla option:checked,
+select.form-select option:checked {
+  background-color: var(--accent-color-dark-bg, var(--bg-hover));
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* Opción "Sin Acceso" o similar marcada con .text-danger */
+.custom-select-vanilla option.text-danger,
+select.form-select option.text-danger {
+  color: var(--danger-color, #EF4444);
+  font-weight: 500;
+}
+
+/* Cuando un select tiene seleccionada la opción text-danger,
+   el trigger también muestra texto rojo (heurística por valor en JS opcional) */
+.custom-select-vanilla.is-danger,
+select.form-select.is-danger {
+  color: var(--danger-color, #EF4444);
+}
+
+/* Variante compacta (para celdas de tabla) */
+.select-cell .custom-select-vanilla,
+.select-cell select.form-select {
+  padding: 0.35rem 1.75rem 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  min-width: 130px;
+}
+
 /* ── Breadcrumb ──────────────────────────────────────────── */
 .module-breadcrumb {
   display: flex;
@@ -270,3 +393,55 @@
 .module-breadcrumb span { cursor: pointer; }
 .module-breadcrumb span:hover { color: var(--accent-color); }
 .module-breadcrumb .current-crumb { color: var(--text-color); font-weight: 600; }
+
+/* ── Responsive: Tablet/Mobile ────────────────────────────── */
+@media (max-width: 768px) {
+  .screen-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .screen-header .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .header-actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .header-actions .btn-primary,
+  .header-actions .btn-outline,
+  .header-actions .btn-warning,
+  .header-actions .btn-danger-soft {
+    flex: 1 1 auto;
+    min-width: 0;
+    justify-content: center;
+  }
+  .table-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-wrapper {
+    max-width: 100%;
+  }
+  /* CustomSelect dropdown: avoid horizontal overflow on small viewports */
+  .custom-select-dropdown {
+    left: 0 !important;
+    right: 0 !important;
+    min-width: 100% !important;
+    max-width: 100vw !important;
+    max-height: 60vh !important;
+  }
+  .custom-select-options {
+    max-height: 50vh !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions .btn-primary,
+  .header-actions .btn-outline,
+  .header-actions .btn-warning,
+  .header-actions .btn-danger-soft {
+    flex: 1 1 100%;
+  }
+}

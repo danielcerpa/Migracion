@@ -2,6 +2,38 @@ class EspecimenModel {
     constructor() {
         this.apiBase = '../api';
         this.items = [];
+        this.catalogos = {
+            pais: [], estado: [], municipio: [], localidad: [],
+            orden: [], familia: [], subfamilia: [], tribu: [], genero: [], especie: [], tipo: [],
+            colector: [], determinador: [],
+            planta_hospedera: [], organismo_hospedero: [], coleccion: [], cita: []
+        };
+    }
+
+    async fetchCatalogos() {
+        const sections = [
+            'pais', 'estado', 'municipio', 'localidad',
+            'orden', 'familia', 'subfamilia', 'tribu', 'genero', 'especie', 'tipo',
+            'colector', 'determinador',
+            'planta_hospedera', 'organismo_hospedero', 'coleccion', 'cita'
+        ];
+        try {
+            const results = await Promise.all(sections.map(s =>
+                fetch(`${this.apiBase}/catalogos.php?section=${s}`)
+                    .then(r => r.ok ? r.json() : [])
+                    .catch(() => [])
+            ));
+            sections.forEach((s, i) => {
+                const data = Array.isArray(results[i]) ? results[i] : [];
+                this.catalogos[s] = data.filter(item =>
+                    item && item.status !== 0 && item.status !== false && item.status !== '0'
+                );
+            });
+            return this.catalogos;
+        } catch (err) {
+            console.error('fetchCatalogos error:', err);
+            return this.catalogos;
+        }
     }
 
     async fetchEspecimenes() {

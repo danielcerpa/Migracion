@@ -17,9 +17,25 @@ switch ($method) {
         try {
             $stmt = $pdo->query($sql);
             $results = $stmt->fetchAll();
-            // Decodificar el JSON de datos_propuestos para el frontend
+
+            // Helper: resolver nombre por id en una tabla
+            $resolve = function($table, $idCol, $nameCol, $id) use ($pdo) {
+                if (!$id) return null;
+                $s = $pdo->prepare("SELECT $nameCol FROM $table WHERE $idCol = ?");
+                $s->execute([$id]);
+                $r = $s->fetch();
+                return $r ? $r[$nameCol] : null;
+            };
+
+            // Decodificar JSON y enriquecer con nombres de catálogos
             foreach ($results as &$row) {
-                $row['datos_propuestos'] = json_decode($row['datos_propuestos'], true);
+                $d = json_decode($row['datos_propuestos'], true) ?: [];
+                if (!empty($d['id_orden']))     $d['orden']      = $resolve('orden',     'idOrden',     'nombre', $d['id_orden']);
+                if (!empty($d['id_familia']))   $d['familia']    = $resolve('familia',   'idFamilia',   'nombre', $d['id_familia']);
+                if (!empty($d['id_municipio'])) $d['municipio']  = $resolve('municipio', 'idMunicipio', 'nombre', $d['id_municipio']);
+                if (!empty($d['id_localidad'])) $d['localidad']  = $resolve('localidad', 'idLocalidad', 'nombre', $d['id_localidad']);
+                if (!empty($d['id_coleccion'])) $d['coleccion']  = $resolve('coleccion', 'idColeccion', 'acronimo', $d['id_coleccion']);
+                $row['datos_propuestos'] = $d;
             }
             echo json_encode($results);
         } catch (PDOException $e) {

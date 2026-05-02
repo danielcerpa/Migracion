@@ -248,9 +248,24 @@ class PrestamoController {
         if (btnDev) btnDev.style.display = canEdit ? 'flex' : 'none';
     }
 
+    computeEstado(item) {
+        // Calcula estado dinámico: Activo -> Atrasado si venció la fecha estimada
+        if (item.status == 0) return 'Baja';
+        const declared = item.estado_prestamo || 'Activo';
+        if (declared === 'Devuelto' || declared === 'Baja') return declared;
+        if (item.fecha_devolucion_estimada) {
+            const est = new Date(String(item.fecha_devolucion_estimada).split('T')[0]);
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            if (est < hoy) return 'Atrasado';
+        }
+        return declared;
+    }
+
     renderTable() {
         const tbody = document.getElementById('prestamo-table-body');
         if (!tbody) return;
+
+        const canEdit = window.Utils.checkPermission('Prestamos', 'edit');
 
         let filtered = this.model.items;
         if (this.query.trim() !== '') {
@@ -266,7 +281,7 @@ class PrestamoController {
 
         tbody.innerHTML = '';
         if (filtered.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="td-empty">No se encontraron préstamos.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="td-empty">No se encontraron préstamos.</td></tr>`;
         } else {
             filtered.forEach(item => {
                 const tr = document.createElement('tr');
@@ -276,20 +291,27 @@ class PrestamoController {
                 if (this.selectedItem && sid != null && sid === iid) {
                     tr.style.backgroundColor = 'var(--bg-hover)';
                 }
-                tr.onclick = () => {
+                tr.onclick = (e) => {
+                    if (e.target.closest('.btn-devolver')) return;
                     this.selectedItem = item;
                     this.renderTable();
                 };
 
+                const estadoActual = this.computeEstado(item);
                 let badgeClass = 'activo';
-                if (item.estado_prestamo === 'Devuelto') badgeClass = 'inactivo';
-                if (item.estado_prestamo === 'Vencido' || item.estado_prestamo === 'Atrasado') badgeClass = 'baja';
-                if (item.estado_prestamo === 'Baja') badgeClass = 'baja';
-                if (item.status == 0) badgeClass = 'baja';
+                if (estadoActual === 'Devuelto') badgeClass = 'inactivo';
+                else if (estadoActual === 'Atrasado') badgeClass = 'baja';
+                else if (estadoActual === 'Baja') badgeClass = 'baja';
 
-                const statusBadge = `<span class="status-badge ${badgeClass}">${item.estado_prestamo || 'Desconocido'}</span>`;
+                const statusBadge = `<span class="status-badge ${badgeClass}">${estadoActual}</span>`;
                 const idShow = this.model.prestamoId(item);
                 const idEsp = item.idEjemplar ?? item.id_especimen;
+
+                // Acción rápida: devolver (solo si activo o atrasado)
+                const puedeDevolver = canEdit && (estadoActual === 'Activo' || estadoActual === 'Atrasado');
+                const btnDevolver = puedeDevolver
+                    ? `<button class="btn-devolver" data-id="${item.idPrestamo}" title="Marcar como devuelto" style="background:transparent;border:none;cursor:pointer;color:var(--accent-color);display:inline-flex;align-items:center;gap:4px;font-size:0.85rem;"><i data-lucide="undo-2" style="width:14px;height:14px;"></i> Devolver</button>`
+                    : '-';
 
                 tr.innerHTML = `
                     <td style="font-weight: 600; color: var(--accent-color);">#${idShow}</td>
@@ -299,9 +321,38 @@ class PrestamoController {
                     <td>${item.fecha_prestamo ? String(item.fecha_prestamo).split('T')[0].split(' ')[0] : '-'}</td>
                     <td>${statusBadge}</td>
                     <td style="text-align: center;">${item.proposito || '-'}</td>
+                    <td style="text-align: center;">${btnDevolver}</td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Bind devolver
+            tbody.querySelectorAll('.btn-devolver').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.dataset.id;
+                    const item = this.model.items.find(p => String(p.idPrestamo) === String(id));
+                    this.handleDevolver(item);
+                });
+            });
+        }
+    }
+
+    async handleDevolver(item) {
+        if (!item) return;
+        if (!confirm(`¿Marcar préstamo #${item.idPrestamo} (${item.prestatario}) como devuelto?`)) return;
+        const hoy = new Date().toISOString().split('T')[0];
+        const data = {
+            ...item,
+            estado_prestamo: 'Devuelto',
+            fecha_devolucion_real: hoy
+        };
+        try {
+            await this.model.updatePrestamo(item.idPrestamo, data);
+            await this.model.fetchPrestamos();
+            this.render();
+        } catch (err) {
+            alert('Error al registrar la devolución');
         }
     }
 

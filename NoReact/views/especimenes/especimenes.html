@@ -69,126 +69,86 @@
         </div>
       </div>
 
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
+      <div class="form-container alta-form">
+        <div class="form-card">
         <form id="alta-especimen-form">
-          <h3 class="section-title" style="margin-top: 0; color: var(--accent-color);">Taxonomía</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Orden</label><select name="id_orden" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Familia</label><select name="id_familia" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Subfamilia</label><select name="id_subfamilia" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Tribu</label><select name="id_tribu" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Género</label><select name="id_genero" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Especie (catálogo)</label><select name="id_especie" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Tipo</label><select name="id_tipo" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Identificación</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Nombre común</label><input type="text" name="nombre_comun" placeholder="Ej. Mariposa monarca"></div>
-            <div class="form-group"><label>Nombre científico *</label><input type="text" name="nombre_cientifico" required></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Datos de colecta</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Colector</label><select name="id_colector" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Determinador</label><select name="id_determinador" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Fecha colecta</label><input type="date" name="fecha_colecta"></div>
-            <div class="form-group"><label>Año identificación</label><input type="number" name="anio_identificacion" placeholder="AAAA"></div>
-            <div class="form-group"><label>N.º individuos</label><input type="number" name="num_individuos" value="1"></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Ubicación y ecología</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>País</label><select name="id_pais" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Estado</label><select name="id_estado" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Municipio</label><select name="id_municipio" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Localidad</label><select name="id_localidad" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Latitud N</label><input type="text" name="latitud_n"></div>
-            <div class="form-group"><label>Longitud O</label><input type="text" name="longitud_o"></div>
-            <div class="form-group"><label>Altitud (m)</label><input type="number" name="altitud"></div>
-            <div class="form-group"><label>Planta hospedera</label><select name="id_planta" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Organismo huésped</label><select name="id_organismo_huesped" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Datos ecológicos</label>
-              <textarea name="datos_ecologicos" rows="2" style="width:100%;border:1px solid var(--border-color);background:transparent;color:var(--text-color);padding:0.5rem;border-radius:6px;"></textarea>
-            </div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Control interno</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1rem;">
-            <div class="form-group"><label>N.º frasco</label><input type="text" name="numero_frasco"></div>
-            <div class="form-group"><label>Colección</label><select name="id_coleccion" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Cita</label><select name="id_cita" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Año catalogación</label><input type="number" name="anio_catalogacion"></div>
-            <div class="form-group"><label>Envío identificación</label><input type="text" name="envio_identificacion" placeholder="Sí / No u otra nota"></div>
-          </div>
-        </form>
-      </div>
-    </div>
 
-    <!-- VIEW: SOLICITUD (alta vía aprobación; sin permiso add) -->
-    <div id="view-esp-solicitud" class="screen-container animate-slide-in" style="display: none;">
-      <div class="screen-header">
-        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
-          <button type="button" class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
-            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
-          </button>
-          <h2 class="screen-title" style="margin: 0;">Solicitar registro de ejemplar</h2>
-        </div>
-        <div class="header-actions">
-          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
-          <button type="submit" form="solicitud-especimen-form" class="btn-primary with-icon">
-            <i data-lucide="send" style="width: 18px; height: 18px;"></i> Enviar solicitud
-          </button>
-        </div>
-      </div>
-      <p style="color: var(--text-muted); margin: 0 0 1rem 1.75rem; max-width: 720px;">Los datos se guardan como solicitud pendiente. Un revisor las aprueba en el módulo <strong>Aprobaciones</strong>.</p>
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
-        <form id="solicitud-especimen-form">
-          <h3 class="section-title" style="margin-top: 0; color: var(--accent-color);">Taxonomía</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Orden</label><select name="id_orden" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Familia</label><select name="id_familia" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Subfamilia</label><select name="id_subfamilia" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Tribu</label><select name="id_tribu" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Género</label><select name="id_genero" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Especie (catálogo)</label><select name="id_especie" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Tipo</label><select name="id_tipo" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Identificación</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Nombre común</label><input type="text" name="nombre_comun" placeholder="Ej. Mariposa monarca"></div>
-            <div class="form-group"><label>Nombre científico *</label><input type="text" name="nombre_cientifico" required></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Datos de colecta</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Colector</label><select name="id_colector" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Determinador</label><select name="id_determinador" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Fecha colecta</label><input type="date" name="fecha_colecta"></div>
-            <div class="form-group"><label>Año identificación</label><input type="number" name="anio_identificacion" placeholder="AAAA"></div>
-            <div class="form-group"><label>N.º individuos</label><input type="number" name="num_individuos" value="1"></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Ubicación y ecología</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>País</label><select name="id_pais" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Estado</label><select name="id_estado" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Municipio</label><select name="id_municipio" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Localidad</label><select name="id_localidad" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Latitud N</label><input type="text" name="latitud_n"></div>
-            <div class="form-group"><label>Longitud O</label><input type="text" name="longitud_o"></div>
-            <div class="form-group"><label>Altitud (m)</label><input type="number" name="altitud"></div>
-            <div class="form-group"><label>Planta hospedera</label><select name="id_planta" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Organismo huésped</label><select name="id_organismo_huesped" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Datos ecológicos</label>
-              <textarea name="datos_ecologicos" rows="2" style="width:100%;border:1px solid var(--border-color);background:transparent;color:var(--text-color);padding:0.5rem;border-radius:6px;"></textarea>
+          <!-- SECCIÓN 1: DATOS GENERALES -->
+          <div class="form-section">
+            <h3 class="section-title">Datos Generales</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Nombre Común</label><input type="text" name="nombre_comun" placeholder="Ej. Pino"></div>
+              <div class="form-group"><label>Nombre Científico</label><input type="text" name="nombre_cientifico" placeholder="Ej. Pinus pinea"></div>
+              <div class="form-group"><label>Núm. Individuos</label><input type="number" name="num_individuos" value="1" min="1"></div>
+              <div class="form-group"><label>Fecha de Colecta</label><input type="date" name="fecha_colecta"></div>
+              <div class="form-group"><label>Año de Identificación</label><input type="number" name="anio_identificacion" placeholder="Ej: 2024"></div>
+              <div class="form-group"><label>Año de Catalogación</label><input type="number" name="anio_catalogacion" placeholder="Ej: 2024"></div>
+              <div class="form-group"><label>Número de Frasco / Caja</label><input type="text" name="numero_frasco" placeholder="Ej: F-102"></div>
+              <div class="form-group"><label>Envío a Identificación</label><input type="date" name="envio_identificacion"></div>
             </div>
           </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Control interno</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1rem;">
-            <div class="form-group"><label>N.º frasco</label><input type="text" name="numero_frasco"></div>
-            <div class="form-group"><label>Colección</label><select name="id_coleccion" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Cita</label><select name="id_cita" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Año catalogación</label><input type="number" name="anio_catalogacion"></div>
-            <div class="form-group"><label>Envío identificación</label><input type="text" name="envio_identificacion" placeholder="Sí / No u otra nota"></div>
+
+          <!-- SECCIÓN 2: TAXONOMÍA -->
+          <div class="form-section">
+            <h3 class="section-title">Información Taxonómica</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Orden</label><div data-cs="id_orden"></div></div>
+              <div class="form-group"><label>Familia</label><div data-cs="id_familia"></div></div>
+              <div class="form-group"><label>Subfamilia</label><div data-cs="id_subfamilia"></div></div>
+              <div class="form-group"><label>Tribu</label><div data-cs="id_tribu"></div></div>
+              <div class="form-group"><label>Género</label><div data-cs="id_genero"></div></div>
+              <div class="form-group"><label>Especie</label><div data-cs="id_especie"></div></div>
+              <div class="form-group"><label>Tipo</label><div data-cs="id_tipo"></div></div>
+            </div>
           </div>
+
+          <!-- SECCIÓN 3: GEOGRAFÍA -->
+          <div class="form-section">
+            <h3 class="section-title">Ubicación Geográfica</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>País</label><div data-cs="id_pais"></div></div>
+              <div class="form-group"><label>Estado</label><div data-cs="id_estado"></div></div>
+              <div class="form-group"><label>Municipio</label><div data-cs="id_municipio"></div></div>
+              <div class="form-group"><label>Localidad</label><div data-cs="id_localidad"></div></div>
+              <div class="form-group"><label>Latitud (N)</label><input type="number" step="any" name="latitud_n" placeholder="Ej: 16.737"></div>
+              <div class="form-group"><label>Longitud (O)</label><input type="number" step="any" name="longitud_o" placeholder="Ej: -92.637"></div>
+              <div class="form-group"><label>Altitud (msnm)</label><input type="number" name="altitud" placeholder="Ej: 2100"></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 4: DATOS BIOLÓGICOS -->
+          <div class="form-section">
+            <h3 class="section-title">Datos Biológicos</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Planta Hospedera</label><div data-cs="id_planta"></div></div>
+              <div class="form-group"><label>Organismo Huésped</label><div data-cs="id_organismo_huesped"></div></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 5: CATALOGACIÓN -->
+          <div class="form-section">
+            <h3 class="section-title">Catalogación</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Colector</label><div data-cs="id_colector"></div></div>
+              <div class="form-group"><label>Determinador</label><div data-cs="id_determinador"></div></div>
+              <div class="form-group"><label>Colección</label><div data-cs="id_coleccion"></div></div>
+              <div class="form-group"><label>Cita Bibliográfica</label><div data-cs="id_cita"></div></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 6: DATOS ECOLÓGICOS -->
+          <div class="form-section">
+            <h3 class="section-title">Datos Ecológicos</h3>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label>Datos Ecológicos</label>
+                <textarea name="datos_ecologicos" rows="3" placeholder="Describa el hábitat, método de colecta, etc."></textarea>
+              </div>
+            </div>
+          </div>
+
         </form>
+        </div>
       </div>
     </div>
 
@@ -199,66 +159,99 @@
           <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
             <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
           </button>
-          <h2 class="screen-title" style="margin: 0;">Actualizar Espécimen</h2>
+          <div>
+            <h2 class="screen-title" style="margin: 0;">Modificar Espécimen</h2>
+            <p id="mod-esp-subtitle" class="screen-subtitle" style="margin: 0; color: var(--text-muted); font-size: 0.85rem;"></p>
+          </div>
         </div>
         <div class="header-actions">
           <button type="button" class="btn-outline btn-back-general">Cancelar</button>
           <button type="submit" form="modificar-especimen-form" class="btn-primary with-icon">
-            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Actualizar
+            <i data-lucide="save" style="width: 18px; height: 18px;"></i> Actualizar Espécimen
           </button>
         </div>
       </div>
 
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
-        <form id="modificar-especimen-form">
-          <h3 class="section-title" style="margin-top: 0; color: var(--accent-color);">Taxonomía</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Orden</label><select name="id_orden" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Familia</label><select name="id_familia" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Subfamilia</label><select name="id_subfamilia" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Tribu</label><select name="id_tribu" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Género</label><select name="id_genero" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Especie (catálogo)</label><select name="id_especie" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Tipo</label><select name="id_tipo" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Identificación</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Nombre común</label><input type="text" name="nombre_comun"></div>
-            <div class="form-group"><label>Nombre científico *</label><input type="text" name="nombre_cientifico" required></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Datos de colecta</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>Colector</label><select name="id_colector" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Determinador</label><select name="id_determinador" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Fecha colecta</label><input type="date" name="fecha_colecta"></div>
-            <div class="form-group"><label>Año identificación</label><input type="number" name="anio_identificacion"></div>
-            <div class="form-group"><label>N.º individuos</label><input type="number" name="num_individuos"></div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Ubicación y ecología</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-            <div class="form-group"><label>País</label><select name="id_pais" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Estado</label><select name="id_estado" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Municipio</label><select name="id_municipio" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Localidad</label><select name="id_localidad" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Latitud N</label><input type="text" name="latitud_n"></div>
-            <div class="form-group"><label>Longitud O</label><input type="text" name="longitud_o"></div>
-            <div class="form-group"><label>Altitud (m)</label><input type="number" name="altitud"></div>
-            <div class="form-group"><label>Planta hospedera</label><select name="id_planta" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Organismo huésped</label><select name="id_organismo_huesped" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label>Datos ecológicos</label>
-              <textarea name="datos_ecologicos" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem; border-radius:6px;"></textarea>
+      <div class="form-container alta-form">
+        <div class="form-card">
+          <form id="modificar-especimen-form">
+
+            <!-- SECCIÓN 1: DATOS GENERALES -->
+            <div class="form-section">
+              <h3 class="section-title">Datos Generales</h3>
+              <div class="form-grid">
+                <div class="form-group"><label>Nombre Común</label><input type="text" name="nombre_comun" placeholder="Ej. Mariposa Monarca"></div>
+                <div class="form-group"><label>Nombre Científico</label><input type="text" name="nombre_cientifico" placeholder="Ej. Danaus plexippus"></div>
+                <div class="form-group"><label>Núm. Individuos</label><input type="number" name="num_individuos" min="1" value="1"></div>
+                <div class="form-group"><label>Fecha de Colecta</label><input type="date" name="fecha_colecta"></div>
+                <div class="form-group"><label>Año de Identificación</label><input type="number" name="anio_identificacion" placeholder="Ej. 2024"></div>
+                <div class="form-group"><label>Año de Catalogación</label><input type="number" name="anio_catalogacion" placeholder="Ej. 2024"></div>
+                <div class="form-group"><label>Número de Frasco</label><input type="text" name="numero_frasco" placeholder="Ej. F-102"></div>
+                <div class="form-group"><label>Envío a Identificación</label><input type="date" name="envio_identificacion"></div>
+              </div>
             </div>
-          </div>
-          <h3 class="section-title" style="color: var(--accent-color);">Control interno</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1rem;">
-            <div class="form-group"><label>N.º frasco</label><input type="text" name="numero_frasco"></div>
-            <div class="form-group"><label>Colección</label><select name="id_coleccion" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Cita</label><select name="id_cita" class="form-select" style="background:var(--bg-input,transparent);color:var(--text-color);border:1px solid var(--border-color);"><option value="">—</option></select></div>
-            <div class="form-group"><label>Año catalogación</label><input type="number" name="anio_catalogacion"></div>
-            <div class="form-group"><label>Envío identificación</label><input type="text" name="envio_identificacion"></div>
-          </div>
-        </form>
+
+            <!-- SECCIÓN 2: TAXONOMÍA -->
+            <div class="form-section">
+              <h3 class="section-title">Taxonomía</h3>
+              <div class="form-grid">
+                <div class="form-group"><label>Orden</label><div id="mod-sel-orden"></div></div>
+                <div class="form-group"><label>Familia</label><div id="mod-sel-familia"></div></div>
+                <div class="form-group"><label>Subfamilia</label><div id="mod-sel-subfamilia"></div></div>
+                <div class="form-group"><label>Tribu</label><div id="mod-sel-tribu"></div></div>
+                <div class="form-group"><label>Género</label><div id="mod-sel-genero"></div></div>
+                <div class="form-group"><label>Especie</label><div id="mod-sel-especie"></div></div>
+                <div class="form-group"><label>Tipo</label><div id="mod-sel-tipo"></div></div>
+              </div>
+            </div>
+
+            <!-- SECCIÓN 3: UBICACIÓN GEOGRÁFICA -->
+            <div class="form-section">
+              <h3 class="section-title">Ubicación Geográfica</h3>
+              <div class="form-grid">
+                <div class="form-group"><label>País</label><div id="mod-sel-pais"></div></div>
+                <div class="form-group"><label>Estado</label><div id="mod-sel-estado"></div></div>
+                <div class="form-group"><label>Municipio</label><div id="mod-sel-municipio"></div></div>
+                <div class="form-group"><label>Localidad</label><div id="mod-sel-localidad"></div></div>
+                <div class="form-group"><label>Altitud (msnm)</label><input type="number" name="altitud" placeholder="Ej. 2100"></div>
+                <div class="form-group"><label>Latitud (N)</label><input type="number" step="any" name="latitud_n" placeholder="Ej. 16.737"></div>
+                <div class="form-group"><label>Longitud (O)</label><input type="number" step="any" name="longitud_o" placeholder="Ej. -92.637"></div>
+              </div>
+            </div>
+
+            <!-- SECCIÓN 4: DATOS BIOLÓGICOS -->
+            <div class="form-section">
+              <h3 class="section-title">Datos Biológicos</h3>
+              <div class="form-grid">
+                <div class="form-group"><label>Planta Hospedera</label><div id="mod-sel-planta"></div></div>
+                <div class="form-group"><label>Organismo Huésped</label><div id="mod-sel-organismo"></div></div>
+              </div>
+            </div>
+
+            <!-- SECCIÓN 5: CATALOGACIÓN -->
+            <div class="form-section">
+              <h3 class="section-title">Catalogación</h3>
+              <div class="form-grid">
+                <div class="form-group"><label>Colector</label><div id="mod-sel-colector"></div></div>
+                <div class="form-group"><label>Determinador</label><div id="mod-sel-determinador"></div></div>
+                <div class="form-group"><label>Colección</label><div id="mod-sel-coleccion"></div></div>
+                <div class="form-group"><label>Cita Bibliográfica</label><div id="mod-sel-cita"></div></div>
+              </div>
+            </div>
+
+            <!-- SECCIÓN 6: DATOS ECOLÓGICOS -->
+            <div class="form-section">
+              <h3 class="section-title">Datos Ecológicos</h3>
+              <div class="form-grid">
+                <div class="form-group full-width">
+                  <label>Datos Ecológicos</label>
+                  <textarea name="datos_ecologicos" rows="3" placeholder="Describa el hábitat, método de colecta, etc."></textarea>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
       </div>
     </div>
 
