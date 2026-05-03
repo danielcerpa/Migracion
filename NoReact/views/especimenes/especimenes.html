@@ -152,6 +152,112 @@
       </div>
     </div>
 
+    <!-- VIEW: SOLICITUD -->
+    <div id="view-esp-solicitud" class="screen-container animate-slide-in" style="display: none;">
+      <div class="screen-header">
+        <div class="header-with-back" style="display: flex; align-items: center; gap: 1rem;">
+          <button class="btn-back btn-back-general" style="background: transparent; border: none; cursor: pointer;">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+          </button>
+          <h2 class="screen-title" style="margin: 0;">Solicitar Registro</h2>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-outline btn-back-general">Cancelar</button>
+          <button type="submit" form="solicitud-especimen-form" class="btn-primary with-icon">
+            <i data-lucide="send" style="width: 18px; height: 18px;"></i> Enviar Solicitud
+          </button>
+        </div>
+      </div>
+
+      <div class="form-container alta-form">
+        <div style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+          <i data-lucide="info" style="width: 20px; height: 20px; color: var(--accent-color); flex-shrink: 0; margin-top: 2px;"></i>
+          <p style="margin: 0; font-size: 0.88rem; color: var(--text-color); line-height: 1.5;">
+            Esta solicitud será revisada por un administrador antes de registrarse oficialmente en el catálogo. Puede consultar el estado de sus solicitudes en el panel <strong>Mis solicitudes de registro</strong>.
+          </p>
+        </div>
+        <div class="form-card">
+        <form id="solicitud-especimen-form">
+
+          <!-- SECCIÓN 1: DATOS GENERALES -->
+          <div class="form-section">
+            <h3 class="section-title">Datos Generales</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Nombre Común</label><input type="text" name="nombre_comun" placeholder="Ej. Pino"></div>
+              <div class="form-group"><label>Nombre Científico</label><input type="text" name="nombre_cientifico" placeholder="Ej. Pinus pinea"></div>
+              <div class="form-group"><label>Núm. Individuos</label><input type="number" name="num_individuos" value="1" min="1"></div>
+              <div class="form-group"><label>Fecha de Colecta</label><input type="date" name="fecha_colecta"></div>
+              <div class="form-group"><label>Año de Identificación</label><input type="number" name="anio_identificacion" placeholder="Ej: 2024"></div>
+              <div class="form-group"><label>Año de Catalogación</label><input type="number" name="anio_catalogacion" placeholder="Ej: 2024"></div>
+              <div class="form-group"><label>Número de Frasco / Caja</label><input type="text" name="numero_frasco" placeholder="Ej: F-102"></div>
+              <div class="form-group"><label>Envío a Identificación</label><input type="date" name="envio_identificacion"></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 2: TAXONOMÍA -->
+          <div class="form-section">
+            <h3 class="section-title">Información Taxonómica</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Orden</label><div data-cs="id_orden"></div></div>
+              <div class="form-group"><label>Familia</label><div data-cs="id_familia"></div></div>
+              <div class="form-group"><label>Subfamilia</label><div data-cs="id_subfamilia"></div></div>
+              <div class="form-group"><label>Tribu</label><div data-cs="id_tribu"></div></div>
+              <div class="form-group"><label>Género</label><div data-cs="id_genero"></div></div>
+              <div class="form-group"><label>Especie</label><div data-cs="id_especie"></div></div>
+              <div class="form-group"><label>Tipo</label><div data-cs="id_tipo"></div></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 3: GEOGRAFÍA -->
+          <div class="form-section">
+            <h3 class="section-title">Ubicación Geográfica</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>País</label><div data-cs="id_pais"></div></div>
+              <div class="form-group"><label>Estado</label><div data-cs="id_estado"></div></div>
+              <div class="form-group"><label>Municipio</label><div data-cs="id_municipio"></div></div>
+              <div class="form-group"><label>Localidad</label><div data-cs="id_localidad"></div></div>
+              <div class="form-group"><label>Latitud (N)</label><input type="number" step="any" name="latitud_n" placeholder="Ej: 16.737"></div>
+              <div class="form-group"><label>Longitud (O)</label><input type="number" step="any" name="longitud_o" placeholder="Ej: -92.637"></div>
+              <div class="form-group"><label>Altitud (msnm)</label><input type="number" name="altitud" placeholder="Ej: 2100"></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 4: DATOS BIOLÓGICOS -->
+          <div class="form-section">
+            <h3 class="section-title">Datos Biológicos</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Planta Hospedera</label><div data-cs="id_planta"></div></div>
+              <div class="form-group"><label>Organismo Huésped</label><div data-cs="id_organismo_huesped"></div></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 5: CATALOGACIÓN -->
+          <div class="form-section">
+            <h3 class="section-title">Catalogación</h3>
+            <div class="form-grid">
+              <div class="form-group"><label>Colector</label><div data-cs="id_colector"></div></div>
+              <div class="form-group"><label>Determinador</label><div data-cs="id_determinador"></div></div>
+              <div class="form-group"><label>Colección</label><div data-cs="id_coleccion"></div></div>
+              <div class="form-group"><label>Cita Bibliográfica</label><div data-cs="id_cita"></div></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN 6: DATOS ECOLÓGICOS -->
+          <div class="form-section">
+            <h3 class="section-title">Datos Ecológicos</h3>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label>Datos Ecológicos</label>
+                <textarea name="datos_ecologicos" rows="3" placeholder="Describa el hábitat, método de colecta, etc."></textarea>
+              </div>
+            </div>
+          </div>
+
+        </form>
+        </div>
+      </div>
+    </div>
+
     <!-- VIEW: MODIFICAR -->
     <div id="view-esp-modificar" class="screen-container animate-slide-in" style="display: none;">
       <div class="screen-header">

@@ -39,6 +39,7 @@ class EspecimenController {
         this.selectedItem = null;
         this.query = '';
         this.altaSelects = {};
+        this.solicitudSelects = {};
         this.altaInitialized = false;
     }
 
@@ -197,7 +198,7 @@ class EspecimenController {
         const views = ['general', 'alta', 'solicitud', 'modificar', 'baja', 'detalle'];
         views.forEach((v) => {
             const el = this.container.querySelector(`#view-esp-${v}`);
-            if (el) el.style.display = v === this.currentView ? 'block' : 'none';
+            if (el) el.style.display = v === this.currentView ? '' : 'none';
         });
 
         const breadcrumb = this.container.querySelector('#especimenes-breadcrumb');
@@ -220,6 +221,8 @@ class EspecimenController {
             this.renderCards();
         } else if (this.currentView === 'alta') {
             this.initAltaForm();
+        } else if (this.currentView === 'solicitud') {
+            this.initSolicitudForm();
         } else if (this.currentView === 'modificar') {
             this.renderModificarForm();
         } else if (this.currentView === 'baja') {
@@ -806,6 +809,154 @@ class EspecimenController {
         mk('id_cita', 'id_cita', citaOpts, 'Seleccionar cita...');
 
         this.altaInitialized = true;
+    }
+
+    // ── Solicitud form: initialize all CustomSelects + cascades ──
+    initSolicitudForm() {
+        const form = this.container.querySelector('#solicitud-especimen-form');
+        if (!form) return;
+
+        // Reset native inputs
+        form.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], textarea').forEach(el => {
+            if (el.name === 'num_individuos') el.value = '1';
+            else el.value = '';
+        });
+
+        // Destroy previous instances
+        Object.values(this.solicitudSelects).forEach(s => { try { s.destroy(); } catch (e) {} });
+        this.solicitudSelects = {};
+
+        const cat = this.model.catalogos;
+
+        // Build options helpers
+        const optsFromList = (list, idKey, labelFn) =>
+            (list || []).map(item => ({ value: String(item[idKey]), label: labelFn(item) }));
+
+        const ordenOpts = optsFromList(cat.orden, 'idOrden', o => o.nombre);
+        const tipoOpts = optsFromList(cat.tipo, 'idTipo', t => t.nombre);
+        const paisOpts = optsFromList(cat.pais, 'idPais', p => p.nombre);
+        const plantaOpts = optsFromList(cat.planta_hospedera, 'idPlanta',
+            p => p.nombre_cientifico + (p.nombre_comun ? ` (${p.nombre_comun})` : ''));
+        const organismoOpts = optsFromList(cat.organismo_hospedero, 'idOrganismo', o => o.nombre_organismo);
+        const colectorOpts = optsFromList(cat.colector, 'idColector',
+            c => `${c.nombre} ${c.apellido_paterno || ''}`.trim());
+        const determinadorOpts = optsFromList(cat.determinador, 'idDeterminador',
+            d => `${d.nombre} ${d.apellido_paterno || ''}`.trim());
+        const coleccionOpts = optsFromList(cat.coleccion, 'idColeccion',
+            c => `${c.acronimo} — ${c.nombre_institucion || ''}`);
+        const citaOpts = optsFromList(cat.cita, 'idCita',
+            c => `${c.anio ? c.anio + ' — ' : ''}${c.titulo}`);
+
+        const mk = (key, name, options, placeholder, extra = {}) => {
+            const host = form.querySelector(`[data-cs="${key}"]`);
+            if (!host) return null;
+            const sel = new CustomSelect(host, Object.assign({
+                options, value: '', placeholder,
+                searchable: true, name
+            }, extra));
+            this.solicitudSelects[key] = sel;
+            return sel;
+        };
+
+        // Geo cascade: País → Estado → Municipio → Localidad
+        mk('id_pais', 'id_pais', paisOpts, 'Seleccionar país...', {
+            onChange: (v) => {
+                this.solicitudSelects.id_estado.setValue('');
+                this.solicitudSelects.id_estado.setOptions(
+                    v ? optsFromList((cat.estado || []).filter(e => String(e.idPais) === String(v)), 'idEstado', e => e.nombre) : []
+                );
+                this.solicitudSelects.id_municipio.setValue('');
+                this.solicitudSelects.id_municipio.setOptions([]);
+                this.solicitudSelects.id_localidad.setValue('');
+                this.solicitudSelects.id_localidad.setOptions([]);
+            }
+        });
+        mk('id_estado', 'id_estado', [], 'Selecciona país primero...', {
+            onChange: (v) => {
+                this.solicitudSelects.id_municipio.setValue('');
+                this.solicitudSelects.id_municipio.setOptions(
+                    v ? optsFromList((cat.municipio || []).filter(m => String(m.idEstado) === String(v)), 'idMunicipio', m => m.nombre) : []
+                );
+                this.solicitudSelects.id_localidad.setValue('');
+                this.solicitudSelects.id_localidad.setOptions([]);
+            }
+        });
+        mk('id_municipio', 'id_municipio', [], 'Selecciona estado primero...', {
+            onChange: (v) => {
+                this.solicitudSelects.id_localidad.setValue('');
+                this.solicitudSelects.id_localidad.setOptions(
+                    v ? optsFromList((cat.localidad || []).filter(l => String(l.idMunicipio) === String(v)), 'idLocalidad', l => l.nombre) : []
+                );
+            }
+        });
+        mk('id_localidad', 'id_localidad', [], 'Selecciona municipio primero...');
+
+        // Taxonomy cascade: Orden → Familia → Subfamilia → Tribu → Género → Especie
+        mk('id_orden', 'id_orden', ordenOpts, 'Seleccionar orden...', {
+            onChange: (v) => {
+                this.solicitudSelects.id_familia.setValue('');
+                this.solicitudSelects.id_familia.setOptions(
+                    v ? optsFromList((cat.familia || []).filter(f => String(f.idOrden) === String(v)), 'idFamilia', f => f.nombre) : []
+                );
+                ['id_subfamilia', 'id_tribu', 'id_genero', 'id_especie'].forEach(k => {
+                    this.solicitudSelects[k].setValue('');
+                    this.solicitudSelects[k].setOptions([]);
+                });
+            }
+        });
+        mk('id_familia', 'id_familia', [], 'Selecciona orden primero...', {
+            onChange: (v) => {
+                this.solicitudSelects.id_subfamilia.setValue('');
+                this.solicitudSelects.id_subfamilia.setOptions(
+                    v ? optsFromList((cat.subfamilia || []).filter(s => String(s.idFamilia) === String(v)), 'idSubfamilia', s => s.nombre) : []
+                );
+                ['id_tribu', 'id_genero', 'id_especie'].forEach(k => {
+                    this.solicitudSelects[k].setValue('');
+                    this.solicitudSelects[k].setOptions([]);
+                });
+            }
+        });
+        mk('id_subfamilia', 'id_subfamilia', [], 'Selecciona familia primero...', {
+            onChange: (v) => {
+                this.solicitudSelects.id_tribu.setValue('');
+                this.solicitudSelects.id_tribu.setOptions(
+                    v ? optsFromList((cat.tribu || []).filter(t => String(t.idSubfamilia) === String(v)), 'idTribu', t => t.nombre) : []
+                );
+                ['id_genero', 'id_especie'].forEach(k => {
+                    this.solicitudSelects[k].setValue('');
+                    this.solicitudSelects[k].setOptions([]);
+                });
+            }
+        });
+        mk('id_tribu', 'id_tribu', [], 'Selecciona subfamilia primero...', {
+            onChange: (v) => {
+                this.solicitudSelects.id_genero.setValue('');
+                this.solicitudSelects.id_genero.setOptions(
+                    v ? optsFromList((cat.genero || []).filter(g => String(g.idTribu) === String(v)), 'idGenero', g => g.nombre) : []
+                );
+                this.solicitudSelects.id_especie.setValue('');
+                this.solicitudSelects.id_especie.setOptions([]);
+            }
+        });
+        mk('id_genero', 'id_genero', [], 'Selecciona tribu primero...', {
+            onChange: (v) => {
+                this.solicitudSelects.id_especie.setValue('');
+                this.solicitudSelects.id_especie.setOptions(
+                    v ? optsFromList((cat.especie || []).filter(e => String(e.idGenero) === String(v)), 'idEspecie',
+                        e => e.nombre + (e.subespecie ? ` ${e.subespecie}` : '')) : []
+                );
+            }
+        });
+        mk('id_especie', 'id_especie', [], 'Selecciona género primero...');
+
+        // Independent selects
+        mk('id_tipo', 'id_tipo', tipoOpts, 'Seleccionar tipo...');
+        mk('id_planta', 'id_planta', plantaOpts, 'Seleccionar planta hospedera...');
+        mk('id_organismo_huesped', 'id_organismo_huesped', organismoOpts, 'Seleccionar organismo huésped...');
+        mk('id_colector', 'id_colector', colectorOpts, 'Seleccionar colector...');
+        mk('id_determinador', 'id_determinador', determinadorOpts, 'Seleccionar determinador...');
+        mk('id_coleccion', 'id_coleccion', coleccionOpts, 'Seleccionar colección...');
+        mk('id_cita', 'id_cita', citaOpts, 'Seleccionar cita...');
     }
 
     async refreshMisSolicitudes() {
