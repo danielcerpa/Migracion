@@ -98,7 +98,9 @@ class EspecimenController {
             this.loadCatalogos()
         ]);
         this.render();
-        await this.refreshMisSolicitudes();
+        if (!this.isAdmin) {
+            await this.refreshMisSolicitudes();
+        }
         if (window.EspecimenesTutorial) window.EspecimenesTutorial.init();
     }
 
@@ -242,15 +244,20 @@ class EspecimenController {
         const canDelete = window.Utils.checkPermission(modName, 'delete');
         const hasModule = window.Utils.hasModuleAccess(modName);
 
+        const isAdmin = canAdd && canEdit && canDelete;
+        this.isAdmin = isAdmin;
+
         const btnAlta = this.container.querySelector('#btn-alta-especimen');
         const btnSolicitar = this.container.querySelector('#btn-solicitar-registro');
         const btnEdit = this.container.querySelector('#btn-actualizar-especimen');
         const btnDelete = this.container.querySelector('#btn-eliminar-especimen');
+        const panelMisSolicitudes = this.container.querySelector('#panel-mis-solicitudes');
 
         if (btnAlta) btnAlta.style.display = canAdd ? 'flex' : 'none';
         if (btnSolicitar) btnSolicitar.style.display = hasModule && !canAdd ? 'flex' : 'none';
         if (btnEdit) btnEdit.style.display = canEdit ? 'flex' : 'none';
         if (btnDelete) btnDelete.style.display = canDelete ? 'flex' : 'none';
+        if (panelMisSolicitudes) panelMisSolicitudes.style.display = isAdmin ? 'none' : '';
     }
 
     renderCards() {
