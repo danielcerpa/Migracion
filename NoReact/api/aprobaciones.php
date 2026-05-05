@@ -6,9 +6,13 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        // Obtener solicitudes pendientes junto con el nombre del usuario
+        // Obtener solicitudes pendientes (y re-enviadas) junto con el nombre del usuario y último comentario
         $sql = "
-            SELECT s.*, u.name as usuario_nombre, u.last_name as usuario_apellido
+            SELECT s.*, u.name as usuario_nombre, u.last_name as usuario_apellido,
+                   (SELECT r.comentarios FROM revision_solicitud r
+                    WHERE r.id_solicitud = s.id_solicitud
+                    ORDER BY r.fecha_revision DESC LIMIT 1) AS ultimo_comentario_revisor,
+                   (SELECT COUNT(*) FROM revision_solicitud r WHERE r.id_solicitud = s.id_solicitud) AS num_revisiones
             FROM solicitud_especimen s
             JOIN user u ON s.id_usuario = u.idUser
             WHERE s.estado = 'PENDIENTE'

@@ -19,7 +19,7 @@ class AprobacionModel {
 
     async approve(id) {
         try {
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(sessionStorage.getItem('user'));
             const response = await fetch(`${this.apiBase}/aprobaciones.php?action=approve&id=${id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -39,7 +39,7 @@ class AprobacionModel {
 
     async reject(id, comentario) {
         try {
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(sessionStorage.getItem('user'));
             const response = await fetch(`${this.apiBase}/aprobaciones.php?action=reject&id=${id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -59,7 +59,7 @@ class AprobacionModel {
 
     async returnRequest(id, comentario) {
         try {
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(sessionStorage.getItem('user'));
             const response = await fetch(`${this.apiBase}/aprobaciones.php?action=return&id=${id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

@@ -8,16 +8,6 @@ class Utils {
      * @param {string} type - The type of toast: 'success', 'danger', 'warning', 'info'.
      */
     static showToast(message, type = 'success') {
-        const toastContainer = document.getElementById('toast-container');
-        if (!toastContainer) {
-            const container = document.createElement('div');
-            container.id = 'toast-container';
-            container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-            container.style.zIndex = '1100';
-            document.body.appendChild(container);
-        }
-
-        const toastId = 'toast-' + Date.now();
         const iconMap = {
             success: 'check-circle',
             danger: 'alert-circle',
@@ -25,37 +15,55 @@ class Utils {
             info: 'info'
         };
 
-        const html = `
-            <div id="${toastId}" class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                    <div class="toast-body d-flex align-items-center gap-2">
-                        <i data-lucide="${iconMap[type] || 'info'}" style="width: 18px; height: 18px;"></i>
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
+        const colorMap = {
+            success: '#10B981', // Emerald 500
+            danger: '#EF4444',  // Red 500
+            warning: '#F59E0B', // Amber 500
+            info: '#3B82F6'     // Blue 500
+        };
+
+        const icon = iconMap[type] || 'info';
+        const color = colorMap[type] || colorMap.info;
+
+        // Custom HTML for the toast
+        const div = document.createElement('div');
+        div.className = `toastify-content d-flex align-items-center justify-content-between`;
+        div.style.gap = '12px';
+        div.style.minWidth = '250px';
+
+        div.innerHTML = `
+            <div class="d-flex align-items-center gap-2">
+                <i data-lucide="${icon}" style="width: 20px; height: 20px;"></i>
+                <span style="font-weight: 500; font-size: 0.95rem;">${message}</span>
             </div>
         `;
 
-        document.getElementById('toast-container').insertAdjacentHTML('beforeend', html);
-        
-        const toastEl = document.getElementById(toastId);
-        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-        
-        lucide.createIcons({
-            attrs: {
-                class: 'lucide-icon'
+        const toast = Toastify({
+            node: div,
+            duration: 4000,
+            close: true,
+            gravity: "bottom",
+            position: "right",
+            stopOnFocus: true,
+            style: {
+                background: color,
+                borderRadius: "12px",
+                padding: "12px 16px",
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                display: "flex",
+                alignItems: "center"
             },
-            nameAttr: 'data-lucide',
-            root: toastEl
-        });
-        
-        toast.show();
+            onClick: function() {} // Callback after click
+        }).showToast();
 
-        // Remove from DOM after hidden
-        toastEl.addEventListener('hidden.bs.toast', () => {
-            toastEl.remove();
-        });
+        // Create icons for the newly added toast
+        // Toastify might take a bit to render or we can find the element
+        // The toastify element is created but we need to find it in the DOM or it might be easier to just call lucide globally
+        // but we want to be efficient. Toastify returns the instance but the element is internal.
+        // Actually, Toastify .showToast() appends to body.
+        setTimeout(() => {
+            lucide.createIcons();
+        }, 10);
     }
 
     /**
@@ -93,7 +101,7 @@ class Utils {
      * @returns {boolean}
      */
     static checkPermission(moduleName, action) {
-        const perms = JSON.parse(localStorage.getItem('permissions') || '[]');
+        const perms = JSON.parse(sessionStorage.getItem('permissions') || '[]');
         const modulePerm = perms.find(p => p.moduleName === moduleName);
         if (!modulePerm) return false;
 
@@ -110,7 +118,7 @@ class Utils {
 
     /** El usuario tiene el módulo asignado (aunque no tenga permiso de alta/edición). */
     static hasModuleAccess(moduleName) {
-        const perms = JSON.parse(localStorage.getItem('permissions') || '[]');
+        const perms = JSON.parse(sessionStorage.getItem('permissions') || '[]');
         return Array.isArray(perms) && perms.some((p) => p.moduleName === moduleName);
     }
 }

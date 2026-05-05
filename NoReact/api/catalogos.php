@@ -25,9 +25,17 @@ if ($section === 'planta_hospedera') $idKey = 'idPlanta';
 
 switch ($method) {
     case 'GET':
-        // Determine if we need to do joins for names (like nombrePais, nombreEstado)
-        // To keep it simple, we'll fetch from the base table. In a full system, you might create views or joins.
-        $stmt = $pdo->query("SELECT * FROM $section");
+        $showAll = isset($_GET['all']) && $_GET['all'] === '1';
+        $statusWhere = $showAll ? '' : ' WHERE status = 1';
+        $sql = "SELECT * FROM $section" . $statusWhere;
+        if ($section === 'estado') {
+            $sql = "SELECT e.*, p.nombre AS nombrePais FROM estado e LEFT JOIN pais p ON e.idPais = p.idPais" . ($showAll ? '' : ' WHERE e.status = 1');
+        } elseif ($section === 'municipio') {
+            $sql = "SELECT m.*, p.nombre AS nombrePais FROM municipio m LEFT JOIN estado e ON m.idEstado = e.idEstado LEFT JOIN pais p ON e.idPais = p.idPais" . ($showAll ? '' : ' WHERE m.status = 1');
+        } elseif ($section === 'localidad') {
+            $sql = "SELECT l.*, p.nombre AS nombrePais FROM localidad l LEFT JOIN municipio m ON l.idMunicipio = m.idMunicipio LEFT JOIN estado e ON m.idEstado = e.idEstado LEFT JOIN pais p ON e.idPais = p.idPais" . ($showAll ? '' : ' WHERE l.status = 1');
+        }
+        $stmt = $pdo->query($sql);
         $data = $stmt->fetchAll();
         echo json_encode($data);
         break;

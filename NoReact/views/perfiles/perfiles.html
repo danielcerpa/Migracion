@@ -13,8 +13,8 @@
         <div>
           <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
             Gestión de Perfiles
-            <button class="module-info-btn" title="Ver guía del módulo">
-              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            <button class="btn-info" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 18px; height: 18px;"></i> Tutorial de uso
             </button>
           </h2>
         </div>
@@ -35,7 +35,7 @@
         <div class="search-wrapper">
           <i data-lucide="search" style="width: 18px; height: 18px;"></i>
           <input type="text" id="search-profiles-input" placeholder="Buscar por nombre o descripción...">
-          <button id="btn-clear-search" class="btn-clear" title="Limpiar búsqueda" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex;">
+          <button id="btn-clear-search" class="btn-clear" title="Limpiar búsqueda" style="background: transparent; border: none; padding: 0; cursor: pointer; display: flex; visibility: hidden;">
             <i data-lucide="x" style="width: 16px; height: 16px;"></i>
           </button>
         </div>
@@ -45,7 +45,6 @@
         <table class="custom-table" id="module-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Nombre de Perfil</th>
               <th>Descripción</th>
               <th style="text-align: center;">Alta</th>
@@ -78,10 +77,11 @@
         </div>
       </div>
 
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
-        <form id="alta-perfil-form">
+      <form id="alta-perfil-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
+        <!-- Panel izquierdo: Información del Perfil -->
+        <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
           <h3 class="section-title" style="margin-top: 0;">Información del Perfil</h3>
-          <div class="form-grid" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+          <div style="display: grid; gap: 1.5rem;">
             <div class="form-group">
               <label>Nombre del Perfil</label>
               <input type="text" name="nickname" class="form-control" placeholder="Ej. Capturista Senior" required>
@@ -91,24 +91,56 @@
               <input type="text" name="description" class="form-control" placeholder="Describe los roles o alcance del perfil">
             </div>
           </div>
+        </div>
 
-          <h3 class="section-title">Niveles de Acceso Globales</h3>
+        <!-- Panel derecho: Niveles de Acceso -->
+        <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
+          <h3 class="section-title" style="margin-top: 0;">Niveles de Acceso Globales</h3>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-              <input type="checkbox" name="key_add" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Dar de Alta
-            </label>
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-              <input type="checkbox" name="key_edit" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Modificar
-            </label>
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-              <input type="checkbox" name="key_delete" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Dar de Baja
-            </label>
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-              <input type="checkbox" name="key_export" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Exportar Reportes
-            </label>
+
+            <!-- Alta -->
+            <div class="perm-toggle-item">
+              <input type="checkbox" name="key_add" id="alta-key_add" style="display:none;">
+              <button type="button" class="perm-toggle-btn" data-checkbox="alta-key_add">
+                <span class="perm-icon-off"><i data-lucide="x-circle"></i></span>
+                <span class="perm-icon-on"><i data-lucide="check-circle"></i></span>
+              </button>
+              <span class="perm-label">Dar de Alta</span>
+            </div>
+
+            <!-- Modificar -->
+            <div class="perm-toggle-item">
+              <input type="checkbox" name="key_edit" id="alta-key_edit" style="display:none;">
+              <button type="button" class="perm-toggle-btn" data-checkbox="alta-key_edit">
+                <span class="perm-icon-off"><i data-lucide="x-circle"></i></span>
+                <span class="perm-icon-on"><i data-lucide="check-circle"></i></span>
+              </button>
+              <span class="perm-label">Modificar</span>
+            </div>
+
+            <!-- Baja -->
+            <div class="perm-toggle-item">
+              <input type="checkbox" name="key_delete" id="alta-key_delete" style="display:none;">
+              <button type="button" class="perm-toggle-btn" data-checkbox="alta-key_delete">
+                <span class="perm-icon-off"><i data-lucide="x-circle"></i></span>
+                <span class="perm-icon-on"><i data-lucide="check-circle"></i></span>
+              </button>
+              <span class="perm-label">Dar de Baja</span>
+            </div>
+
+            <!-- Exportar -->
+            <div class="perm-toggle-item">
+              <input type="checkbox" name="key_export" id="alta-key_export" style="display:none;">
+              <button type="button" class="perm-toggle-btn" data-checkbox="alta-key_export">
+                <span class="perm-icon-off"><i data-lucide="x-circle"></i></span>
+                <span class="perm-icon-on"><i data-lucide="check-circle"></i></span>
+              </button>
+              <span class="perm-label">Exportar Reportes</span>
+            </div>
+
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
 
     <!-- VIEW: MODIFICAR -->
@@ -128,10 +160,11 @@
         </div>
       </div>
 
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
-        <form id="modificar-perfil-form">
+      <form id="modificar-perfil-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
+        <!-- Panel izquierdo: Información del Perfil -->
+        <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
           <h3 class="section-title" style="margin-top: 0;">Información del Perfil</h3>
-          <div class="form-grid" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+          <div style="display: grid; gap: 1.5rem;">
             <div class="form-group">
               <label>Nombre del Perfil</label>
               <input type="text" name="nickname" class="form-control" required>
@@ -141,24 +174,56 @@
               <input type="text" name="description" class="form-control">
             </div>
           </div>
+        </div>
 
-          <h3 class="section-title">Niveles de Acceso Globales</h3>
+        <!-- Panel derecho: Niveles de Acceso -->
+        <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px;">
+          <h3 class="section-title" style="margin-top: 0;">Niveles de Acceso Globales</h3>
           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem;">
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-              <input type="checkbox" name="key_add" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Dar de Alta
-            </label>
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-              <input type="checkbox" name="key_edit" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Modificar
-            </label>
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-              <input type="checkbox" name="key_delete" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Dar de Baja
-            </label>
-            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-              <input type="checkbox" name="key_export" style="width:18px;height:18px;accent-color:var(--accent-color);"> Permitir Exportar Reportes
-            </label>
+
+            <!-- Alta -->
+            <div class="perm-toggle-item" data-target="mod-key_add">
+              <input type="checkbox" name="key_add" id="mod-key_add" style="display:none;">
+              <button type="button" class="perm-toggle-btn" data-checkbox="mod-key_add">
+                <span class="perm-icon-off"><i data-lucide="x-circle"></i></span>
+                <span class="perm-icon-on"><i data-lucide="check-circle"></i></span>
+              </button>
+              <span class="perm-label">Dar de Alta</span>
+            </div>
+
+            <!-- Modificar -->
+            <div class="perm-toggle-item" data-target="mod-key_edit">
+              <input type="checkbox" name="key_edit" id="mod-key_edit" style="display:none;">
+              <button type="button" class="perm-toggle-btn" data-checkbox="mod-key_edit">
+                <span class="perm-icon-off"><i data-lucide="x-circle"></i></span>
+                <span class="perm-icon-on"><i data-lucide="check-circle"></i></span>
+              </button>
+              <span class="perm-label">Modificar</span>
+            </div>
+
+            <!-- Baja -->
+            <div class="perm-toggle-item" data-target="mod-key_delete">
+              <input type="checkbox" name="key_delete" id="mod-key_delete" style="display:none;">
+              <button type="button" class="perm-toggle-btn" data-checkbox="mod-key_delete">
+                <span class="perm-icon-off"><i data-lucide="x-circle"></i></span>
+                <span class="perm-icon-on"><i data-lucide="check-circle"></i></span>
+              </button>
+              <span class="perm-label">Dar de Baja</span>
+            </div>
+
+            <!-- Exportar -->
+            <div class="perm-toggle-item" data-target="mod-key_export">
+              <input type="checkbox" name="key_export" id="mod-key_export" style="display:none;">
+              <button type="button" class="perm-toggle-btn" data-checkbox="mod-key_export">
+                <span class="perm-icon-off"><i data-lucide="x-circle"></i></span>
+                <span class="perm-icon-on"><i data-lucide="check-circle"></i></span>
+              </button>
+              <span class="perm-label">Exportar Reportes</span>
+            </div>
+
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
 
     <!-- VIEW: BAJA -->
@@ -182,3 +247,5 @@
 
   </div>
 </div>
+
+

@@ -104,7 +104,6 @@ input, select, textarea {
 /* ── Global Form Focus: underline only ──────────────────── */
 /* Reset default styles for common form elements */
 input:not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]),
-select,
 textarea {
   background: transparent !important;
   border: none !important;
@@ -112,20 +111,59 @@ textarea {
   border-radius: 0 !important;
   color: var(--text-color) !important;
   outline: none !important;
-  transition: border-color 0.2s ease;
   box-shadow: none !important;
   padding-left: 0;
   padding-right: 0;
 }
 
+/* Style selects to look like custom dropdowns (Tamaño style) */
+select {
+  appearance: none;
+  background-color: transparent !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 6px !important;
+  color: var(--text-color) !important;
+  padding: 0.5rem 2rem 0.5rem 0.75rem !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.dark-mode select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+select:hover {
+  background-color: var(--bg-subtle) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Style the native dropdown options to match the theme */
+select option {
+  background-color: var(--bg-card);
+  color: var(--text-color);
+  padding: 8px; /* Adds a bit of breathing room if the browser supports it */
+}
+
+
 /* Apply the green underline on focus with !important to win over module-specific CSS */
 input:not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):focus,
-select:focus,
 textarea:focus {
   outline: none !important;
   border-bottom: 2px solid var(--accent-color) !important;
   box-shadow: none !important;
   background: transparent !important;
+}
+
+select:focus {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 0 2px rgba(0, 168, 89, 0.2) !important; /* Greenish glow to match accent */
+  outline: none !important;
 }
 
 /* Ensure placeholder visibility remains consistent */

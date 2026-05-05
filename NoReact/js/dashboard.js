@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(sessionStorage.getItem('user'));
     if (!user) { window.location.replace('../index.html'); return; }
 
-    const permsCheck = JSON.parse(localStorage.getItem('permissions') || '[]');
+    const permsCheck = JSON.parse(sessionStorage.getItem('permissions') || '[]');
     const hasNoModules = !Array.isArray(permsCheck) || permsCheck.length === 0;
     if (user.status === 0 || hasNoModules) {
         if (window.AccessDeniedModal) {
@@ -124,12 +124,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             const open = configPanel.style.display === 'flex';
             configPanel.style.display = open ? 'none' : 'flex';
             configBtn.classList.toggle('config-btn-active', !open);
+            if (open) {
+                const scaleOpts = document.getElementById('scale-options');
+                if (scaleOpts) scaleOpts.style.display = 'none';
+            }
         });
         configPanel.addEventListener('click', e => e.stopPropagation());
         document.addEventListener('click', e => {
             if (!configPanel.contains(e.target) && !configBtn.contains(e.target)) {
                 configPanel.style.display = 'none';
                 configBtn.classList.remove('config-btn-active');
+                const scaleOpts = document.getElementById('scale-options');
+                if (scaleOpts) scaleOpts.style.display = 'none';
             }
         });
     }
@@ -153,11 +159,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    const perms = JSON.parse(localStorage.getItem('permissions') || '[]');
+    const perms = JSON.parse(sessionStorage.getItem('permissions') || '[]');
+    // Filtrar permisos excluyendo "Sin Acceso" (doble seguridad en caso de datos legacy en sessionStorage)
+    const visiblePerms = perms.filter(p => p.profileNickname !== 'Sin Acceso');
     const userId = user.id ?? user.idUser;
     let navModuleList = await fetchNavModulesForUser(userId);
     if (!navModuleList) {
-        navModuleList = modulesStatic.filter(m => perms.some(p => p.moduleName === m.name));
+        // Fallback: mostrar solo módulos que existan en los permisos visibles
+        navModuleList = modulesStatic.filter(m => visiblePerms.some(p => p.moduleName === m.name));
     }
 
     if (navModules) {
@@ -261,8 +270,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (logoutBtn) {
         logoutBtn.onclick = () => {
-            localStorage.removeItem('user');
-            localStorage.removeItem('permissions');
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('permissions');
             window.location.replace('../index.html');
         };
     }

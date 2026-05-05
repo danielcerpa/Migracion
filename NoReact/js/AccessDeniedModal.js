@@ -25,9 +25,9 @@ class AccessDeniedModal {
                 // Setup Logout
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', () => {
-                        localStorage.removeItem('user');
-                        localStorage.removeItem('permissions');
-                        localStorage.removeItem('token');
+                        sessionStorage.removeItem('user');
+                        sessionStorage.removeItem('permissions');
+                        sessionStorage.removeItem('token');
                         window.location.replace('../index.html');
                     });
                 }
@@ -40,9 +40,9 @@ class AccessDeniedModal {
         } catch (error) {
             console.error('Error showing AccessDeniedModal:', error);
             // Fallback: alert and logout
-            alert('Acceso Denegado: Sus permisos han sido eliminados. Por favor, contáctese con su administrador.');
-            localStorage.removeItem('user');
-            localStorage.removeItem('permissions');
+            window.Utils.showToast('Acceso Denegado: Sus permisos han sido eliminados. Por favor, contáctese con su administrador.', 'danger');
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('permissions');
             window.location.replace('../index.html');
         }
     }

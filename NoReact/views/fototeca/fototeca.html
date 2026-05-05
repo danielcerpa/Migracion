@@ -13,8 +13,8 @@
         <div>
           <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
             Gestión de Fototeca
-            <button class="module-info-btn" title="Ver guía del módulo">
-              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            <button class="btn-info" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 18px; height: 18px;"></i> Tutorial de uso
             </button>
           </h2>
         </div>
@@ -76,30 +76,34 @@
         </div>
       </div>
 
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 600px;">
-        <form id="alta-fototeca-form" enctype="multipart/form-data">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 700px;">
+        <form id="alta-fototeca-form">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-            <div class="form-group"><label>ID Espécimen *</label><input type="number" name="id_especimen" required min="1"></div>
-            <div class="form-group full-width">
-              <label>Archivo de imagen</label>
-              <input type="file" name="archivo" id="alta-foto-file" accept="image/jpeg,image/png,image/webp,image/gif">
-              <p class="fototeca-upload-hint">Si elige un archivo, se guarda en el servidor (carpeta <code>uploads/fototeca</code>). Máx. 5 MB.</p>
+            <div class="form-group">
+              <label>Espécimen *</label>
+              <div data-cs="id_especimen"></div>
+              <input type="hidden" name="id_especimen" required>
             </div>
-          </div>
-          <div id="alta-foto-preview" style="display:none; margin-bottom:1.5rem;">
-            <img id="alta-foto-preview-img" src="" alt="Preview" style="max-width:100%; max-height:200px; border-radius:8px; border:1px solid var(--border-color);">
-          </div>
-          <div class="form-group" style="margin-bottom: 1.5rem;">
-            <label>Ruta o URL (solo si no sube archivo)</label>
-            <input type="url" name="ruta_archivo" placeholder="https://... (opcional si hay archivo)">
+            <div class="form-group">
+              <label>Ruta o URL de la imagen *</label>
+              <input type="url" name="ruta_archivo" placeholder="https://..." required>
+            </div>
           </div>
           <div class="form-group" style="margin-bottom: 1.5rem;">
             <label>Descripción de la Foto</label>
             <input type="text" name="descripcion_foto" placeholder="Ej. Vista dorsal de las alas">
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            <div class="form-group"><label>ID Colector (Opcional)</label><input type="number" name="id_colector"></div>
-            <div class="form-group"><label>ID Determinador (Opcional)</label><input type="number" name="id_determinador"></div>
+            <div class="form-group">
+              <label>Colector (Opcional)</label>
+              <div data-cs="id_colector"></div>
+              <input type="hidden" name="id_colector">
+            </div>
+            <div class="form-group">
+              <label>Determinador (Opcional)</label>
+              <div data-cs="id_determinador"></div>
+              <input type="hidden" name="id_determinador">
+            </div>
           </div>
         </form>
       </div>
@@ -122,19 +126,34 @@
         </div>
       </div>
 
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 600px;">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 700px;">
         <form id="modificar-fototeca-form">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-            <div class="form-group"><label>ID Espécimen *</label><input type="number" name="id_especimen" required min="1"></div>
-            <div class="form-group"><label>Ruta o URL *</label><input type="text" name="ruta_archivo" required></div>
+            <div class="form-group">
+              <label>Espécimen *</label>
+              <div data-cs="id_especimen"></div>
+              <input type="hidden" name="id_especimen" required>
+            </div>
+            <div class="form-group">
+              <label>Ruta o URL *</label>
+              <input type="url" name="ruta_archivo" required>
+            </div>
           </div>
           <div class="form-group" style="margin-bottom: 1.5rem;">
             <label>Descripción de la Foto</label>
             <input type="text" name="descripcion_foto">
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            <div class="form-group"><label>ID Colector (Opcional)</label><input type="number" name="id_colector"></div>
-            <div class="form-group"><label>ID Determinador (Opcional)</label><input type="number" name="id_determinador"></div>
+            <div class="form-group">
+              <label>Colector (Opcional)</label>
+              <div data-cs="id_colector"></div>
+              <input type="hidden" name="id_colector">
+            </div>
+            <div class="form-group">
+              <label>Determinador (Opcional)</label>
+              <div data-cs="id_determinador"></div>
+              <input type="hidden" name="id_determinador">
+            </div>
           </div>
         </form>
       </div>

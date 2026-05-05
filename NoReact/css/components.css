@@ -102,6 +102,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -444,4 +446,62 @@ select.form-select.is-danger {
   .header-actions .btn-danger-soft {
     flex: 1 1 100%;
   }
+}
+
+/* ── Pagination ───────────────────────────────────────────── */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.pagination-info {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.btn-page-nav,
+.btn-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-page-nav:hover:not(:disabled),
+.btn-page:hover:not(.active) {
+  background: var(--bg-hover);
+  border-color: var(--text-muted);
+}
+
+.btn-page.active {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+  pointer-events: none;
+}
+
+.btn-page-nav:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--text-muted);
 }

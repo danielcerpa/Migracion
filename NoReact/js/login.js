@@ -12,7 +12,7 @@ function buildMockPermissions(isAdmin) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('user')) {
+    if (sessionStorage.getItem('user')) {
         window.location.replace('views/dashboard.html');
         return;
     }
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const errorMsg = document.getElementById('error-msg');
+
     const togglePassBtn = document.getElementById('toggle-password');
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form Submission
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        errorMsg.style.display = 'none';
+        e.preventDefault();
 
         const email = emailInput.value;
         const password = passwordInput.value;
@@ -93,44 +93,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok && data.success) {
                 // Autenticación exitosa
-                localStorage.setItem('user', JSON.stringify(data.user));
-                localStorage.setItem('permissions', JSON.stringify(data.permissions || []));
+                sessionStorage.setItem('user', JSON.stringify(data.user));
+                sessionStorage.setItem('permissions', JSON.stringify(data.permissions || []));
                 window.location.replace('views/dashboard.html');
             } else {
-                // Manejar mock alternativo por si la API falla o la DB está vacía
-                if ((email === 'admin@mail.com' || email === 'consultor@mail.com') && password === '123') {
+                // Manejar mock por si la API responde con error pero es cuenta de demo (opcional, dependiendo de si quieres que el API mande)
+                // Pero siguiendo la instrucción de "separar", verificamos los datos ingresados
+                const isDemoEmail = (email === 'admin@mail.com' || email === 'consultor@mail.com');
+                
+                if (isDemoEmail && password === '123') {
                     const isAdmin = email === 'admin@mail.com';
-                    const user = {
-                        id: isAdmin ? 1 : 2,
-                        name: isAdmin ? 'Admin' : 'Consultor',
-                        email,
-                        status: 1,
-                    };
-                    localStorage.setItem('user', JSON.stringify(user));
-                    localStorage.setItem('permissions', JSON.stringify(buildMockPermissions(isAdmin)));
+                    const user = { id: isAdmin ? 1 : 2, name: isAdmin ? 'Admin' : 'Consultor', email, status: 1 };
+                    sessionStorage.setItem('user', JSON.stringify(user));
+                    sessionStorage.setItem('permissions', JSON.stringify(buildMockPermissions(isAdmin)));
                     window.location.replace('views/dashboard.html');
+                } else if (!isDemoEmail) {
+                    window.Utils.showToast('Correo no encontrado', 'danger');
                 } else {
-                    errorMsg.textContent = data.error || 'Correo o contraseña incorrectos';
-                    errorMsg.style.display = 'block';
+                    window.Utils.showToast('Contraseña incorrecta', 'danger');
                 }
             }
         } catch (err) {
             console.error('Login error:', err);
-            // Fallback al mock si no hay servidor
-            if ((email === 'admin@mail.com' || email === 'consultor@mail.com') && password === '123') {
+            // Fallback al mock si no hay servidor (separado)
+            const isDemoEmail = (email === 'admin@mail.com' || email === 'consultor@mail.com');
+            
+            if (isDemoEmail && password === '123') {
                 const isAdmin = email === 'admin@mail.com';
-                const user = {
-                    id: isAdmin ? 1 : 2,
-                    name: isAdmin ? 'Admin' : 'Consultor',
-                    email,
-                    status: 1,
-                };
-                localStorage.setItem('user', JSON.stringify(user));
-                localStorage.setItem('permissions', JSON.stringify(buildMockPermissions(isAdmin)));
+                const user = { id: isAdmin ? 1 : 2, name: isAdmin ? 'Admin' : 'Consultor', email, status: 1 };
+                sessionStorage.setItem('user', JSON.stringify(user));
+                sessionStorage.setItem('permissions', JSON.stringify(buildMockPermissions(isAdmin)));
                 window.location.replace('views/dashboard.html');
+            } else if (!isDemoEmail) {
+                window.Utils.showToast('Correo no encontrado', 'danger');
+            } else if (isDemoEmail && password !== '123') {
+                window.Utils.showToast('Contraseña incorrecta', 'danger');
             } else {
-                errorMsg.textContent = 'Error de conexión con el servidor.';
-                errorMsg.style.display = 'block';
+                window.Utils.showToast('Error de conexión con el servidor.', 'danger');
             }
         } finally {
             submitBtn.disabled = false;

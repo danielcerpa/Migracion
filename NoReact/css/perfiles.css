@@ -23,3 +23,62 @@
   letter-spacing: 0.06em;
   color: var(--text-muted);
 }
+
+/* ── Permission Toggle Buttons ─────────────────────────────────── */
+.perm-toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.perm-toggle-item:hover {
+  background: var(--bg-hover, rgba(255,255,255,0.05));
+}
+
+.perm-toggle-item:active {
+  transform: scale(0.97);
+}
+
+.perm-toggle-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  /* El clic lo gestiona el contenedor .perm-toggle-item */
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+
+/* Icono OFF → X roja, visible por defecto */
+.perm-icon-off {
+  display: flex;
+  color: #EF4444;
+}
+.perm-icon-off i { width: 24px; height: 24px; }
+
+/* Icono ON → check verde, oculto por defecto */
+.perm-icon-on {
+  display: none;
+  color: #22C55E;
+}
+.perm-icon-on i { width: 24px; height: 24px; }
+
+/* Cuando el botón tiene la clase .perm-active → intercambiar iconos */
+.perm-toggle-btn.perm-active .perm-icon-off { display: none; }
+.perm-toggle-btn.perm-active .perm-icon-on  { display: flex; }
+
+.perm-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+  user-select: none;
+}

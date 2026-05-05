@@ -38,11 +38,12 @@ try {
         }
 
         if ($isPasswordValid) {
-            // 3. Obtener permisos detallados por módulo
+            // 3. Obtener permisos detallados por módulo (excluir "Sin Acceso")
             $stmtPerms = $pdo->prepare("
                 SELECT 
                     m.idModule, 
                     m.name as moduleName,
+                    p.nickname as profileNickname,
                     p.key_add, 
                     p.key_edit, 
                     p.key_delete, 
@@ -50,7 +51,7 @@ try {
                 FROM permissions perm
                 JOIN module m ON perm.idModule = m.idModule
                 JOIN profile p ON perm.idProfile = p.idProfile
-                WHERE perm.idUser = ?
+                WHERE perm.idUser = ? AND p.nickname <> 'Sin Acceso'
             ");
             $stmtPerms->execute([$user['idUser']]);
             $permissions = $stmtPerms->fetchAll(PDO::FETCH_ASSOC);
@@ -68,11 +69,11 @@ try {
             ]);
         } else {
             http_response_code(401);
-            echo json_encode(["error" => "Credenciales incorrectas"]);
+            echo json_encode(["error" => "Contraseña incorrecta"]);
         }
     } else {
         http_response_code(401);
-        echo json_encode(["error" => "Credenciales incorrectas o usuario inactivo"]);
+        echo json_encode(["error" => "Correo no encontrado"]);
     }
 
 } catch (PDOException $e) {

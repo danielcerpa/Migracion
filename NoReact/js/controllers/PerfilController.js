@@ -13,6 +13,12 @@ class PerfilController {
         this.container = document.getElementById('perfiles-module');
         if (!this.container) return;
 
+        // Resetear estado al recargar desde sidebar
+        this.currentView = 'general';
+        this.selectedProfile = null;
+        this.query = '';
+        this.currentPage = 1;
+
         await this.model.fetchProfiles();
 
         if (this._uiAbort) this._uiAbort.abort();
@@ -29,11 +35,11 @@ class PerfilController {
         // Navigation events
         document.getElementById('btn-alta-perfil')?.addEventListener('click', () => this.navigate('alta'), { signal });
         document.getElementById('btn-actualizar-perfil')?.addEventListener('click', () => {
-            if (!this.selectedProfile) { alert('Seleccione un perfil de la tabla primero.'); return; }
+            if (!this.selectedProfile) { window.Utils.showToast('Seleccione un perfil de la tabla primero.', 'warning'); return; }
             this.navigate('modificar', this.selectedProfile);
         }, { signal });
         document.getElementById('btn-eliminar-perfil')?.addEventListener('click', () => {
-            if (!this.selectedProfile) { alert('Seleccione un perfil de la tabla primero.'); return; }
+            if (!this.selectedProfile) { window.Utils.showToast('Seleccione un perfil de la tabla primero.', 'warning'); return; }
             this.navigate('baja', this.selectedProfile);
         }, { signal });
 
@@ -50,18 +56,34 @@ class PerfilController {
                 this.query = e.target.value;
                 this.currentPage = 1;
                 this.renderTable();
+                const clearBtn = document.getElementById('btn-clear-search');
+                if (clearBtn) clearBtn.style.visibility = this.query ? 'visible' : 'hidden';
             }, { signal });
         }
         document.getElementById('btn-clear-search')?.addEventListener('click', () => {
             this.query = '';
             if (searchInput) searchInput.value = '';
             this.renderTable();
+            const clearBtn = document.getElementById('btn-clear-search');
+            if (clearBtn) clearBtn.style.visibility = 'hidden';
         }, { signal });
 
         // Forms
         document.getElementById('alta-perfil-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e), { signal });
         document.getElementById('modificar-perfil-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e), { signal });
         document.getElementById('btn-confirmar-baja')?.addEventListener('click', () => this.handleBajaSubmit(), { signal });
+
+        // Permission toggles — delegado en document para cubrir ambos formularios
+        document.addEventListener('click', (e) => {
+            const item = e.target.closest('.perm-toggle-item');
+            if (!item) return;
+            const btn = item.querySelector('.perm-toggle-btn');
+            if (!btn) return;
+            const cb = document.getElementById(btn.dataset.checkbox);
+            if (!cb) return;
+            cb.checked = !cb.checked;
+            this._syncToggleBtn(btn);
+        }, { signal });
     }
 
     navigate(view, profile = null) {
@@ -136,7 +158,7 @@ class PerfilController {
 
         tbody.innerHTML = '';
         if (filtered.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="td-empty">No se encontraron perfiles para "${this.query}".</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="td-empty">No se encontraron perfiles para "${this.query}".</td></tr>`;
         } else {
             filtered.forEach(p => {
                 const tr = document.createElement('tr');
@@ -152,7 +174,6 @@ class PerfilController {
                 const renderCheck = (val) => val ? `<i data-lucide="check-circle" style="color: var(--success-color); width: 18px;"></i>` : `<i data-lucide="x-circle" style="color: #EF4444; width: 18px;"></i>`;
 
                 tr.innerHTML = `
-                    <td class="td-id">#${p.idProfile}</td>
                     <td class="td-name" style="color: var(--accent-color); font-weight: 600;">${p.nickname}</td>
                     <td>${p.description || '-'}</td>
                     <td style="text-align: center;">${renderCheck(p.key_add)}</td>
@@ -166,8 +187,31 @@ class PerfilController {
         lucide.createIcons();
     }
 
+    // ── Perm Toggle Helpers ──────────────────────────────────────────
+    _syncToggleBtn(btn) {
+        const cb = document.getElementById(btn.dataset.checkbox);
+        if (!cb) return;
+        btn.classList.toggle('perm-active', cb.checked);
+        lucide.createIcons();
+    }
+
+    _syncPermToggles(formId) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+        form.querySelectorAll('.perm-toggle-btn').forEach(btn => this._syncToggleBtn(btn));
+    }
+
+    _resetPermToggles(formId) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+        form.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+        form.querySelectorAll('.perm-toggle-btn').forEach(btn => btn.classList.remove('perm-active'));
+        lucide.createIcons();
+    }
+
     renderAltaForm() {
         document.getElementById('alta-perfil-form').reset();
+        this._resetPermToggles('alta-perfil-form');
     }
 
     renderModificarForm() {
@@ -179,6 +223,7 @@ class PerfilController {
         form.key_edit.checked = Boolean(this.selectedProfile.key_edit);
         form.key_delete.checked = Boolean(this.selectedProfile.key_delete);
         form.key_export.checked = Boolean(this.selectedProfile.key_export);
+        this._syncPermToggles('modificar-perfil-form');
     }
 
     renderBajaForm() {

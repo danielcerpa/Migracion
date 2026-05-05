@@ -126,3 +126,128 @@
 .module-breadcrumb span { cursor: pointer; }
 .module-breadcrumb span:hover { color: var(--accent-color); }
 .module-breadcrumb .current-crumb { color: var(--text-color); font-weight: 600; }
+
+/* ─── FORM STYLES (consistente con usuarios.css) ─── */
+.catalogos-module {
+  .screen-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .screen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .btn-back {
+    background: var(--bg-subtle, #f3f4f6);
+    border: none;
+    color: var(--text-color);
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-back:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .screen-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.65rem;
+  }
+
+  /* Section title igual que usuarios */
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+
+  /* Grid de formulario dinámico */
+  .form-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  /* Campos full-width en grid de 2 columnas */
+  .form-group.cat-full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* Etiquetas pequeñas muted */
+  .form-group label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  /* Asterisco de campo requerido */
+  .cat-required {
+    color: var(--accent-color);
+    margin-left: 2px;
+    font-style: normal;
+  }
+
+  /* Inputs, selects, textareas al 100% */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+
+  /* Tabla de búsqueda */
+  .table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 450px;
+  }
+
+  .search-wrapper > svg {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+  }
+
+  .search-wrapper input {
+    width: 100%;
+    padding: 0.5rem 32px 0.5rem 28px;
+    background-color: transparent;
+    border: none;
+    color: var(--text-color);
+    font-size: 0.9rem;
+  }
+}

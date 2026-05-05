@@ -12,6 +12,12 @@ class CatalogoController {
         this.container = document.getElementById('catalogos-module');
         if (!this.container) return;
 
+        // Resetear estado al recargar desde sidebar
+        this.currentView = 'dashboard';
+        this.currentSection = null;
+        this.selectedItem = null;
+        this.query = '';
+
         if (this._uiAbort) this._uiAbort.abort();
         this._uiAbort = new AbortController();
 
@@ -29,11 +35,11 @@ class CatalogoController {
         
         document.getElementById('btn-alta-catalogo')?.addEventListener('click', () => this.navigate('alta'), { signal });
         document.getElementById('btn-actualizar-catalogo')?.addEventListener('click', () => {
-            if (!this.selectedItem) { alert('Seleccione un registro de la tabla primero.'); return; }
+            if (!this.selectedItem) { window.Utils.showToast('Seleccione un registro de la tabla primero.', 'warning'); return; }
             this.navigate('modificar', this.selectedItem);
         }, { signal });
         document.getElementById('btn-eliminar-catalogo')?.addEventListener('click', () => {
-            if (!this.selectedItem) { alert('Seleccione un registro de la tabla primero.'); return; }
+            if (!this.selectedItem) { window.Utils.showToast('Seleccione un registro de la tabla primero.', 'warning'); return; }
             this.navigate('baja', this.selectedItem);
         }, { signal });
 
@@ -47,8 +53,16 @@ class CatalogoController {
             searchInput.addEventListener('input', (e) => {
                 this.query = e.target.value;
                 this.renderTable();
+                const clearBtn = document.getElementById('btn-clear-search-cat');
+                if (clearBtn) clearBtn.style.visibility = this.query ? 'visible' : 'hidden';
             }, { signal });
         }
+        document.getElementById('btn-clear-search-cat')?.addEventListener('click', (e) => {
+            this.query = '';
+            if (searchInput) searchInput.value = '';
+            this.renderTable();
+            e.currentTarget.style.visibility = 'hidden';
+        }, { signal });
 
         // Forms
         document.getElementById('alta-catalogo-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e), { signal });
@@ -132,9 +146,11 @@ class CatalogoController {
         } else if (this.currentView === 'alta') {
             document.getElementById('cat-title-alta').textContent = `Nuevo ${this.getSectionLabel()}`;
             this.renderForm('alta-catalogo-form', 'alta');
+            this.renderSideTable('alta');
         } else if (this.currentView === 'modificar') {
             document.getElementById('cat-title-modificar').textContent = `Actualizar ${this.getSectionLabel()}`;
             this.renderForm('modificar-catalogo-form', 'modificar');
+            this.renderSideTable('modificar');
         } else if (this.currentView === 'baja') {
             this.renderBaja();
         }
@@ -173,7 +189,11 @@ class CatalogoController {
         else if (this.currentSection === 'especie') cols.push({ label: 'Nombre', key: 'nombre' }, { label: 'Subespecie', key: 'subespecie' });
         else cols.push({ label: 'Nombre', key: 'nombre' });
 
-        cols.push({ label: 'Estado', key: 'status' });
+        if (['estado', 'municipio', 'localidad'].includes(this.currentSection)) {
+            cols.push({ label: 'País', key: 'nombrePais' });
+        } else {
+            cols.push({ label: 'Estado', key: 'status' });
+        }
 
         thead.innerHTML = `<tr>${cols.map(c => `<th>${c.label}</th>`).join('')}</tr>`;
 
@@ -216,60 +236,67 @@ class CatalogoController {
     renderForm(formId, mode) {
         const form = document.getElementById(formId);
         const fieldsContainer = form.querySelector('.dynamic-fields');
-        fieldsContainer.innerHTML = ''; // Clear
+        fieldsContainer.innerHTML = '';
 
         const s = this.currentSection;
         let html = '';
 
-        const makeInput = (label, name, required = false, type = 'text', ph = '') => `
-            <div class="form-group">
-                <label>${label} ${required ? '*' : ''}</label>
-                <input type="${type}" name="${name}" ${required ? 'required' : ''} placeholder="${ph}">
-            </div>`;
+        // Secciones con muchos campos usan 2 columnas
+        const multiColSections = ['colector', 'determinador', 'cita', 'localidad', 'planta', 'organismo', 'coleccion'];
+        const gridCols = multiColSections.includes(s) ? '1fr 1fr' : '1fr';
+        fieldsContainer.style.gridTemplateColumns = gridCols;
+
+        const makeCol = (label, inner) => `<div class="form-group"><label>${label}</label>${inner}</div>`;
+        const makeColFull = (label, inner) => `<div class="form-group cat-full-width"><label>${label}</label>${inner}</div>`;
+        const req = `<span class="cat-required">*</span>`;
+
+        const inp = (name, type = 'text', ph = '', required = false) =>
+            `<input type="${type}" name="${name}" class="form-control" ${required ? 'required' : ''} placeholder="${ph}">`;
+        const sel = (name, options, required = false) =>
+            `<select name="${name}" class="form-select custom-select-vanilla" ${required ? 'required' : ''}><option value="">Seleccione...</option>${options}</select>`;
+        const ta = (name, ph = '') =>
+            `<textarea name="${name}" class="form-control" rows="3" placeholder="${ph}" style="resize:vertical;"></textarea>`;
 
         const parentSec = this.model.PARENT_SECTION[s];
         if (parentSec) {
-            let parentIdKey = parentSec === 'organismo' ? 'idOrganismo' : 'id' + parentSec.charAt(0).toUpperCase() + parentSec.slice(1);
-            let options = this.model.parentItems.map(p => `<option value="${p[parentIdKey]}">${p.nombre || p.nombre_cientifico || p.nombre_organismo || p.acronimo || p[parentIdKey]}</option>`).join('');
-            html += `
-            <div class="form-group">
-                <label>Padre (${parentSec}) *</label>
-                <select name="${parentIdKey}" required>
-                    <option value="">Seleccione...</option>
-                    ${options}
-                </select>
-            </div>`;
+            const parentIdKey = parentSec === 'organismo' ? 'idOrganismo' : 'id' + parentSec.charAt(0).toUpperCase() + parentSec.slice(1);
+            const options = this.model.parentItems.map(p => `<option value="${p[parentIdKey]}">${p.nombre || p.nombre_cientifico || p.nombre_organismo || p.acronimo || p[parentIdKey]}</option>`).join('');
+            html += makeColFull(`Padre (${parentSec}) ${req}`, sel(parentIdKey, options, true));
         }
 
         if (['pais', 'estado', 'municipio', 'localidad', 'orden', 'familia', 'subfamilia', 'tribu', 'genero', 'especie', 'tipo'].includes(s)) {
-            html += makeInput('Nombre', 'nombre', true);
-            if (s === 'pais') html += makeInput('Código ISO', 'codigo', false);
-            if (s === 'localidad') html += makeInput('Latitud', 'latitud', false) + makeInput('Longitud', 'longitud', false) + makeInput('Altitud', 'altitud', false);
-            if (s === 'especie') html += makeInput('Subespecie', 'subespecie', false);
+            html += makeCol(`Nombre ${req}`, inp('nombre', 'text', `Ej. ${s.charAt(0).toUpperCase() + s.slice(1)}`, true));
+            if (s === 'pais') html += makeCol('Código ISO', inp('codigo', 'text', 'Ej. MX'));
+            if (s === 'localidad') {
+                html += makeCol('Latitud', inp('latitud', 'text', 'Ej. 19.4326'));
+                html += makeCol('Longitud', inp('longitud', 'text', 'Ej. -99.1332'));
+                html += makeColFull('Altitud (m)', inp('altitud', 'number', 'Ej. 2240'));
+            }
+            if (s === 'especie') html += makeCol('Subespecie', inp('subespecie', 'text', 'Opcional'));
         } else if (['colector', 'determinador'].includes(s)) {
-            html += makeInput('Nombre(s)', 'nombre', true);
-            html += makeInput('Apellido Paterno', 'apellido_paterno', false);
-            html += makeInput('Apellido Materno', 'apellido_materno', false);
-            html += makeInput('Correo', 'correo', false, 'email');
-            html += makeInput('Institución', 'institucion', false);
+            html += makeCol(`Nombre(s) ${req}`, inp('nombre', 'text', 'Ej. Juan', true));
+            html += makeCol('Apellido Paterno', inp('apellido_paterno', 'text', 'Ej. Pérez'));
+            html += makeCol('Apellido Materno', inp('apellido_materno', 'text', 'Ej. García'));
+            html += makeCol('Correo Electrónico', inp('correo', 'email', 'usuario@mail.com'));
+            html += makeColFull('Institución', inp('institucion', 'text', 'Ej. UNAM'));
         } else if (s === 'planta') {
-            html += makeInput('Familia Botánica', 'familia_botanica', false);
-            html += makeInput('Nombre Científico', 'nombre_cientifico', true);
-            html += makeInput('Nombre Común', 'nombre_comun', false);
+            html += makeCol('Familia Botánica', inp('familia_botanica', 'text', 'Ej. Asteraceae'));
+            html += makeCol(`Nombre Científico ${req}`, inp('nombre_cientifico', 'text', 'Ej. Dahlia pinnata', true));
+            html += makeColFull('Nombre Común', inp('nombre_comun', 'text', 'Ej. Dalia'));
         } else if (s === 'organismo') {
-            html += makeInput('Familia Hospedera', 'familia_hospedera', false);
-            html += makeInput('Nombre Organismo', 'nombre_organismo', true);
+            html += makeCol('Familia Hospedera', inp('familia_hospedera', 'text', 'Ej. Formicidae'));
+            html += makeCol(`Nombre Organismo ${req}`, inp('nombre_organismo', 'text', 'Ej. Hormiga roja', true));
         } else if (s === 'coleccion') {
-            html += makeInput('Acrónimo', 'acronimo', true);
-            html += makeInput('Nombre Institución', 'nombre_institucion', false);
+            html += makeCol(`Acrónimo ${req}`, inp('acronimo', 'text', 'Ej. UNAM-EC', true));
+            html += makeCol('Nombre de la Institución', inp('nombre_institucion', 'text', 'Ej. Universidad Nacional...'));
         } else if (s === 'cita') {
-            html += makeInput('Título', 'titulo', true);
-            html += makeInput('Autores', 'autores', false);
-            html += makeInput('Año', 'anio', false, 'number');
-            html += makeInput('Revista', 'revista', false);
-            html += makeInput('Volumen', 'volumen', false);
-            html += makeInput('Páginas', 'paginas', false);
-            html += `<div class="form-group"><label>Referencia Completa</label><textarea name="referencia_completa"></textarea></div>`;
+            html += makeColFull(`Título ${req}`, inp('titulo', 'text', 'Ej. Taxonomía de los Lepidópteros', true));
+            html += makeColFull('Autores', inp('autores', 'text', 'Ej. García, J.; López, R.'));
+            html += makeCol('Revista / Publicación', inp('revista', 'text', 'Ej. Revista Mexicana de Biodiversidad'));
+            html += makeCol('Año', inp('anio', 'number', 'Ej. 2023'));
+            html += makeCol('Volumen', inp('volumen', 'text', 'Ej. 12(3)'));
+            html += makeCol('Páginas', inp('paginas', 'text', 'Ej. 45-67'));
+            html += makeColFull('Referencia Completa', ta('referencia_completa', 'Cita bibliográfica completa...'));
         }
 
         fieldsContainer.innerHTML = html;
@@ -300,7 +327,7 @@ class CatalogoController {
             await this.model.fetchData(this.currentSection, false);
             this.navigate('general');
         } catch (err) {
-            alert('Error creando el registro');
+            window.Utils.showToast('Error creando el registro', 'danger');
         }
     }
 
@@ -316,7 +343,7 @@ class CatalogoController {
             await this.model.fetchData(this.currentSection, false);
             this.navigate('general');
         } catch (err) {
-            alert('Error actualizando el registro');
+            window.Utils.showToast('Error actualizando el registro', 'danger');
         }
     }
 
@@ -328,7 +355,73 @@ class CatalogoController {
             await this.model.fetchData(this.currentSection, false);
             this.navigate('general');
         } catch (err) {
-            alert('Error eliminando el registro');
+            window.Utils.showToast('Error eliminando el registro', 'danger');
+        }
+    }
+    renderSideTable(view) {
+        const cardId = `${view}-side-table-card`;
+        const card = document.getElementById(cardId);
+        if (!card) return;
+
+        if (this.currentSection !== 'pais' && this.currentSection !== 'orden') {
+            card.style.display = 'none';
+            return;
+        }
+
+        card.style.display = 'block';
+        const titleEl = document.getElementById(`${view}-side-table-title`);
+        if (titleEl) {
+            let label = this.getSectionLabel().toUpperCase();
+            if (label === 'PAÍS') label = 'PAÍSES';
+            else if (label === 'ORDEN') label = 'ÓRDENES';
+            titleEl.textContent = `${label} REGISTRADOS`;
+        }
+        
+        const thead = document.getElementById(`${view}-side-table-head`);
+        const tbody = document.getElementById(`${view}-side-table-body`);
+        const searchInput = document.getElementById(`search-side-${view}-input`);
+        
+        if (searchInput && !searchInput.dataset.bound) {
+            searchInput.dataset.bound = "true";
+            searchInput.addEventListener('input', (e) => {
+                this[`sideQuery_${view}`] = e.target.value.toLowerCase();
+                this.renderSideTable(view);
+            }, { signal: this._uiAbort?.signal });
+        }
+
+        const q = this[`sideQuery_${view}`] || '';
+        
+        let cols = [];
+        if (this.currentSection === 'pais') {
+            cols = [{ label: 'NOMBRE', key: 'nombre' }, { label: 'ISO', key: 'codigo' }];
+        } else if (this.currentSection === 'orden') {
+            cols = [{ label: 'NOMBRE', key: 'nombre' }];
+        }
+
+        thead.innerHTML = `<tr>${cols.map(c => `<th>${c.label}</th>`).join('')}</tr>`;
+
+        let filtered = this.model.items.filter(item => item.status == 1);
+        if (q.trim() !== '') {
+            filtered = filtered.filter(item => 
+                Object.values(item).some(val => String(val).toLowerCase().includes(q))
+            );
+        }
+
+        tbody.innerHTML = '';
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="${cols.length}" style="text-align:center; padding: 1rem; color: var(--text-muted);">No hay registros.</td></tr>`;
+        } else {
+            filtered.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = cols.map(c => `<td>${item[c.key] || '-'}</td>`).join('');
+                tbody.appendChild(tr);
+            });
+        }
+        
+        const tableCard = card.querySelector('.table-card');
+        if (tableCard) {
+            tableCard.style.maxHeight = '400px';
+            tableCard.style.overflowY = 'auto';
         }
     }
 }

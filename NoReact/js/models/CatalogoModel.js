@@ -18,17 +18,19 @@ class CatalogoModel {
 
     async fetchData(section, loadParent = false) {
         try {
-            const promises = [fetch(`${this.apiBase}/catalogos.php?section=${section}`).then(r => r.json())];
+            // Admin table gets all records (active + inactive); parent selects only get active
+            const promises = [fetch(`${this.apiBase}/catalogos.php?section=${section}&all=1`).then(r => r.json())];
             
             const parentSec = this.PARENT_SECTION[section];
             if (loadParent && parentSec) {
+                // Parent items populate form selects → only active
                 promises.push(fetch(`${this.apiBase}/catalogos.php?section=${parentSec}`).then(r => r.json()));
             }
 
             const results = await Promise.all(promises);
             this.items = results[0];
             if (results[1]) {
-                this.parentItems = results[1].filter(item => item.status !== 0 && item.status !== false && item.status !== '0');
+                this.parentItems = results[1]; // API already filters status=1
             } else {
                 this.parentItems = [];
             }

@@ -17,6 +17,11 @@ class PrestamoController {
         this.container = document.getElementById('prestamos-module');
         if (!this.container) return;
 
+        // Resetear estado al recargar desde sidebar
+        this.currentView = 'general';
+        this.selectedItem = null;
+        this.query = '';
+
         if (this._uiAbort) this._uiAbort.abort();
         this._uiAbort = new AbortController();
         this.unbindEjemplarPicker();
@@ -33,11 +38,11 @@ class PrestamoController {
 
         document.getElementById('btn-alta-prestamo')?.addEventListener('click', () => this.navigate('alta'), { signal });
         document.getElementById('btn-actualizar-prestamo')?.addEventListener('click', () => {
-            if (!this.selectedItem) { alert('Seleccione un préstamo primero.'); return; }
+            if (!this.selectedItem) { window.Utils.showToast('Seleccione un préstamo primero.', 'warning'); return; }
             this.navigate('modificar', this.selectedItem);
         }, { signal });
         document.getElementById('btn-eliminar-prestamo')?.addEventListener('click', () => {
-            if (!this.selectedItem) { alert('Seleccione un préstamo primero.'); return; }
+            if (!this.selectedItem) { window.Utils.showToast('Seleccione un préstamo primero.', 'warning'); return; }
             this.navigate('baja', this.selectedItem);
         }, { signal });
         document.getElementById('btn-registrar-devolucion')?.addEventListener('click', () => this.registrarDevolucion(), { signal });
@@ -210,7 +215,7 @@ class PrestamoController {
             const f = document.getElementById('alta-prestamo-form');
             if (f) {
                 f.reset();
-                const u = JSON.parse(localStorage.getItem('user') || '{}');
+                const u = JSON.parse(sessionStorage.getItem('user') || '{}');
                 const pm = f.elements.namedItem('prestamista');
                 if (pm) {
                     pm.value = [u.name, u.last_name].filter(Boolean).join(' ').trim() || 'Colección';
@@ -352,7 +357,7 @@ class PrestamoController {
             await this.model.fetchPrestamos();
             this.render();
         } catch (err) {
-            alert('Error al registrar la devolución');
+            window.Utils.showToast('Error al registrar la devolución', 'danger');
         }
     }
 
@@ -383,7 +388,7 @@ class PrestamoController {
 
     async registrarDevolucion() {
         if (!this.selectedItem) {
-            alert('Seleccione un préstamo en la tabla.');
+            window.Utils.showToast('Seleccione un préstamo en la tabla.', 'warning');
             return;
         }
         const id = this.selectedPrestamoId();

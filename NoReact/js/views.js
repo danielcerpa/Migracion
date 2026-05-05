@@ -134,7 +134,7 @@ function openCommentModal(id, action) {
 
 function submitComment(id, action) {
     const text = document.getElementById('comment-text')?.value;
-    if (action === 'REGRESADA' && !text?.trim()) { alert('Debe agregar un comentario para regresar la solicitud.'); return; }
+    if (action === 'REGRESADA' && !text?.trim()) { window.Utils.showToast('Debe agregar un comentario para regresar la solicitud.', 'warning'); return; }
     closeCommentModal();
     document.querySelector(`[onclick="rechazar(${id})"], [onclick="regresar(${id})"]`)?.closest('.aprobacion-card')?.remove();
 }

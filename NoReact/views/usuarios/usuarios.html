@@ -13,8 +13,8 @@
         <div>
           <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
             Gestión de Usuarios
-            <button class="module-info-btn" title="Ver guía del módulo">
-              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            <button class="btn-info" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 18px; height: 18px;"></i> Tutorial de uso
             </button>
           </h2>
         </div>
@@ -40,18 +40,15 @@
           </button>
         </div>
         <div class="filter-group">
-          <div class="pagination-select-wrapper">
-            <span class="pagination-select-label">Mostrar:</span>
-            <select id="rows-per-page-select" class="pagination-select">
+          <div class="pagination-select-wrapper" style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="pagination-select-label" style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">Mostrar:</span>
+            <select id="rows-per-page-select" class="form-select custom-select-vanilla" style="width: auto; min-width: 70px; padding: 0.35rem 2rem 0.35rem 0.75rem; height: auto; font-size: 0.85rem; border-radius: 8px;">
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
           </div>
-          <button class="btn-outline" style="display: flex; align-items: center; gap: 6px;">
-            <i data-lucide="filter" style="width: 18px; height: 18px;"></i> Filtros
-          </button>
         </div>
       </div>
 
@@ -59,7 +56,6 @@
         <table class="custom-table" id="module-table">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Nombre</th>
               <th>Apellido Paterno</th>
               <th>Apellido Materno</th>

@@ -9,11 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit();
 }
 
-$host = "127.0.0.1";
-$user = "root";
-$password = ""; // Cambia a "1472" si tu XAMPP tiene clave
+$host = "127.0.0.1";  // Cambia a 192.168.10.20 para server
+$user = "root"; // Cambia a "Daniel" para server
+$password = ""; // Cambia a "daniel123" para server
 $dbname = "ug";
-$port = 3306;
+$port = 3307; // Cambia a "3306" para server
 
 try {
     $dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=utf8mb4";

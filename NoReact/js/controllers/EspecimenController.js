@@ -40,12 +40,14 @@ class EspecimenController {
         this.query = '';
         this.altaSelects = {};
         this.solicitudSelects = {};
+        this.editarSolicitudSelects = {};
         this.altaInitialized = false;
+        this.selectedSolicitudRegresada = null; // solicitud REGRESADA seleccionada para editar
     }
 
     getUserId() {
         try {
-            const u = JSON.parse(localStorage.getItem('user') || '{}');
+            const u = JSON.parse(sessionStorage.getItem('user') || '{}');
             return u.id ?? u.idUser ?? null;
         } catch (_) {
             return null;
@@ -122,15 +124,17 @@ class EspecimenController {
                 this.navigate('alta');
             } else if (target.id === 'btn-solicitar-registro') {
                 this.navigate('solicitud');
+            } else if (target.id === 'btn-editar-solicitud') {
+                this.navigate('editar-solicitud');
             } else if (target.id === 'btn-actualizar-especimen' || target.id === 'btn-edit-from-detail') {
                 if (!this.selectedItem) {
-                    alert('Seleccione un espécimen primero.');
+                    window.Utils.showToast('Seleccione un espécimen primero.', 'warning');
                     return;
                 }
                 this.navigate('modificar');
             } else if (target.id === 'btn-eliminar-especimen' || target.id === 'btn-delete-from-detail') {
                 if (!this.selectedItem) {
-                    alert('Seleccione un espécimen primero.');
+                    window.Utils.showToast('Seleccione un espécimen primero.', 'warning');
                     return;
                 }
                 this.navigate('baja');
@@ -169,6 +173,9 @@ class EspecimenController {
 
         const formSol = this.container.querySelector('#solicitud-especimen-form');
         if (formSol) formSol.onsubmit = (e) => this.handleSolicitudSubmit(e);
+
+        const formEdit = this.container.querySelector('#editar-solicitud-form');
+        if (formEdit) formEdit.onsubmit = (e) => this.handleEditarSolicitudSubmit(e);
     }
 
     navigate(view) {
@@ -184,6 +191,9 @@ class EspecimenController {
         } else if (v === 'solicitud') {
             const f = this.container.querySelector('#solicitud-especimen-form');
             if (f && window.EspecimenCatalogos) await window.EspecimenCatalogos.fillFormSelects(f);
+        } else if (v === 'editar-solicitud') {
+            const f = this.container.querySelector('#editar-solicitud-form');
+            if (f && window.EspecimenCatalogos) await window.EspecimenCatalogos.fillFormSelects(f);
         } else if (v === 'modificar') {
             const f = this.container.querySelector('#modificar-especimen-form');
             if (f && window.EspecimenCatalogos) await window.EspecimenCatalogos.fillFormSelects(f);
@@ -195,7 +205,7 @@ class EspecimenController {
     render() {
         if (!this.container) return;
 
-        const views = ['general', 'alta', 'solicitud', 'modificar', 'baja', 'detalle'];
+        const views = ['general', 'alta', 'solicitud', 'modificar', 'baja', 'detalle', 'editar-solicitud'];
         views.forEach((v) => {
             const el = this.container.querySelector(`#view-esp-${v}`);
             if (el) el.style.display = v === this.currentView ? '' : 'none';
@@ -208,10 +218,11 @@ class EspecimenController {
             if (this.currentView !== 'general') {
                 const labels = {
                     alta: 'Nuevo',
-                    solicitud: 'Solicitar registro',
+                    solicitud: 'Nueva Solicitud',
                     modificar: 'Actualizar',
                     baja: 'Eliminar',
                     detalle: 'Ficha Técnica',
+                    'editar-solicitud': 'Editar Solicitud',
                 };
                 currentCrumb.textContent = labels[this.currentView] || this.currentView;
             }
@@ -223,6 +234,8 @@ class EspecimenController {
             this.initAltaForm();
         } else if (this.currentView === 'solicitud') {
             this.initSolicitudForm();
+        } else if (this.currentView === 'editar-solicitud') {
+            this.initEditarSolicitudForm();
         } else if (this.currentView === 'modificar') {
             this.renderModificarForm();
         } else if (this.currentView === 'baja') {
@@ -232,7 +245,7 @@ class EspecimenController {
             this.renderDetalle();
         }
 
-        if (['alta', 'solicitud', 'modificar'].includes(this.currentView)) {
+        if (['alta', 'solicitud', 'modificar', 'editar-solicitud'].includes(this.currentView)) {
             void this.afterNavigateCatalogos();
         }
 
@@ -249,17 +262,21 @@ class EspecimenController {
 
         const isAdmin = canAdd && canEdit && canDelete;
         this.isAdmin = isAdmin;
+        const isCapturista = hasModule && !canAdd; // tiene acceso pero no puede insertar directo
 
         const btnAlta = this.container.querySelector('#btn-alta-especimen');
         const btnSolicitar = this.container.querySelector('#btn-solicitar-registro');
+        const btnEditarSol = this.container.querySelector('#btn-editar-solicitud');
         const btnEdit = this.container.querySelector('#btn-actualizar-especimen');
         const btnDelete = this.container.querySelector('#btn-eliminar-especimen');
         const panelMisSolicitudes = this.container.querySelector('#panel-mis-solicitudes');
 
         if (btnAlta) btnAlta.style.display = canAdd ? 'flex' : 'none';
-        if (btnSolicitar) btnSolicitar.style.display = hasModule && !canAdd ? 'flex' : 'none';
-        if (btnEdit) btnEdit.style.display = canEdit ? 'flex' : 'none';
-        if (btnDelete) btnDelete.style.display = canDelete ? 'flex' : 'none';
+        if (btnSolicitar) btnSolicitar.style.display = isCapturista ? 'flex' : 'none';
+        // El btn Editar Solicitud se muestra solo si capturista Y tiene alguna REGRESADA
+        if (btnEditarSol) btnEditarSol.style.display = 'none'; // se actualiza en refreshMisSolicitudes
+        if (btnEdit) btnEdit.style.display = canEdit && !isCapturista ? 'flex' : 'none';
+        if (btnDelete) btnDelete.style.display = canDelete && !isCapturista ? 'flex' : 'none';
         if (panelMisSolicitudes) panelMisSolicitudes.style.display = isAdmin ? 'none' : '';
     }
 
@@ -959,6 +976,142 @@ class EspecimenController {
         mk('id_cita', 'id_cita', citaOpts, 'Seleccionar cita...');
     }
 
+    // ── Editar solicitud REGRESADA: pre-llenar formulario con datos previos ──
+    initEditarSolicitudForm() {
+        const form = this.container.querySelector('#editar-solicitud-form');
+        if (!form) return;
+
+        const sol = this.selectedSolicitudRegresada;
+
+        // Mostrar comentario del revisor
+        const bannerTxt = this.container.querySelector('#editar-sol-comentario-texto');
+        if (bannerTxt) bannerTxt.textContent = sol?.ultimo_comentario || 'Sin comentarios del revisor.';
+
+        // Subtítulo
+        const subtitle = this.container.querySelector('#editar-sol-subtitle');
+        if (subtitle && sol) subtitle.textContent = `Solicitud #${sol.id_solicitud}`;
+
+        // Hidden field
+        const hiddenId = this.container.querySelector('#editar-sol-id');
+        if (hiddenId && sol) hiddenId.value = sol.id_solicitud;
+
+        // Pre-llenar inputs simples con datos_propuestos
+        const d = sol?.datos_propuestos || {};
+        const setInput = (name, val) => {
+            const el = form.elements[name];
+            if (!el) return;
+            if (el.type === 'date' && val) el.value = String(val).slice(0, 10);
+            else el.value = (val == null ? '' : val);
+        };
+        setInput('nombre_comun', d.nombre_comun);
+        setInput('nombre_cientifico', d.nombre_cientifico);
+        setInput('num_individuos', d.num_individuos != null ? d.num_individuos : 1);
+        setInput('fecha_colecta', d.fecha_colecta);
+        setInput('anio_identificacion', d.anio_identificacion);
+        setInput('anio_catalogacion', d.anio_catalogacion);
+        setInput('numero_frasco', d.numero_frasco);
+        setInput('envio_identificacion', d.envio_identificacion);
+        setInput('latitud_n', d.latitud_n);
+        setInput('longitud_o', d.longitud_o);
+        setInput('altitud', d.altitud);
+        setInput('datos_ecologicos', d.datos_ecologicos);
+
+        // Destruir instancias previas
+        Object.values(this.editarSolicitudSelects).forEach(s => { try { s.destroy(); } catch (e) {} });
+        this.editarSolicitudSelects = {};
+
+        const cat = this.model.catalogos;
+        const optsFromList = (list, idKey, labelFn) =>
+            (list || []).map(item => ({ value: String(item[idKey]), label: labelFn(item) }));
+
+        const ordenOpts = optsFromList(cat.orden, 'idOrden', o => o.nombre);
+        const tipoOpts = optsFromList(cat.tipo, 'idTipo', t => t.nombre);
+        const paisOpts = optsFromList(cat.pais, 'idPais', p => p.nombre);
+        const plantaOpts = optsFromList(cat.planta_hospedera, 'idPlanta', p => p.nombre_cientifico + (p.nombre_comun ? ` (${p.nombre_comun})` : ''));
+        const organismoOpts = optsFromList(cat.organismo_hospedero, 'idOrganismo', o => o.nombre_organismo);
+        const colectorOpts = optsFromList(cat.colector, 'idColector', c => `${c.nombre} ${c.apellido_paterno || ''}`.trim());
+        const determinadorOpts = optsFromList(cat.determinador, 'idDeterminador', dd => `${dd.nombre} ${dd.apellido_paterno || ''}`.trim());
+        const coleccionOpts = optsFromList(cat.coleccion, 'idColeccion', c => `${c.acronimo} — ${c.nombre_institucion || ''}`);
+        const citaOpts = optsFromList(cat.cita, 'idCita', c => `${c.anio ? c.anio + ' — ' : ''}${c.titulo}`);
+
+        const mk = (key, name, options, placeholder, value, extra = {}) => {
+            const host = form.querySelector(`[data-cs-edit="${key}"]`);
+            if (!host) return null;
+            const sel = new CustomSelect(host, Object.assign({ options, value: value != null ? String(value) : '', placeholder, searchable: true, name }, extra));
+            this.editarSolicitudSelects[key] = sel;
+            return sel;
+        };
+
+        // Geo cascade
+        mk('id_pais', 'id_pais', paisOpts, 'Seleccionar país...', d.id_pais, {
+            onChange: (v) => {
+                this.editarSolicitudSelects.id_estado.setValue('');
+                this.editarSolicitudSelects.id_estado.setOptions(v ? optsFromList((cat.estado||[]).filter(e=>String(e.idPais)===String(v)),'idEstado',e=>e.nombre) : []);
+                this.editarSolicitudSelects.id_municipio.setValue(''); this.editarSolicitudSelects.id_municipio.setOptions([]);
+                this.editarSolicitudSelects.id_localidad.setValue(''); this.editarSolicitudSelects.id_localidad.setOptions([]);
+            }
+        });
+        mk('id_estado', 'id_estado', d.id_pais ? optsFromList((cat.estado||[]).filter(e=>String(e.idPais)===String(d.id_pais)),'idEstado',e=>e.nombre) : [], 'Selecciona país primero...', d.id_estado, {
+            onChange: (v) => {
+                this.editarSolicitudSelects.id_municipio.setValue('');
+                this.editarSolicitudSelects.id_municipio.setOptions(v ? optsFromList((cat.municipio||[]).filter(m=>String(m.idEstado)===String(v)),'idMunicipio',m=>m.nombre) : []);
+                this.editarSolicitudSelects.id_localidad.setValue(''); this.editarSolicitudSelects.id_localidad.setOptions([]);
+            }
+        });
+        mk('id_municipio', 'id_municipio', d.id_estado ? optsFromList((cat.municipio||[]).filter(m=>String(m.idEstado)===String(d.id_estado)),'idMunicipio',m=>m.nombre) : [], 'Selecciona estado primero...', d.id_municipio, {
+            onChange: (v) => {
+                this.editarSolicitudSelects.id_localidad.setValue('');
+                this.editarSolicitudSelects.id_localidad.setOptions(v ? optsFromList((cat.localidad||[]).filter(l=>String(l.idMunicipio)===String(v)),'idLocalidad',l=>l.nombre) : []);
+            }
+        });
+        mk('id_localidad', 'id_localidad', d.id_municipio ? optsFromList((cat.localidad||[]).filter(l=>String(l.idMunicipio)===String(d.id_municipio)),'idLocalidad',l=>l.nombre) : [], 'Selecciona municipio primero...', d.id_localidad);
+
+        // Taxonomy cascade
+        mk('id_orden', 'id_orden', ordenOpts, 'Seleccionar orden...', d.id_orden, {
+            onChange: (v) => {
+                this.editarSolicitudSelects.id_familia.setValue('');
+                this.editarSolicitudSelects.id_familia.setOptions(v ? optsFromList((cat.familia||[]).filter(f=>String(f.idOrden)===String(v)),'idFamilia',f=>f.nombre) : []);
+                ['id_subfamilia','id_tribu','id_genero','id_especie'].forEach(k=>{ this.editarSolicitudSelects[k].setValue(''); this.editarSolicitudSelects[k].setOptions([]); });
+            }
+        });
+        mk('id_familia', 'id_familia', d.id_orden ? optsFromList((cat.familia||[]).filter(f=>String(f.idOrden)===String(d.id_orden)),'idFamilia',f=>f.nombre) : [], 'Selecciona orden primero...', d.id_familia, {
+            onChange: (v) => {
+                this.editarSolicitudSelects.id_subfamilia.setValue('');
+                this.editarSolicitudSelects.id_subfamilia.setOptions(v ? optsFromList((cat.subfamilia||[]).filter(s=>String(s.idFamilia)===String(v)),'idSubfamilia',s=>s.nombre) : []);
+                ['id_tribu','id_genero','id_especie'].forEach(k=>{ this.editarSolicitudSelects[k].setValue(''); this.editarSolicitudSelects[k].setOptions([]); });
+            }
+        });
+        mk('id_subfamilia','id_subfamilia', d.id_familia ? optsFromList((cat.subfamilia||[]).filter(s=>String(s.idFamilia)===String(d.id_familia)),'idSubfamilia',s=>s.nombre) : [], 'Selecciona familia primero...', d.id_subfamilia, {
+            onChange: (v) => {
+                this.editarSolicitudSelects.id_tribu.setValue('');
+                this.editarSolicitudSelects.id_tribu.setOptions(v ? optsFromList((cat.tribu||[]).filter(t=>String(t.idSubfamilia)===String(v)),'idTribu',t=>t.nombre) : []);
+                ['id_genero','id_especie'].forEach(k=>{ this.editarSolicitudSelects[k].setValue(''); this.editarSolicitudSelects[k].setOptions([]); });
+            }
+        });
+        mk('id_tribu','id_tribu', d.id_subfamilia ? optsFromList((cat.tribu||[]).filter(t=>String(t.idSubfamilia)===String(d.id_subfamilia)),'idTribu',t=>t.nombre) : [], 'Selecciona subfamilia primero...', d.id_tribu, {
+            onChange: (v) => {
+                this.editarSolicitudSelects.id_genero.setValue('');
+                this.editarSolicitudSelects.id_genero.setOptions(v ? optsFromList((cat.genero||[]).filter(g=>String(g.idTribu)===String(v)),'idGenero',g=>g.nombre) : []);
+                this.editarSolicitudSelects.id_especie.setValue(''); this.editarSolicitudSelects.id_especie.setOptions([]);
+            }
+        });
+        mk('id_genero','id_genero', d.id_tribu ? optsFromList((cat.genero||[]).filter(g=>String(g.idTribu)===String(d.id_tribu)),'idGenero',g=>g.nombre) : [], 'Selecciona tribu primero...', d.id_genero, {
+            onChange: (v) => {
+                this.editarSolicitudSelects.id_especie.setValue('');
+                this.editarSolicitudSelects.id_especie.setOptions(v ? optsFromList((cat.especie||[]).filter(e=>String(e.idGenero)===String(v)),'idEspecie',e=>e.nombre+(e.subespecie?` ${e.subespecie}`:'')) : []);
+            }
+        });
+        mk('id_especie','id_especie', d.id_genero ? optsFromList((cat.especie||[]).filter(e=>String(e.idGenero)===String(d.id_genero)),'idEspecie',e=>e.nombre+(e.subespecie?` ${e.subespecie}`:'')) : [], 'Selecciona género primero...', d.id_especie);
+
+        mk('id_tipo','id_tipo', tipoOpts, 'Seleccionar tipo...', d.id_tipo);
+        mk('id_planta','id_planta', plantaOpts, 'Seleccionar planta hospedera...', d.id_planta);
+        mk('id_organismo_huesped','id_organismo_huesped', organismoOpts, 'Seleccionar organismo huésped...', d.id_organismo_huesped);
+        mk('id_colector','id_colector', colectorOpts, 'Seleccionar colector...', d.id_colector);
+        mk('id_determinador','id_determinador', determinadorOpts, 'Seleccionar determinador...', d.id_determinador);
+        mk('id_coleccion','id_coleccion', coleccionOpts, 'Seleccionar colección...', d.id_coleccion);
+        mk('id_cita','id_cita', citaOpts, 'Seleccionar cita...', d.id_cita);
+    }
+
     async refreshMisSolicitudes() {
         const box = this.container.querySelector('#mis-solicitudes-body');
         if (!box) return;
@@ -969,19 +1122,49 @@ class EspecimenController {
         }
         box.innerHTML = '<p style="margin:0;color:var(--text-muted);">Cargando…</p>';
         const rows = await this.model.fetchMisSolicitudes(uid);
+
+        // Verificar si hay alguna REGRESADA para mostrar/ocultar btn-editar-solicitud
+        const regresadas = rows.filter(r => r.estado === 'REGRESADA');
+        const btnEditarSol = this.container.querySelector('#btn-editar-solicitud');
+        if (btnEditarSol && !this.isAdmin) {
+            if (regresadas.length > 0) {
+                this.selectedSolicitudRegresada = regresadas[0]; // la más reciente
+                btnEditarSol.style.display = 'flex';
+            } else {
+                this.selectedSolicitudRegresada = null;
+                btnEditarSol.style.display = 'none';
+            }
+        }
+
         if (!rows.length) {
             box.innerHTML = '<p style="margin:0;color:var(--text-muted);">No hay solicitudes registradas.</p>';
             return;
         }
-        box.innerHTML = rows
-            .map((r) => {
-                const fc = r.fecha_creacion ? String(r.fecha_creacion).replace('T', ' ').slice(0, 19) : '';
-                return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--border-color);">
-                    <span>#${r.id_solicitud} · <strong>${r.estado || ''}</strong></span>
+
+        const statusColors = {
+            'PENDIENTE':  { bg: 'rgba(59,130,246,0.1)',  color: '#3b82f6' },
+            'APROBADA':   { bg: 'rgba(16,185,129,0.1)',  color: '#10b981' },
+            'RECHAZADA':  { bg: 'rgba(239,68,68,0.1)',   color: '#ef4444' },
+            'REGRESADA':  { bg: 'rgba(251,191,36,0.1)',  color: '#f59e0b' },
+        };
+
+        box.innerHTML = rows.map((r) => {
+            const fc = r.fecha_creacion ? String(r.fecha_creacion).replace('T', ' ').slice(0, 19) : '';
+            const sc = statusColors[r.estado] || { bg: 'rgba(128,128,128,0.1)', color: '#888' };
+            const badge = `<span style="background:${sc.bg};color:${sc.color};padding:2px 8px;border-radius:4px;font-size:0.72rem;font-weight:700;">${r.estado || ''}</span>`;
+            let comentario = '';
+            if (r.estado === 'REGRESADA' && r.ultimo_comentario) {
+                comentario = `<div style="margin-top:0.35rem;font-size:0.8rem;color:#f59e0b;background:rgba(251,191,36,0.08);padding:0.35rem 0.6rem;border-radius:6px;border-left:3px solid #f59e0b;">
+                    <strong>Comentario:</strong> ${r.ultimo_comentario}</div>`;
+            }
+            return `<div style="padding:0.6rem 0;border-bottom:1px solid var(--border-color);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="display:flex;align-items:center;gap:0.5rem;">#${r.id_solicitud} ${badge}</span>
                     <span style="font-size:0.8rem;color:var(--text-muted);">${fc}</span>
-                </div>`;
-            })
-            .join('');
+                </div>
+                ${comentario}
+            </div>`;
+        }).join('');
     }
 
     async handleAltaSubmit(e) {
@@ -1020,13 +1203,13 @@ class EspecimenController {
         e.preventDefault();
         const uid = this.getUserId();
         if (!uid) {
-            alert('No se pudo obtener el usuario.');
+            window.Utils.showToast('No se pudo obtener el usuario.', 'danger');
             return;
         }
         try {
             const datos = this.datosPropuestosDesdeFormulario(new FormData(e.target));
             if (!datos.nombre_cientifico || String(datos.nombre_cientifico).trim() === '') {
-                alert('El nombre científico es obligatorio en la solicitud.');
+                window.Utils.showToast('El nombre científico es obligatorio en la solicitud.', 'warning');
                 return;
             }
             await this.model.createSolicitud(uid, datos);
@@ -1036,6 +1219,28 @@ class EspecimenController {
             window.Utils.showToast('Solicitud enviada. Revise el estado en el panel inferior o en Aprobaciones.', 'success');
         } catch (err) {
             window.Utils.showToast(err.message || 'Error al enviar la solicitud', 'danger');
+        }
+    }
+
+    async handleEditarSolicitudSubmit(e) {
+        e.preventDefault();
+        const uid = this.getUserId();
+        if (!uid) { window.Utils.showToast('No se pudo obtener el usuario.', 'danger'); return; }
+        if (!this.selectedSolicitudRegresada) { window.Utils.showToast('No hay solicitud seleccionada para editar.', 'warning'); return; }
+        try {
+            const datos = this.datosPropuestosDesdeFormulario(new FormData(e.target));
+            if (!datos.nombre_cientifico || String(datos.nombre_cientifico).trim() === '') {
+                window.Utils.showToast('El nombre científico es obligatorio.', 'warning');
+                return;
+            }
+            await this.model.updateSolicitud(this.selectedSolicitudRegresada.id_solicitud, uid, datos);
+            e.target.reset();
+            this.selectedSolicitudRegresada = null;
+            await this.refreshMisSolicitudes();
+            this.navigate('general');
+            window.Utils.showToast('Solicitud reenviada correctamente. El administrador la revisará en Aprobaciones.', 'success');
+        } catch (err) {
+            window.Utils.showToast(err.message || 'Error al reenviar la solicitud', 'danger');
         }
     }
 

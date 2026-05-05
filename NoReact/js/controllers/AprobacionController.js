@@ -123,6 +123,9 @@ class AprobacionController {
                 </div>
 
                 <div class="card-actions">
+                    <button class="btn-aprobacion btn-ficha" data-id="${sol.id_solicitud}" title="Ver ficha técnica completa" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);">
+                        <i data-lucide="file-text" style="width: 16px; height: 16px;"></i> Ver Ficha
+                    </button>
                     <button class="btn-aprobacion btn-accept" data-id="${sol.id_solicitud}">
                         <i data-lucide="check-circle" style="width: 18px; height: 18px;"></i> Aceptar
                     </button>
@@ -135,10 +138,12 @@ class AprobacionController {
                 </div>
             `;
 
+            const btnFicha = card.querySelector('.btn-ficha');
             const btnAccept = card.querySelector('.btn-accept');
             const btnReturn = card.querySelector('.btn-return');
             const btnReject = card.querySelector('.btn-reject');
 
+            btnFicha.addEventListener('click', () => this.openFichaModal(sol));
             btnAccept.addEventListener('click', () => this.handleApprove(sol.id_solicitud));
             btnReturn.addEventListener('click', () => this.openModal(sol.id_solicitud, 'REGRESADA'));
             btnReject.addEventListener('click', () => this.openModal(sol.id_solicitud, 'RECHAZADA'));
@@ -162,6 +167,131 @@ class AprobacionController {
         document.querySelectorAll('.btn-reject').forEach(btn => {
             btn.style.display = canDelete ? 'flex' : 'none';
         });
+    }
+
+    openFichaModal(sol) {
+        const d = sol.datos_propuestos || {};
+        const val = (v) => (v === null || v === undefined || v === '') ? '—' : v;
+        const field = (label, value) =>
+            `<div class="ft-field"><span class="ft-label">${label}</span><span class="ft-value">${val(value)}</span></div>`;
+
+        const revisiones = sol.num_revisiones > 0
+            ? `<span style="background:rgba(251,191,36,0.15);color:#f59e0b;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;margin-left:8px;">${sol.num_revisiones} revisión(es) previa(s)</span>`
+            : '';
+
+        const comentarioRevisor = sol.ultimo_comentario_revisor
+            ? `<div style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;">
+                <strong style="color:#f59e0b;font-size:0.85rem;">Último comentario del revisor:</strong>
+                <p style="margin:0.25rem 0 0;font-size:0.88rem;color:var(--text-color);">${sol.ultimo_comentario_revisor}</p>
+               </div>` : '';
+
+        const html = `
+        <div style="font-family:inherit;max-height:80vh;overflow-y:auto;">
+          ${comentarioRevisor}
+          <div class="ft-modal" style="position:relative;max-width:none;width:100%;box-shadow:none;padding:0;">
+            <header class="ft-header">
+              <h1 class="ft-title" style="display:flex;align-items:center;gap:0;">FICHA TÉCNICA ${revisiones}</h1>
+              <p class="ft-subtitle">Solicitud #${sol.id_solicitud} · ${sol.usuario_nombre} ${sol.usuario_apellido}</p>
+            </header>
+            <section class="ft-section ft-hero-section" style="margin-top:0;">
+              <div class="ft-hero-info">
+                <h2 class="ft-common-name">${val(d.nombre_comun)}</h2>
+                <p class="ft-scientific-name"><i>${val(d.nombre_cientifico)}</i></p>
+              </div>
+              <div class="ft-hero-image"><i data-lucide="bug" style="width:48px;height:48px;opacity:0.4;"></i></div>
+            </section>
+            <section class="ft-section">
+              <h3 class="ft-section-title">Datos Generales</h3>
+              <div class="ft-grid ft-grid-3">
+                ${field('Núm. Individuos', d.num_individuos)}
+                ${field('Fecha de Colecta', d.fecha_colecta)}
+                ${field('Año Identificación', d.anio_identificacion)}
+                ${field('Año Catalogación', d.anio_catalogacion)}
+                ${field('Número de Frasco', d.numero_frasco)}
+                ${field('Envío Identificación', d.envio_identificacion)}
+              </div>
+            </section>
+            <section class="ft-section">
+              <h3 class="ft-section-title">Taxonomía</h3>
+              <div class="ft-grid ft-grid-3">
+                ${field('Orden', d.orden_nombre || d.orden || (d.id_orden ? '#'+d.id_orden : null))}
+                ${field('Familia', d.familia_nombre || d.familia || (d.id_familia ? '#'+d.id_familia : null))}
+                ${field('Subfamilia', d.id_subfamilia ? '#'+d.id_subfamilia : null)}
+                ${field('Tribu', d.id_tribu ? '#'+d.id_tribu : null)}
+                ${field('Género', d.id_genero ? '#'+d.id_genero : null)}
+                ${field('Especie', d.id_especie ? '#'+d.id_especie : null)}
+              </div>
+            </section>
+            <section class="ft-section">
+              <h3 class="ft-section-title">Ubicación Geográfica</h3>
+              <div class="ft-grid ft-grid-3">
+                ${field('Localidad', d.localidad_nombre || d.localidad || (d.id_localidad ? '#'+d.id_localidad : null))}
+                ${field('Municipio', d.municipio_nombre || d.municipio || (d.id_municipio ? '#'+d.id_municipio : null))}
+                ${field('Latitud', d.latitud_n)}
+                ${field('Longitud', d.longitud_o)}
+                ${field('Altitud (msnm)', d.altitud)}
+              </div>
+            </section>
+            <section class="ft-section">
+              <h3 class="ft-section-title">Catalogación</h3>
+              <div class="ft-grid ft-grid-2">
+                ${field('Colección', d.coleccion_nombre || d.coleccion || (d.id_coleccion ? '#'+d.id_coleccion : null))}
+                ${field('Colector', d.id_colector ? '#'+d.id_colector : null)}
+                ${field('Determinador', d.id_determinador ? '#'+d.id_determinador : null)}
+                ${field('Cita Bibliográfica', d.id_cita ? '#'+d.id_cita : null)}
+              </div>
+            </section>
+            <section class="ft-section">
+              <h3 class="ft-section-title">Datos Ecológicos</h3>
+              <div class="ft-notes">${d.datos_ecologicos || 'Sin datos ecológicos registrados.'}</div>
+            </section>
+          </div>
+        </div>`;
+
+        // Crear / reusar modal de ficha
+        let fichaModal = document.getElementById('aprobacion-ficha-modal');
+        if (!fichaModal) {
+            fichaModal = document.createElement('div');
+            fichaModal.id = 'aprobacion-ficha-modal';
+            fichaModal.className = 'modal-overlay';
+            fichaModal.style.cssText = 'display:none;align-items:flex-start;padding-top:4vh;';
+            fichaModal.innerHTML = `
+                <div class="modal-content" style="max-width:800px;width:95%;max-height:90vh;overflow-y:auto;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                        <h2 class="modal-title" id="ficha-modal-title">Ficha Técnica</h2>
+                        <button id="btn-close-ficha-modal" style="background:none;border:none;cursor:pointer;font-size:1.5rem;color:var(--text-muted);">×</button>
+                    </div>
+                    <div id="ficha-modal-body"></div>
+                    <div class="modal-footer" style="border-top:1px solid var(--border-color);margin-top:1rem;padding-top:1rem;">
+                        <button id="btn-ficha-approve" class="btn-aprobacion btn-accept" data-id=""><i data-lucide="check-circle" style="width:16px;height:16px;"></i> Aceptar</button>
+                        <button id="btn-ficha-return" class="btn-aprobacion btn-return" data-id=""><i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i> Regresar</button>
+                        <button id="btn-ficha-reject" class="btn-aprobacion btn-reject" data-id=""><i data-lucide="x-circle" style="width:16px;height:16px;"></i> Rechazar</button>
+                    </div>
+                </div>`;
+            document.getElementById('aprobaciones-module').appendChild(fichaModal);
+            document.getElementById('btn-close-ficha-modal').addEventListener('click', () => { fichaModal.style.display = 'none'; });
+            fichaModal.addEventListener('click', (e) => { if (e.target === fichaModal) fichaModal.style.display = 'none'; });
+        }
+
+        document.getElementById('ficha-modal-body').innerHTML = html;
+        const btnApprove = document.getElementById('btn-ficha-approve');
+        const btnReturn = document.getElementById('btn-ficha-return');
+        const btnReject = document.getElementById('btn-ficha-reject');
+        // Re-assign listeners by cloning
+        [btnApprove, btnReturn, btnReject].forEach(b => { const c = b.cloneNode(true); b.parentNode.replaceChild(c, b); });
+        document.getElementById('btn-ficha-approve').addEventListener('click', () => { fichaModal.style.display='none'; this.handleApprove(sol.id_solicitud); });
+        document.getElementById('btn-ficha-return').addEventListener('click', () => { fichaModal.style.display='none'; this.openModal(sol.id_solicitud, 'REGRESADA'); });
+        document.getElementById('btn-ficha-reject').addEventListener('click', () => { fichaModal.style.display='none'; this.openModal(sol.id_solicitud, 'RECHAZADA'); });
+
+        // Aplicar permisos al modal de ficha
+        const canEdit = window.Utils.checkPermission('Aprobaciones', 'edit');
+        const canDelete = window.Utils.checkPermission('Aprobaciones', 'delete');
+        document.getElementById('btn-ficha-approve').style.display = canEdit ? 'flex' : 'none';
+        document.getElementById('btn-ficha-return').style.display = canEdit ? 'flex' : 'none';
+        document.getElementById('btn-ficha-reject').style.display = canDelete ? 'flex' : 'none';
+
+        fichaModal.style.display = 'flex';
+        lucide.createIcons();
     }
 
     async handleApprove(id) {
@@ -205,7 +335,7 @@ class AprobacionController {
     async submitCommentAction() {
         const text = document.getElementById('modal-comment-text').value;
         if (this.commentAction === 'REGRESADA' && text.trim() === '') {
-            alert('Debe agregar un comentario para regresar la solicitud.');
+            window.Utils.showToast('Debe agregar un comentario para regresar la solicitud.', 'warning');
             return;
         }
 

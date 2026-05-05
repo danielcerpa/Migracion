@@ -13,8 +13,8 @@
         <div>
           <h2 class="screen-title" style="display: flex; align-items: center; gap: 8px;">
             Gestión de Préstamos
-            <button class="module-info-btn" title="Ver guía del módulo">
-              <i data-lucide="info" style="width: 14px; height: 14px;"></i> Tutorial de uso
+            <button class="btn-info" title="Ver guía del módulo">
+              <i data-lucide="info" style="width: 18px; height: 18px;"></i> Tutorial de uso
             </button>
           </h2>
         </div>
@@ -52,7 +52,6 @@
               <th>F. Préstamo</th>
               <th>Estado</th>
               <th style="text-align: center;">Propósito</th>
-              <th style="text-align: center;">Acción</th>
             </tr>
           </thead>
           <tbody id="prestamo-table-body">
@@ -79,9 +78,9 @@
         </div>
       </div>
 
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 1200px; margin: 0 auto;">
         <form id="alta-prestamo-form">
-          <div class="form-group prestamo-ejemplar-search-wrap" style="margin-bottom: 1.25rem; position: relative;">
+          <div class="form-group prestamo-ejemplar-search-wrap" style="margin-bottom: 1.5rem; position: relative;">
             <label>Buscar espécimen en la colección</label>
             <div class="search-wrapper" style="position: relative;">
               <i data-lucide="search" style="width: 18px; height: 18px;"></i>
@@ -94,44 +93,46 @@
               </table>
             </div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+
+          <div style="display: grid; grid-template-columns: 1fr 2fr 2fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <div class="form-group"><label>ID Espécimen *</label><input type="number" name="idEjemplar" required min="1"></div>
-            <div class="form-group"><label>Prestatario *</label><input type="text" name="prestatario" required></div>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <div class="form-group"><label>Nombre científico (auto)</label><input type="text" name="nombre_cientifico" readonly class="prestamo-readonly-field"></div>
             <div class="form-group"><label>Nombre común (auto)</label><input type="text" name="nombre_comun" readonly class="prestamo-readonly-field"></div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-            <div class="form-group"><label>Prestamista (quien autoriza en colección) *</label><input type="text" name="prestamista" required></div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Prestatario *</label><input type="text" name="prestatario" required></div>
             <div class="form-group"><label>Tel. prestatario</label><input type="text" name="telefono_prestatario" maxlength="15"></div>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <div class="form-group"><label>Institución</label><input type="text" name="institucion"></div>
-            <div class="form-group"><label>Propósito</label><input type="text" name="proposito"></div>
+            <div class="form-group"><label>Prestamista (autoriza) *</label><input type="text" name="prestamista" required></div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Propósito</label><input type="text" name="proposito"></div>
             <div class="form-group"><label>Fecha Préstamo *</label><input type="date" name="fecha_prestamo" required></div>
             <div class="form-group"><label>Fecha Dev. Estimada</label><input type="date" name="fecha_devolucion_estimada"></div>
             <div class="form-group"><label>Fecha Dev. Real</label><input type="date" name="fecha_devolucion_real"></div>
           </div>
-          <div class="form-group" style="margin-bottom: 1.5rem;">
-            <label>Condición al Prestar</label>
-            <textarea name="condicion_al_prestar" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
-          </div>
-          <div class="form-group" style="margin-bottom: 1.5rem;">
-            <label>Observaciones</label>
-            <textarea name="observaciones" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Estado del Préstamo</label>
-            <select name="estado_prestamo">
-                <option value="Activo">Activo</option>
-                <option value="Devuelto">Devuelto</option>
-                <option value="Vencido">Vencido</option>
-                <option value="Atrasado">Atrasado</option>
-                <option value="Baja">Baja / Perdido</option>
-            </select>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label>Condición al Prestar</label>
+              <textarea name="condicion_al_prestar" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem; border-radius: 6px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Observaciones</label>
+              <textarea name="observaciones" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem; border-radius: 6px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Estado del Préstamo</label>
+              <select name="estado_prestamo">
+                  <option value="Activo">Activo</option>
+                  <option value="Devuelto">Devuelto</option>
+                  <option value="Vencido">Vencido</option>
+                  <option value="Atrasado">Atrasado</option>
+                  <option value="Baja">Baja / Perdido</option>
+              </select>
+            </div>
           </div>
         </form>
       </div>
@@ -154,9 +155,9 @@
         </div>
       </div>
 
-      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 800px;">
+      <div class="form-card" style="background: var(--bg-card); border: 1px solid var(--border-color); padding: 2rem; border-radius: 12px; max-width: 1200px; margin: 0 auto;">
         <form id="modificar-prestamo-form">
-          <div class="form-group prestamo-ejemplar-search-wrap" style="margin-bottom: 1.25rem; position: relative;">
+          <div class="form-group prestamo-ejemplar-search-wrap" style="margin-bottom: 1.5rem; position: relative;">
             <label>Buscar espécimen en la colección</label>
             <div class="search-wrapper" style="position: relative;">
               <i data-lucide="search" style="width: 18px; height: 18px;"></i>
@@ -169,44 +170,46 @@
               </table>
             </div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+
+          <div style="display: grid; grid-template-columns: 1fr 2fr 2fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <div class="form-group"><label>ID Espécimen *</label><input type="number" name="idEjemplar" required min="1"></div>
-            <div class="form-group"><label>Prestatario *</label><input type="text" name="prestatario" required></div>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <div class="form-group"><label>Nombre científico (auto)</label><input type="text" name="nombre_cientifico" readonly class="prestamo-readonly-field"></div>
             <div class="form-group"><label>Nombre común (auto)</label><input type="text" name="nombre_comun" readonly class="prestamo-readonly-field"></div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-            <div class="form-group"><label>Prestamista *</label><input type="text" name="prestamista" required></div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Prestatario *</label><input type="text" name="prestatario" required></div>
             <div class="form-group"><label>Tel. prestatario</label><input type="text" name="telefono_prestatario" maxlength="15"></div>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             <div class="form-group"><label>Institución</label><input type="text" name="institucion"></div>
-            <div class="form-group"><label>Propósito</label><input type="text" name="proposito"></div>
+            <div class="form-group"><label>Prestamista (autoriza) *</label><input type="text" name="prestamista" required></div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group"><label>Propósito</label><input type="text" name="proposito"></div>
             <div class="form-group"><label>Fecha Préstamo *</label><input type="date" name="fecha_prestamo" required></div>
             <div class="form-group"><label>Fecha Dev. Estimada</label><input type="date" name="fecha_devolucion_estimada"></div>
             <div class="form-group"><label>Fecha Dev. Real</label><input type="date" name="fecha_devolucion_real"></div>
           </div>
-          <div class="form-group" style="margin-bottom: 1.5rem;">
-            <label>Condición al Prestar</label>
-            <textarea name="condicion_al_prestar" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
-          </div>
-          <div class="form-group" style="margin-bottom: 1.5rem;">
-            <label>Observaciones</label>
-            <textarea name="observaciones" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem;"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Estado del Préstamo</label>
-            <select name="estado_prestamo">
-                <option value="Activo">Activo</option>
-                <option value="Devuelto">Devuelto</option>
-                <option value="Vencido">Vencido</option>
-                <option value="Atrasado">Atrasado</option>
-                <option value="Baja">Baja / Perdido</option>
-            </select>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label>Condición al Prestar</label>
+              <textarea name="condicion_al_prestar" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem; border-radius: 6px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Observaciones</label>
+              <textarea name="observaciones" rows="2" style="width:100%; border:1px solid var(--border-color); background:transparent; color:var(--text-color); padding:0.5rem; border-radius: 6px;"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Estado del Préstamo</label>
+              <select name="estado_prestamo">
+                  <option value="Activo">Activo</option>
+                  <option value="Devuelto">Devuelto</option>
+                  <option value="Vencido">Vencido</option>
+                  <option value="Atrasado">Atrasado</option>
+                  <option value="Baja">Baja / Perdido</option>
+              </select>
+            </div>
           </div>
         </form>
       </div>

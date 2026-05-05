@@ -286,8 +286,8 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    height: 42px;
-    padding: 0 18px;
+    height: 2.625rem;
+    padding: 0 1.125rem;
     border-radius: 8px;
     font-size: 0.92rem;
     font-weight: 500;
@@ -471,7 +471,6 @@
   /* Table Highlighting */
   .selected-row {
     background: var(--bg-hover) !important;
-    border-left: 3px solid var(--accent-color) !important;
   }
 
   /* Search Dropdown */
@@ -512,5 +511,5 @@
     font-size: 0.8rem;
     padding-right: 1rem;
   }
-}
+
 

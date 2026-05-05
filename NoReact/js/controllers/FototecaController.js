@@ -11,7 +11,16 @@ class FototecaController {
         this.container = document.getElementById('fototeca-module');
         if (!this.container) return;
 
-        await this.model.fetchFotos();
+        this.currentView = 'general';
+        this.selectedItem = null;
+        this.query = '';
+        this._altaSelects = {};
+        this._modSelects = {};
+
+        await Promise.all([
+            this.model.fetchFotos(),
+            this._loadCatalogos()
+        ]);
 
         if (this._uiAbort) this._uiAbort.abort();
         this._uiAbort = new AbortController();
@@ -21,16 +30,35 @@ class FototecaController {
         if (window.FototecaTutorial) window.FototecaTutorial.init();
     }
 
+    async _loadCatalogos() {
+        const sections = ['especimen', 'colector', 'determinador'];
+        try {
+            const [especimenes, colectores, determinadores] = await Promise.all([
+                fetch('../api/especimenes.php').then(r => r.ok ? r.json() : []).catch(() => []),
+                fetch('../api/catalogos.php?section=colector').then(r => r.ok ? r.json() : []).catch(() => []),
+                fetch('../api/catalogos.php?section=determinador').then(r => r.ok ? r.json() : []).catch(() => [])
+            ]);
+            this._cats = {
+                especimen: Array.isArray(especimenes) ? especimenes : (especimenes.data || []),
+                colector: Array.isArray(colectores) ? colectores : [],
+                determinador: Array.isArray(determinadores) ? determinadores : []
+            };
+        } catch (err) {
+            console.error('Fototeca _loadCatalogos error:', err);
+            this._cats = { especimen: [], colector: [], determinador: [] };
+        }
+    }
+
     bindEvents() {
         const { signal } = this._uiAbort;
 
         document.getElementById('btn-alta-fototeca')?.addEventListener('click', () => this.navigate('alta'), { signal });
         document.getElementById('btn-actualizar-fototeca')?.addEventListener('click', () => {
-            if (!this.selectedItem) { alert('Seleccione una imagen primero.'); return; }
+            if (!this.selectedItem) { window.Utils.showToast('Seleccione una imagen primero.', 'warning'); return; }
             this.navigate('modificar', this.selectedItem);
         }, { signal });
         document.getElementById('btn-eliminar-fototeca')?.addEventListener('click', () => {
-            if (!this.selectedItem) { alert('Seleccione una imagen primero.'); return; }
+            if (!this.selectedItem) { window.Utils.showToast('Seleccione una imagen primero.', 'warning'); return; }
             this.navigate('baja', this.selectedItem);
         }, { signal });
 
@@ -50,22 +78,6 @@ class FototecaController {
         document.getElementById('alta-fototeca-form')?.addEventListener('submit', (e) => this.handleAltaSubmit(e), { signal });
         document.getElementById('modificar-fototeca-form')?.addEventListener('submit', (e) => this.handleModificarSubmit(e), { signal });
         document.getElementById('btn-confirmar-baja-foto')?.addEventListener('click', () => this.handleBajaSubmit(), { signal });
-
-        // Preview de archivo seleccionado
-        const fileInput = document.getElementById('alta-foto-file');
-        if (fileInput) {
-            fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                const previewWrap = document.getElementById('alta-foto-preview');
-                const previewImg = document.getElementById('alta-foto-preview-img');
-                if (file && previewWrap && previewImg) {
-                    previewImg.src = URL.createObjectURL(file);
-                    previewWrap.style.display = 'block';
-                } else if (previewWrap) {
-                    previewWrap.style.display = 'none';
-                }
-            }, { signal });
-        }
     }
 
     navigate(view, item = null) {
@@ -100,7 +112,9 @@ class FototecaController {
             this.renderTable();
         } else if (this.currentView === 'alta') {
             document.getElementById('alta-fototeca-form').reset();
+            this._initFormSelects('alta');
         } else if (this.currentView === 'modificar') {
+            this._initFormSelects('modificar');
             this.renderModificarForm();
         } else if (this.currentView === 'baja') {
             this.renderBajaForm();
@@ -187,18 +201,76 @@ class FototecaController {
         }
     }
 
+    _initFormSelects(view) {
+        const formId = view === 'alta' ? 'alta-fototeca-form' : 'modificar-fototeca-form';
+        const form = document.getElementById(formId);
+        if (!form || !window.CustomSelect) return;
+
+        const store = view === 'alta' ? '_altaSelects' : '_modSelects';
+
+        // Destroy previous instances
+        Object.values(this[store]).forEach(s => { try { s.destroy(); } catch(e) {} });
+        this[store] = {};
+
+        const cats = this._cats || { especimen: [], colector: [], determinador: [] };
+
+        const especimenOpts = cats.especimen.map(e => ({
+            value: String(e.id_especimen),
+            label: `#${String(e.id_especimen).padStart(5,'0')} — ${e.nombre_comun || e.nombre_cientifico || 'Sin nombre'}`
+        }));
+        const colectorOpts = cats.colector.map(c => ({
+            value: String(c.idColector),
+            label: `${c.nombre || ''} ${c.apellido_paterno || ''}`.trim()
+        }));
+        const determinadorOpts = cats.determinador.map(d => ({
+            value: String(d.idDeterminador),
+            label: `${d.nombre || ''} ${d.apellido_paterno || ''}`.trim()
+        }));
+
+        const mk = (csKey, hiddenName, options, placeholder) => {
+            const host = form.querySelector(`[data-cs="${csKey}"]`);
+            const hidden = form.querySelector(`input[name="${hiddenName}"]`);
+            if (!host) return null;
+            const sel = new window.CustomSelect(host, {
+                options, value: '', placeholder,
+                searchable: true,
+                onChange: (v) => { if (hidden) hidden.value = v || ''; }
+            });
+            this[store][csKey] = sel;
+            return sel;
+        };
+
+        mk('id_especimen', 'id_especimen', especimenOpts, 'Buscar espécimen...');
+        mk('id_colector',  'id_colector',  colectorOpts,  'Buscar colector...');
+        mk('id_determinador', 'id_determinador', determinadorOpts, 'Buscar determinador...');
+    }
+
     renderModificarForm() {
         if (!this.selectedItem) return;
         const form = document.getElementById('modificar-fototeca-form');
+        const s = this.selectedItem;
+
+        // Populate regular inputs
         Array.from(form.elements).forEach(el => {
-            if (el.name && this.selectedItem[el.name] !== undefined) {
-                if (el.type === 'date' && this.selectedItem[el.name]) {
-                    el.value = String(this.selectedItem[el.name]).split(' ')[0];
-                } else {
-                    el.value = this.selectedItem[el.name];
-                }
+            if (el.name && s[el.name] !== undefined && el.type !== 'hidden') {
+                el.value = el.type === 'date' && s[el.name]
+                    ? String(s[el.name]).split(' ')[0]
+                    : s[el.name];
             }
         });
+
+        // Set CustomSelect values and sync hidden inputs
+        const store = this._modSelects;
+        const setCs = (key, hiddenName, value) => {
+            if (store[key] && value != null && value !== '') {
+                store[key].setValue(String(value));
+                const hidden = form.querySelector(`input[name="${hiddenName}"]`);
+                if (hidden) hidden.value = String(value);
+            }
+        };
+        setCs('id_especimen', 'id_especimen', s.id_especimen);
+        setCs('id_colector',  'id_colector',  s.id_colector);
+        setCs('id_determinador', 'id_determinador', s.id_determinador);
     }
 
     renderBajaForm() {
@@ -210,32 +282,10 @@ class FototecaController {
     async handleAltaSubmit(e) {
         e.preventDefault();
         const form = e.target;
-        const fileInput = form.querySelector('input[type="file"]');
-        const file = fileInput?.files?.[0];
         try {
-            if (file) {
-                const fd = new FormData();
-                fd.append('archivo', file);
-                fd.append('id_especimen', form.elements.namedItem('id_especimen').value);
-                const desc = form.elements.namedItem('descripcion_foto')?.value || '';
-                fd.append('descripcion_foto', desc);
-                const col = form.elements.namedItem('id_colector')?.value;
-                const det = form.elements.namedItem('id_determinador')?.value;
-                if (col) fd.append('id_colector', col);
-                if (det) fd.append('id_determinador', det);
-                const response = await fetch(`${this.model.apiBase}/fototeca.php`, { method: 'POST', body: fd });
-                const body = await response.json().catch(() => ({}));
-                if (!response.ok) throw new Error(body.error || 'Error');
-            } else {
-                const formData = new FormData(form);
-                formData.delete('archivo');
-                const data = Object.fromEntries(formData.entries());
-                if (!String(data.ruta_archivo || '').trim()) {
-                    window.Utils.showToast('Suba un archivo o indique una URL en el campo ruta.', 'warning');
-                    return;
-                }
-                await this.model.createFoto(data);
-            }
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            await this.model.createFoto(data);
             await this.model.fetchFotos();
             window.Utils.showToast('Imagen registrada.', 'success');
             this.navigate('general');
@@ -255,7 +305,7 @@ class FototecaController {
             await this.model.fetchFotos();
             this.navigate('general');
         } catch (err) {
-            alert('Error actualizando imagen');
+            window.Utils.showToast('Error actualizando imagen', 'danger');
         }
     }
 
@@ -266,7 +316,7 @@ class FototecaController {
             await this.model.fetchFotos();
             this.navigate('general');
         } catch (err) {
-            alert('Error eliminando imagen');
+            window.Utils.showToast('Error eliminando imagen', 'danger');
         }
     }
 }

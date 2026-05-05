@@ -16,6 +16,13 @@ class UsuarioController {
         this.container = document.getElementById('usuarios-module');
         if (!this.container) return;
 
+        // Resetear estado al recargar desde sidebar
+        this.currentView = 'general';
+        this.selectedUser = null;
+        this.query = '';
+        this.currentPage = 1;
+        this.permissionsForm = {};
+
         // Fetch initial data
         await Promise.all([
             this.model.fetchUsers(),
@@ -40,13 +47,25 @@ class UsuarioController {
             if (!target) return;
 
             if (target.id === 'btn-alta') this.navigate('alta');
-            if (target.id === 'btn-actualizar') {
-                if (!this.selectedUser) { alert('Seleccione un usuario de la tabla primero.'); return; }
-                this.navigate('modificar', this.selectedUser);
-            }
-            if (target.id === 'btn-eliminar') {
-                if (!this.selectedUser) { alert('Seleccione un usuario de la tabla primero.'); return; }
-                this.navigate('baja', this.selectedUser);
+            
+            if (target.id === 'btn-actualizar' || target.id === 'btn-eliminar') {
+                if (!this.selectedUser) { window.Utils.showToast('Seleccione un usuario de la tabla primero.', 'warning'); return; }
+                
+                const sessionData = window.sessionStorage.getItem('userSession');
+                const currentUser = sessionData ? JSON.parse(sessionData) : null;
+                const isSuperAdmin = currentUser && Number(currentUser.id) === 1;
+                const targetIsAdmin = this.selectedUser.permisos && this.selectedUser.permisos.some(p => Number(p.idProfile) === 1);
+                
+                if (targetIsAdmin && !isSuperAdmin) {
+                    window.Utils.showToast('No tienes permisos para modificar o eliminar a otros Administradores.', 'danger');
+                    return;
+                }
+                
+                if (target.id === 'btn-actualizar') {
+                    this.navigate('modificar', this.selectedUser);
+                } else {
+                    this.navigate('baja', this.selectedUser);
+                }
             }
             if (target.classList.contains('btn-back-general') || target.id === 'breadcrumb-back') {
                 this.navigate('general');
@@ -67,6 +86,7 @@ class UsuarioController {
                 if (input) input.value = '';
                 this.currentPage = 1;
                 this.renderTable();
+                target.style.visibility = 'hidden';
             }
             if (target.id === 'btn-clear-mod-search') {
                 this.modSearchTerm = '';
@@ -74,6 +94,7 @@ class UsuarioController {
                 if (input) input.value = '';
                 this.selectedUser = null;
                 this.renderModificarForm();
+                target.style.visibility = 'hidden';
             }
         }, { signal });
 
@@ -190,7 +211,7 @@ class UsuarioController {
         const tbody = document.getElementById('usuarios-table-body');
         if (!tbody) return;
 
-        let filtered = this.model.users;
+        let filtered = this.model.users.filter(u => Number(u.idUser) !== 1);
         if (this.query.trim() !== '') {
             const q = this.query.toLowerCase();
             filtered = filtered.filter(u => 
@@ -206,7 +227,7 @@ class UsuarioController {
 
         tbody.innerHTML = '';
         if (paginated.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="td-empty">No se encontraron usuarios para "${this.query}".</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="td-empty">No se encontraron usuarios para "${this.query}".</td></tr>`;
         } else {
             paginated.forEach(u => {
                 const tr = document.createElement('tr');
@@ -220,7 +241,6 @@ class UsuarioController {
                 };
 
                 tr.innerHTML = `
-                    <td class="td-id">#${u.idUser}</td>
                     <td class="td-name">${u.name}</td>
                     <td>${u.last_name || '-'}</td>
                     <td>${u.second_last_name || '-'}</td>
@@ -288,8 +308,34 @@ class UsuarioController {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        const sinAcceso = this.model.profiles.find(p => p.nickname === 'SinAcceso');
+        const sinAcceso = this.model.profiles.find(p => p.nickname === 'SinAcceso' || p.nickname === 'Sin Acceso');
         const defaultProfileId = sinAcceso ? String(sinAcceso.idProfile) : '5';
+
+        const sessionData = window.sessionStorage.getItem('userSession');
+        const currentUser = sessionData ? JSON.parse(sessionData) : null;
+        const isSuperAdmin = currentUser && Number(currentUser.id) === 1;
+
+        const getOptions = (moduleObj) => {
+            const isRestrictedModule = moduleObj.name === 'Usuarios' || moduleObj.name === 'Perfiles';
+            const isApprovalModule = moduleObj.name === 'Aprobaciones';
+
+            return this.model.profiles.map(p => {
+                // Restricción para módulos sensibles (Usuarios/Perfiles)
+                if (!isSuperAdmin && isRestrictedModule && (Number(p.idProfile) === 1 || p.nickname === 'Administrador')) {
+                    return '';
+                }
+
+                // Restricción para Aprobaciones: solo Admin o Sin Acceso
+                if (isApprovalModule) {
+                    const isAllowed = p.nickname === 'Administrador' || p.nickname === 'Sin Acceso' || p.nickname === 'SinAcceso';
+                    if (!isAllowed) return '';
+                }
+
+                const isSelected = this.permissionsForm[moduleObj.idModule] == p.idProfile;
+                const dangerClass = p.nickname === 'SinAcceso' || p.nickname === 'Sin Acceso' ? 'text-danger' : '';
+                return `<option value="${p.idProfile}" ${isSelected ? 'selected' : ''} class="${dangerClass}">${p.nickname}</option>`;
+            }).join('');
+        };
 
         let html = '<table class="permissions-dual-table"><tbody>';
         for (let i = 0; i < this.model.modules.length; i += 2) {
@@ -300,15 +346,26 @@ class UsuarioController {
             if (!this.permissionsForm[m1.idModule]) this.permissionsForm[m1.idModule] = defaultProfileId;
             if (m2 && !this.permissionsForm[m2.idModule]) this.permissionsForm[m2.idModule] = defaultProfileId;
 
+            // Sanitize Aprobaciones if it has an invalid profile
+            [m1, m2].forEach(m => {
+                if (m && m.name === 'Aprobaciones') {
+                    const currentProfId = this.permissionsForm[m.idModule];
+                    const prof = this.model.profiles.find(p => String(p.idProfile) === String(currentProfId));
+                    if (prof && !(prof.nickname === 'Administrador' || prof.nickname === 'Sin Acceso' || prof.nickname === 'SinAcceso')) {
+                        this.permissionsForm[m.idModule] = defaultProfileId;
+                    }
+                }
+            });
+
             html += `<td class="module-label-cell">${m1.name}</td>`;
             html += `<td class="select-cell"><select class="form-select custom-select-vanilla" data-module="${m1.idModule}">
-                ${this.model.profiles.map(p => `<option value="${p.idProfile}" ${this.permissionsForm[m1.idModule] == p.idProfile ? 'selected' : ''} class="${p.nickname === 'SinAcceso' ? 'text-danger' : ''}">${p.nickname}</option>`).join('')}
+                ${getOptions(m1)}
             </select></td>`;
 
             if (m2) {
                 html += `<td class="module-label-cell">${m2.name}</td>`;
                 html += `<td class="select-cell"><select class="form-select custom-select-vanilla" data-module="${m2.idModule}">
-                    ${this.model.profiles.map(p => `<option value="${p.idProfile}" ${this.permissionsForm[m2.idModule] == p.idProfile ? 'selected' : ''} class="${p.nickname === 'SinAcceso' ? 'text-danger' : ''}">${p.nickname}</option>`).join('')}
+                    ${getOptions(m2)}
                 </select></td>`;
             } else {
                 html += `<td class="module-label-cell"></td><td class="select-cell"></td>`;
@@ -338,20 +395,11 @@ class UsuarioController {
         });
     }
 
-    /**
-     * Exige al menos un módulo con un perfil distinto de «Sin Acceso» (evita usuarios bloqueados por error).
-     */
-    permisosTienenAccesoOperativo() {
-        const sin = this.model.profiles.find(p => p.nickname === 'Sin Acceso' || p.nickname === 'SinAcceso');
-        const sinId = sin ? String(sin.idProfile) : null;
-        return Object.entries(this.permissionsForm).some(([, prof]) => (sinId == null ? true : String(prof) !== sinId));
-    }
-
     renderReferenceTable(containerId) {
         const container = document.getElementById(containerId);
         if (!container) return;
 
-        const profiles = this.model.profiles.filter(p => p.nickname !== 'SinAcceso');
+        const profiles = this.model.profiles.filter(p => p.nickname !== 'SinAcceso' && p.nickname !== 'Sin Acceso');
         if (profiles.length === 0) return;
 
         const keys = Object.keys(profiles[0]).filter(k => k.startsWith('key_'));
@@ -385,9 +433,11 @@ class UsuarioController {
 
         const q = this.modSearchTerm.toLowerCase();
         const filtered = this.model.users.filter(u => 
+            Number(u.idUser) !== 1 && (
             u.name.toLowerCase().includes(q) ||
             (u.last_name || '').toLowerCase().includes(q) ||
             u.email.toLowerCase().includes(q)
+            )
         );
 
         dropdown.innerHTML = '';
@@ -406,6 +456,20 @@ class UsuarioController {
                 `;
                 item.onmousedown = (e) => {
                     e.preventDefault();
+                    
+                    const sessionData = window.sessionStorage.getItem('userSession');
+                    const currentUser = sessionData ? JSON.parse(sessionData) : null;
+                    const isSuperAdmin = currentUser && Number(currentUser.id) === 1;
+                    const targetIsAdmin = u.permisos && u.permisos.some(p => Number(p.idProfile) === 1);
+                    
+                    if (targetIsAdmin && !isSuperAdmin) {
+                        window.Utils.showToast('No tienes permisos para modificar a otros Administradores.', 'danger');
+                        this.showModDropdown = false;
+                        const dropdown = document.getElementById('search-mod-dropdown');
+                        if (dropdown) dropdown.style.display = 'none';
+                        return;
+                    }
+                    
                     this.selectedUser = u;
                     this.modSearchTerm = `${u.name} ${u.last_name || ''} ${u.second_last_name || ''}`.trim();
                     const input = document.getElementById('search-mod-input');
@@ -507,11 +571,6 @@ class UsuarioController {
             return;
         }
 
-        if (!this.permisosTienenAccesoOperativo()) {
-            window.Utils.showToast('Asigne al menos un módulo con un perfil distinto de «Sin Acceso».', 'warning');
-            return;
-        }
-
         try {
             window.Utils.setButtonLoading(btnSave, true);
             await this.model.createUser(data);
@@ -544,11 +603,6 @@ class UsuarioController {
                 return;
             }
             data.password = form.password.value;
-        }
-
-        if (!this.permisosTienenAccesoOperativo()) {
-            window.Utils.showToast('Debe quedar al menos un módulo con perfil distinto de «Sin Acceso».', 'warning');
-            return;
         }
 
         try {

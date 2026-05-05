@@ -64,7 +64,7 @@ const DashboardTutorial = {
           },
         },
         {
-          element: '#scale-trigger',
+          element: '#config-size-interface',
           popover: {
             title: 'Tamaño de Interfaz',
             description: 'Ajusta el <strong>zoom de la interfaz</strong> según tu comodidad.',
@@ -89,7 +89,7 @@ const DashboardTutorial = {
           },
         },
         {
-          element: '#nav-modules-container',
+          element: '#nav-modules-container .nav-group:first-child',
           popover: {
             title: 'Módulos del Sistema',
             description: 'Accede a las funcionalidades específicas de cada área.',

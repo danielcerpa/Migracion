@@ -29,6 +29,33 @@ class EspecimenModel {
                     item && item.status !== 0 && item.status !== false && item.status !== '0'
                 );
             });
+
+            // Función para obtener ID considerando camelCase o snake_case
+            const getVal = (obj, keys) => {
+                for (const k of keys) { if (obj[k] != null) return String(obj[k]); }
+                return null;
+            };
+
+            const filterCascade = (child, parent, parentIdKeys, parentRefKeys) => {
+                const activeParentIds = new Set(this.catalogos[parent].map(p => getVal(p, parentIdKeys)));
+                this.catalogos[child] = this.catalogos[child].filter(c => {
+                    const pid = getVal(c, parentRefKeys);
+                    return pid == null || activeParentIds.has(pid); // Si no tiene padre referenciado, lo dejamos; si lo tiene, debe estar activo
+                });
+            };
+
+            // Cascada de Geografía
+            filterCascade('estado', 'pais', ['idPais', 'id_pais'], ['idPais', 'id_pais']);
+            filterCascade('municipio', 'estado', ['idEstado', 'id_estado'], ['idEstado', 'id_estado']);
+            filterCascade('localidad', 'municipio', ['idMunicipio', 'id_municipio'], ['idMunicipio', 'id_municipio']);
+
+            // Cascada de Taxonomía
+            filterCascade('familia', 'orden', ['idOrden', 'id_orden'], ['idOrden', 'id_orden']);
+            filterCascade('subfamilia', 'familia', ['idFamilia', 'id_familia'], ['idFamilia', 'id_familia']);
+            filterCascade('tribu', 'subfamilia', ['idSubfamilia', 'id_subfamilia'], ['idSubfamilia', 'id_subfamilia']);
+            filterCascade('genero', 'tribu', ['idTribu', 'id_tribu'], ['idTribu', 'id_tribu']);
+            filterCascade('especie', 'genero', ['idGenero', 'id_genero'], ['idGenero', 'id_genero']);
+
             return this.catalogos;
         } catch (err) {
             console.error('fetchCatalogos error:', err);
@@ -75,6 +102,26 @@ class EspecimenModel {
         });
         if (!response.ok) {
             let msg = 'Error al enviar la solicitud';
+            try {
+                const j = await response.json();
+                if (j.error) msg = j.error;
+            } catch (_) {}
+            throw new Error(msg);
+        }
+        return await response.json();
+    }
+
+    /** Reenvía una solicitud REGRESADA con datos corregidos (cambia estado a PENDIENTE). */
+    async updateSolicitud(id, userId, datosPropuestos) {
+        const uid = parseInt(String(userId), 10);
+        if (!uid) throw new Error('Usuario inválido');
+        const response = await fetch(`${this.apiBase}/solicitudes_especimen.php?id=${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id_usuario: uid, datos_propuestos: datosPropuestos }),
+        });
+        if (!response.ok) {
+            let msg = 'Error al reenviar la solicitud';
             try {
                 const j = await response.json();
                 if (j.error) msg = j.error;
